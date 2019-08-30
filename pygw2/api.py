@@ -40,10 +40,34 @@ def get_dailies():
     """
     Get daily achievements from API.
     https://api.guildwars2.com/v2/achievements/daily
-    :return:
+    :return: dict
     """
 
     url = "/v2/achievements/daily"
+
+    r = requests.get(base_url + url, params=parameters)
+
+    achievements = {}
+
+    for dtype in r.json():
+        achievements[dtype] = []
+        for achi in r.json()[dtype]:
+            achievements[dtype].append({
+                "achievement": get_achievements([achi['id']]),
+                "level": achi['level'],
+                "required_access": achi.get('required_access', None)
+            })
+
+    return achievements
+
+
+def get_dailies_tomorrow():
+    """
+    Get daily achievements for tomorrow from API.
+    https://api.guildwars2.com/v2/achievements/daily/tomorrow
+    :return: dict
+    """
+    url = "/v2/achievements/daily/tomorrow"
 
     r = requests.get(base_url + url, params=parameters)
 
