@@ -47,72 +47,21 @@ class Achievement:
         self.type = achi['type']
 
         # Go through all the flags
-        if 'Pvp' in achi['flags']:
-            self.pvp = True
-        else:
-            self.pvp = False
-
-        if 'CategoryDisplay' in achi['flags']:
-            self.meta = True
-        else:
-            self.meta = False
-
-        if 'MoveToTop' in achi['flags']:
-            self.mtt = True
-        else:
-            self.mtt = False
-
-        if 'IgnoreNearlyComplete' in achi['flags']:
-            self.inc = True
-        else:
-            self.inc = False
-
-        if 'Repeatable' in achi['flags']:
-            self.repeatable = True
-        else:
-            self.repeatable = False
-
-        if 'Hidden' in achi['flags']:
-            self.hidden = True
-        else:
-            self.hidden = False
-
-        if 'RequiresUnlock' in achi['flags']:
-            self.req_unlock = True
-        else:
-            self.req_unlock = False
-
-        if 'RepairOnLogin' in achi['flags']:
-            self.repair = True
-        else:
-            self.repair = False
-
-        if 'Daily' in achi['flags']:
-            self.daily = True
-        else:
-            self.daily = False
-
-        if 'Weekly' in achi['flags']:
-            self.weekly = True
-        else:
-            self.weekly = False
-
-        if 'Monthly' in achi['flags']:
-            self.monthly = True
-        else:
-            self.monthly = False
-
-        if 'Permanent' in achi['flags']:
-            self.permanent = True
-        else:
-            self.permanent = False
+        self.pvp = 'Pvp' in achi['flags']
+        self.meta = 'CategoryDisplay' in achi['flags']
+        self.mtt = 'MoveToTop' in achi['flags']
+        self.inc = 'IgnoreNearlyComplete' in achi['flags']
+        self.repeatable = 'Repeatable' in achi['flags']
+        self.hidden = 'Hidden' in achi['flags']
+        self.req_unlock = 'RequiresUnlock' in achi['flags']
+        self.repair = 'RepairOnLogin' in achi['flags']
+        self.daily = 'Daily' in achi['flags']
+        self.weekly = 'Weekly' in achi['flags']
+        self.monthly = 'Monthly' in achi['flags']
+        self.permanent = 'Permanent' in achi['flags']
 
         self.tiers = achi['tiers']
-
-        if 'prerequisites' in achi:
-            self.prerequisites = achi['prerequisites']
-        else:
-            self.prerequisites = None
+        self.prerequisites = achi.get('prerequisites', None)
 
         if 'rewards' in achi:
             self.rewards = []
@@ -121,15 +70,8 @@ class Achievement:
         else:
             self.rewards = []
 
-        if 'bits' in achi:
-            self.bits = achi['bits']
-        else:
-            self.bits = None
-
-        if 'point_cap' in achi:
-            self.point_cap = achi['point_cap']
-        else:
-            self.point_cap = None
+        self.bits = achi.get('bits', None)
+        self.point_cap = achi.get('point_cap', None)
 
         if 'type' in achi:
             del achi['type']

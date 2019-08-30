@@ -14,6 +14,7 @@ parameters = {
 def get_achievements(ids: list=[]):
     """
     Get achievements from API by list of IDs.
+    https://api.guildwars2.com/v2/achievements
     :param ids: list=[]
     :return: list
     """
@@ -33,3 +34,28 @@ def get_achievements(ids: list=[]):
         for achi in data:
             achis.append(Achievement(achi))
         return achis
+
+
+def get_dailies():
+    """
+    Get daily achievements from API.
+    https://api.guildwars2.com/v2/achievements/daily
+    :return:
+    """
+
+    url = "/v2/achievements/daily"
+
+    r = requests.get(base_url + url, params=parameters)
+
+    achievements = {}
+
+    for dtype in r.json():
+        achievements[dtype] = []
+        for achi in r.json()[dtype]:
+            achievements[dtype].append({
+                "achievement": get_achievements([achi['id']]),
+                "level": achi['level'],
+                "required_access": achi.get('required_access', None)
+            })
+
+    return achievements
