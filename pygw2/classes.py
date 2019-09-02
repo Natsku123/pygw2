@@ -1,3 +1,11 @@
+from .api import achievements
+
+
+class ApiError(Exception):
+    """Raised if API returns something unexpected."""
+    pass
+
+
 class Coins:
     def __init__(self, coins: dict):
         self.count = coins['count']
@@ -29,6 +37,37 @@ class Title:
         if 'type' in title:
             del title['type']
         self.json = title
+
+
+class AchievementCategory:
+    def __init__(self, achicategory: dict):
+        self.id = achicategory['id']
+        self.name = achicategory['name']
+        self.description = achicategory['description']
+        self.order = achicategory['order']
+        self.icon = achicategory.get('icon', None)
+        self.achievements = achievements.get(achicategory['achievements'])
+
+    def __str__(self):
+        return str(self.id)
+
+    def __repr__(self):
+        return "AchievementCategory(id={0.id})".format(self)
+
+
+class AchievementGroup:
+    def __init__(self, achigroup: dict):
+        self.id = achigroup['id']
+        self.name = achigroup['name']
+        self.description = achigroup['description']
+        self.order = achigroup['order']
+        self.categories = achigroup['categories']
+
+    def __str__(self):
+        return str(self.id)
+
+    def __repr__(self):
+        return "AchievementGroup(id={0.id})".format(self)
 
 
 class Achievement:
