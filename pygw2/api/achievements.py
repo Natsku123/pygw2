@@ -4,7 +4,7 @@ from ..classes import *
 from ..settings import *
 
 
-def get(ids: list=[]):
+def get(ids: list=[], json=False):
     """
     Get achievements from API by list of IDs.
     https://api.guildwars2.com/v2/achievements
@@ -20,6 +20,11 @@ def get(ids: list=[]):
 
     r = requests.get(base_url + url, params=parameters)
 
+    if r.status_code == 414:
+        raise ApiError("Too many IDs.")
+    elif r.status_code == 404:
+        raise ApiError("File or directory not found")
+
     data = r.json()
 
     # Check for errors.
@@ -27,7 +32,7 @@ def get(ids: list=[]):
         raise ApiError(data['text'])
 
     # Return list of ids.
-    if len(ids) == 0:
+    if len(ids) == 0 or json:
         return data
 
     # Return list of Achievements.
