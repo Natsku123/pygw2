@@ -16,10 +16,360 @@ class Coins:
 
 class Item:
     def __init__(self, item: dict):
-        self.id = item['id']
-        if 'type' in item:
-            del item['type']
-        self.json = item
+        self.id = item.get('id', None)
+        self.chat_link = item.get('chat_link', None)
+        self.name = item.get('name', None)
+        self.icon = item.get('icon', None)
+        self.description = item.get('description', None)
+        self.rarity = item.get('rarity', None)
+        self.level = item.get('level', None)
+        self.vendor_value = item.get('vendor_value', 0)
+        self.default_skin = item.get('default_skin', None)
+
+        # Go through all the flags
+        if 'flags' in item:
+            self.accountBindOnUse = 'AccountBindOnUse' in item['flags']
+            self.accountBound = 'AccountBound' in item['flags']
+            self.attuned = 'Attuned' in item['flags']
+            self.bulkConsume = 'BulkConsume' in item['flags']
+            self.deleteWarn = 'DeleteWarning' in item['flags']
+            self.hideSuffix = 'HideSuffix' in item['flags']
+            self.infused = 'Infused' in item['flags']
+            self.monsterOnly = 'MonsterOnly' in item['flags']
+            self.noMysticForge = 'NoMysticForge' in item['flags']
+            self.noSalvage = 'NoSalvage' in item['flags']
+            self.noSell = 'NoSell' in item['flags']
+            self.notUpgradeable = 'NotUpgradeable' in item['flags']
+            self.noUnderwater = 'NoUnderwater' in item['flags']
+            self.soulbindOnAcquire = 'SoulbindOnAcquire' in item['flags']
+            self.soulBindOnUse = 'SoulBindOnUse' in item['flags']
+            self.tonic = 'Tonic' in item['flags']
+            self.unique = 'Unique' in item['flags']
+        else:
+            self.accountBindOnUse = None
+            self.accountBound = None
+            self.attuned = None
+            self.bulkConsume = None
+            self.deleteWarn = None
+            self.hideSuffix = None
+            self.infused = None
+            self.monsterOnly = None
+            self.noMysticForge = None
+            self.noSalvage = None
+            self.noSell = None
+            self.notUpgradeable = None
+            self.noUnderwater = None
+            self.soulbindOnAcquire = None
+            self.soulBindOnUse = None
+            self.tonic = None
+            self.unique = None
+
+        # Go through all the game types.
+        if 'game_types' in item:
+            self.activity = 'Activity' in item['game_types']
+            self.dungeon = 'Dungeon' in item['game_types']
+            self.pve = 'Pve' in item['game_types']
+            self.pvp = 'Pvp' in item['game_types']
+            self.pvpLobby = 'PvpLobby' in item['game_types']
+            self.wvw = 'Wvw' in item['game_types']
+
+        else:
+            self.activity = None
+            self.dungeon = None
+            self.pve = None
+            self.pvp = None
+            self.pvpLobby = None
+            self.wvw = None
+
+        if 'restrictions' in item:
+            self.asura = 'Asura' in item['restrictions']
+            self.charr = 'Charr' in item['restrictions']
+            self.human = 'Human' in item['restrictions']
+            self.norn = 'Norn' in item['restrictions']
+            self.sylvari = 'Sylvari' in item['restrictions']
+            self.elementalist = 'Elementalist' in item['restrictions']
+            self.engineer = 'Engineer' in item['restrictions']
+            self.guardian = 'Guardian' in item['restrictions']
+            self.mesmer = 'Mesmer' in item['restrictions']
+            self.necromancer = 'Necromancer' in item['restrictions']
+            self.ranger = 'Ranger' in item['restrictions']
+            self.thief = 'Thief' in item['restrictions']
+            self.warrior = 'Warrior' in item['restrictions']
+        else:
+            self.asura = None
+            self.charr = None
+            self.human = None
+            self.norn = None
+            self.sylvari = None
+            self.elementalist = None
+            self.engineer = None
+            self.guardian = None
+            self.mesmer = None
+            self.necromancer = None
+            self.ranger = None
+            self.thief = None
+            self.warrior = None
+
+        self.details = item.get('details', None)
+
+
+class ArmorItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+        self.weight_class = item.get('weight_class', None)
+        self.defense = item.get('defense', None)
+
+        self.infusion_slots = []
+        for inf in item.get('infusion_slots', []):
+            self.infusion_slots.append(InfusionSlot(inf))
+
+        self.infix_upgrade = None
+        if item.get('infix_upgrade', None):
+            self.infix_upgrade = InfixUpgrade(item['infix_upgrade'])
+
+        # TODO convert to items
+        self.suffix_item_id = item.get('suffix_item_id', None)
+        self.secondary_suffix_item_id = item.get('suffix_item_id', None)
+
+        # TODO needs further implementation (stats)
+        self.stat_choices = item.get('stat_choices', None)
+        super().__init__(item)
+
+
+class BackItem(Item):
+    def __init__(self, item: dict):
+        self.infusion_slots = []
+        for inf in item.get('infusion_slots', []):
+            self.infusion_slots.append(InfusionSlot(inf))
+
+        self.infix_upgrade = None
+        if item.get('infix_upgrade', None):
+            self.infix_upgrade = InfixUpgrade(item['infix_upgrade'])
+
+        # TODO convert to items
+        self.suffix_item_id = item.get('suffix_item_id', None)
+        self.secondary_suffix_item_id = item.get('suffix_item_id', None)
+
+        # TODO needs further implementation (stats)
+        self.stat_choices = item.get('stat_choices', None)
+        super().__init__(item)
+
+
+class Bag(Item):
+    def __init__(self, item: dict):
+        self.size = item.get('size', None)
+        self.no_sell_or_sort = item.get('no_sell_or_sort', None)
+        super().__init__(item)
+
+
+class ConsumableItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get("type", None)
+        self.description = item.get('description', None)
+        self.duration_ms = item.get('duration_ms', None)
+        self.unlock_type = item.get('unlock_type', None)
+
+        # TODO change to dye
+        self.color_id = item.get('color_id', None)
+
+        # TODO change to recipe
+        self.recipe_id = item.get('recipe_id', None)
+        self.extra_recipe_id = item.get('extra_recipe_id', None)
+
+        # TODO change to guild upgrade
+        self.guild_upgrade_id = item.get('guild_upgrade_id', None)
+
+        self.apply_count = item.get('apply_count', None)
+        self.name = item.get('name', None)
+        self.icon = item.get('icon', None)
+
+        # TODO change to skins
+        self.skins = item.get('skins', None)
+
+        super().__init__(item)
+
+
+class ContainerItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+        super().__init__(item)
+
+
+class GatheringToolItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+        super().__init__(item)
+
+
+class GizmoItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+
+        # TODO change to guild upgrade
+        self.guild_upgrade_id = item.get('guild_upgrade_id', None)
+        super().__init__(item)
+
+
+class MiniatureItem(Item):
+    def __init__(self, item: dict):
+
+        # TODO change to mini
+        self.type = item.get('minipet_id', None)
+        super().__init__(item)
+
+
+class SalvageKitItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+        self.charges = item.get('charges', None)
+        super().__init__(item)
+
+
+class TrinketItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+
+        self.infusion_slots = []
+        for inf in item.get('infusion_slots', []):
+            self.infusion_slots.append(InfusionSlot(inf))
+
+        self.infix_upgrade = None
+        if item.get('infix_upgrade', None):
+            self.infix_upgrade = InfixUpgrade(item['infix_upgrade'])
+
+        # TODO convert to items
+        self.suffix_item_id = item.get('suffix_item_id', None)
+        self.secondary_suffix_item_id = item.get('suffix_item_id', None)
+
+        # TODO needs further implementation (stats)
+        self.stat_choices = item.get('stat_choices', None)
+        super().__init__(item)
+
+
+class UpgradeComponentItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+
+        if 'flags' in item:
+            self.upgradeAxe = 'Axe' in item['flags']
+            self.upgradeDagger = 'Dagger' in item['flags']
+            self.upgradeFocus = 'Focus' in item['flags']
+            self.upgradeGreatsword = 'Greatsword' in item['flags']
+            self.upgradeHammer = 'Hammer' in item['flags']
+            self.upgradeHarpoon = 'Harpoon' in item['flags']
+            self.upgradeLongBow = 'LongBow' in item['flags']
+            self.upgradeMace = 'Mace' in item['flags']
+            self.upgradePistol = 'Pistol' in item['flags']
+            self.upgradeRifle = 'Rifle' in item['flags']
+            self.upgradeScepter = 'Scepter' in item['flags']
+            self.upgradeShield = 'Shield' in item['flags']
+            self.upgradeShortBow = 'ShortBow' in item['flags']
+            self.upgradeSpeargun = 'Speargun' in item['flags']
+            self.upgradeStaff = 'Staff' in item['flags']
+            self.upgradeSword = 'Sword' in item['flags']
+            self.upgradeTorch = 'Torch' in item['flags']
+            self.upgradeTrident = 'Trident' in item['flags']
+            self.upgradeWarhorn = 'Warhorn' in item['flags']
+            self.upgradeHeavyArmor = 'HeavyArmor' in item['flags']
+            self.upgradeMediumArmor = 'MediumArmor' in item['flags']
+            self.upgradeLightArmor = 'LightArmor' in item['flags']
+            self.upgradeTrinket = 'Trinket' in item['flags']
+        else:
+            self.upgradeAxe = None
+            self.upgradeDagger = None
+            self.upgradeFocus = None
+            self.upgradeGreatsword = None
+            self.upgradeHammer = None
+            self.upgradeHarpoon = None
+            self.upgradeLongBow = None
+            self.upgradeMace = None
+            self.upgradePistol = None
+            self.upgradeRifle = None
+            self.upgradeScepter = None
+            self.upgradeShield = None
+            self.upgradeShortBow = None
+            self.upgradeSpeargun = None
+            self.upgradeStaff = None
+            self.upgradeSword = None
+            self.upgradeTorch = None
+            self.upgradeTrident = None
+            self.upgradeWarhorn = None
+            self.upgradeHeavyArmor = None
+            self.upgradeMediumArmor = None
+            self.upgradeLightArmor = None
+            self.upgradeTrinket = None
+
+        if 'infusion_upgrade_flags' in item:
+            self.infusionEnrichment = 'Enrichment' in item['infusion_upgrade_flags']
+            self.infusion = 'Infusion' in item['infusion_upgrade_flags']
+            self.infusionDefense = 'Defense' in item['infusion_upgrade_flags']
+            self.infusionOffense = 'Offense' in item['infusion_upgrade_flags']
+            self.infusionUtility = 'Utility' in item['infusion_upgrade_flags']
+            self.infusionAgony = 'Agony' in item['infusion_upgrade_flags']
+        else:
+            self.infusionEnrichment = None
+            self.infusion = None
+            self.infusionDefense = None
+            self.infusionOffense = None
+            self.infusionUtility = None
+            self.infusionAgony = None
+
+        self.suffix = item.get('suffix', None)
+
+        self.infix_upgrade = None
+        if item.get('infix_upgrade', None):
+            self.infix_upgrade = InfixUpgrade(item['infix_upgrade'])
+
+        self.bonuses = item.get('bonuses', None)
+        super().__init__(item)
+
+
+class WeaponItem(Item):
+    def __init__(self, item: dict):
+        self.type = item.get('type', None)
+        self.damage_type = item.get('damage_type', None)
+        self.min_power = item.get('min_power', None)
+        self.max_power = item.get('max_power', None)
+        self.defense = item.get('defense', None)
+
+        self.infusion_slots = []
+        for inf in item.get('infusion_slots', []):
+            self.infusion_slots.append(InfusionSlot(inf))
+
+        self.infix_upgrade = None
+        if item.get('infix_upgrade', None):
+            self.infix_upgrade = InfixUpgrade(item['infix_upgrade'])
+
+        # TODO convert to items
+        self.suffix_item_id = item.get('suffix_item_id', None)
+        self.secondary_suffix_item_id = item.get('suffix_item_id', None)
+
+        # TODO needs further implementation (stats)
+        self.stat_choices = item.get('stat_choices', None)
+
+        super().__init__(item)
+
+
+class InfixUpgrade:
+    def __init__(self, iu: dict):
+
+        # TODO The itemstat id that can be resolved against /v2/itemstats.
+        self.id = iu.get('id', None)
+
+        self.attributes = iu.get('attributes', None)
+        self.buff = iu.get('buff', None)
+
+
+class InfusionSlot:
+    def __init__(self, ins: dict):
+        if 'flags' in ins:
+            self.enrichment = 'Enrichment' in ins['flags']
+            self.infusion = 'Infusion' in ins['flags']
+        else:
+            self.enrichment = False
+            self.infusion = False
+
+        self.item_id = ins.get('item_id', None)
 
 
 class Mastery:
@@ -50,10 +400,10 @@ class Account:
         self.created = acc['created']
 
         # Go through access
-        self.pff = 'PlayForFree' in acc['access']
-        self.gw2 = 'GuildWars2' in acc['access']
-        self.hot = 'HeartOfThorns' in acc['access']
-        self.pof = 'PathOfFire' in acc['access']
+        self.playForFree = 'PlayForFree' in acc['access']
+        self.guildWars2 = 'GuildWars2' in acc['access']
+        self.heartOfThorns = 'HeartOfThorns' in acc['access']
+        self.pathOfFire = 'PathOfFire' in acc['access']
 
         self.commander = acc['commander']
         self.fractal_level = acc['fractal_level']
@@ -113,26 +463,26 @@ class Achievement:
         # Go through all the flags
         if 'flags' in achi:
             self.pvp = 'Pvp' in achi['flags']
-            self.meta = 'CategoryDisplay' in achi['flags']
-            self.mtt = 'MoveToTop' in achi['flags']
-            self.inc = 'IgnoreNearlyComplete' in achi['flags']
+            self.categoryDisplay = 'CategoryDisplay' in achi['flags']
+            self.moveToTop = 'MoveToTop' in achi['flags']
+            self.ignoreNearlyComplete = 'IgnoreNearlyComplete' in achi['flags']
             self.repeatable = 'Repeatable' in achi['flags']
             self.hidden = 'Hidden' in achi['flags']
-            self.req_unlock = 'RequiresUnlock' in achi['flags']
-            self.repair = 'RepairOnLogin' in achi['flags']
+            self.requiresUnlock = 'RequiresUnlock' in achi['flags']
+            self.repairOnLogin = 'RepairOnLogin' in achi['flags']
             self.daily = 'Daily' in achi['flags']
             self.weekly = 'Weekly' in achi['flags']
             self.monthly = 'Monthly' in achi['flags']
             self.permanent = 'Permanent' in achi['flags']
         else:
             self.pvp = None
-            self.meta = None
-            self.mtt = None
-            self.inc = None
+            self.categoryDisplay = None
+            self.moveToTop = None
+            self.ignoreNearlyComplete = None
             self.repeatable = None
             self.hidden = None
-            self.req_unlock = None
-            self.repair = None
+            self.requiresUnlock = None
+            self.repairOnLogin = None
             self.daily = None
             self.weekly = None
             self.monthly = None
