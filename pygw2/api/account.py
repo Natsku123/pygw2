@@ -93,7 +93,7 @@ def get_bank(data, api_key: str):
     # Blacklist of purged IDs
     blacklist = [45022, 45023, 45024, 45025]
 
-    # Optimizing api calls to batches of ids
+    # Optimizing api calls to batches of 200 ids
     item_ids = []
     i = 0
     batch = 0
@@ -107,6 +107,8 @@ def get_bank(data, api_key: str):
             i = i + 1
 
     items_ready = {}
+
+    # Get dict of item and its id
     for items in item_ids:
         items_fetched = get_item(ids=items)
         if isinstance(items_fetched, list):
@@ -114,6 +116,8 @@ def get_bank(data, api_key: str):
                 items_ready[item.id] = item
         else:
             items_ready[items_fetched.id] = items_fetched
+
+    # Combine information
     for item in data:
         # TODO create more accurate item object
 
@@ -250,10 +254,20 @@ def get_inventory(data, api_key: str):
     :return:
     """
     inventory = []
+    ids = []
     for item in data:
+        ids.append(item['id'])
+    items = get_item(ids=ids)
+    for item in data:
+        corr_item = None
+        for itm_obj in items:
+            if item['id'] == itm_obj.id:
+                corr_item = itm_obj
+                break
+
         # TODO change to more specific items
         inventory.append({
-            "item": get_item(ids=[item['id']]),
+            "item": corr_item,
             "count": item['count'],
             "charges": item.get('charges', None),
             "skin": item.get('skin', None),
@@ -262,6 +276,121 @@ def get_inventory(data, api_key: str):
             "binding": item.get('binding', None)
         })
     return inventory
+
+
+@endpoint("/v2/account/luck")
+def get_luck(data, api_key: str):
+    """
+    Get account luck from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO edit data returned to 'better' format
+    return data
+
+
+@endpoint("/v2/account/mailcarriers")
+def get_mailcarriers(data, api_key: str):
+    """
+    Get unlocked mailcarriers from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/mailcarriers
+    return data
+
+
+@endpoint("/v2/account/mapchests")
+def get_mapchests(data, api_key: str):
+    """
+    Get mapchest unlocked since daily reset from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/mapchests
+    return data
+
+
+@endpoint("/v2/account/masteries")
+def get_masteries(data, api_key: str):
+    """
+    Get unlocked masteries from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/masteries
+    return data
+
+
+@endpoint("/v2/account/mastery/points")
+def get_mastery_points(data, api_key: str):
+    """
+    Get account mastery points from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO edit data to 'better' format
+    return data
+
+
+@endpoint("/v2/account/materials")
+def get_materials(data, api_key: str):
+    """
+    Get contents of material storage from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # Optimizing api calls to batches of 200 ids
+    item_ids = []
+    i = 0
+    batch = 0
+    for item in data:
+        if i % 200 == 0 or i == 0:
+            item_ids.append([])
+            batch = batch + 1
+
+        item_ids[batch - 1].append(item['id'])
+        i = i + 1
+
+    items_ready = {}
+
+    # Get dict of item and its id
+    for items in item_ids:
+        items_fetched = get_item(ids=items)
+        if isinstance(items_fetched, list):
+            for item in items_fetched:
+                items_ready[item.id] = item
+        else:
+            items_ready[items_fetched.id] = items_fetched
+
+    items = []
+    for item in data:
+        items.append({
+            "item": items_ready[item['id']],
+            "category": item['category'],
+            "binding": item.get('binding', None),
+            "count": item['count']
+        })
+
+    return items
+
+
+
+
+
+
 
 
 
