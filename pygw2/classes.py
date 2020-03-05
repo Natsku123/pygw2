@@ -110,8 +110,6 @@ class Item:
             self.thief = None
             self.warrior = None
 
-        self.details = item.get('details', None)
-
 
 class ArmorItem(Item):
     def __init__(self, item: dict):
@@ -426,7 +424,7 @@ class AchievementCategory:
         self.description = achicategory['description']
         self.order = achicategory['order']
         self.icon = achicategory.get('icon', None)
-        self.achievements = achievements.get(achicategory['achievements'])
+        self.achievements = achievements.get(ids=achicategory['achievements'])
 
     def __str__(self):
         return str(self.id)
@@ -524,7 +522,7 @@ class AchievementProgress(Achievement):
         # Add rest of achievement information.
         if achio is None:
             try:
-                achievement = achievements.get([achi['id']], json=True)[0]
+                achievement = achievements.get(ids=[achi['id']], json=True)[0]
 
                 super().__init__(achievement)
             except ApiError:

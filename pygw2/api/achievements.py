@@ -1,35 +1,16 @@
-import requests
 from ..utils import *
 from ..classes import *
-from ..settings import *
 
 
-def get(ids: list=[], json=False):
+@endpoint("/v2/achievements")
+def get(data, ids: list=[], json=False):
     """
     Get achievements from API by list of IDs.
     https://api.guildwars2.com/v2/achievements
+    :param data: Data from endpoint wrapper
     :param ids: list=[]
     :return: list
     """
-    url = "/v2/achievements"
-    parameters = default_parameters.copy()
-
-    if len(ids) != 0:
-        ids = list_to_str(ids)
-        parameters['ids'] = ids
-
-    r = requests.get(base_url + url, params=parameters)
-
-    if r.status_code == 414:
-        raise ApiError("Too many IDs.")
-    elif r.status_code == 404:
-        raise ApiError("File or directory not found")
-
-    data = r.json()
-
-    # Check for errors.
-    if 'text' in data:
-        raise ApiError(data['text'])
 
     # Return list of ids.
     if len(ids) == 0 or json:
@@ -43,26 +24,23 @@ def get(ids: list=[], json=False):
         return achis
 
 
-def get_dailies():
+@endpoint("/v2/achievements/daily")
+def get_dailies(data):
     """
     Get daily achievements from API.
     https://api.guildwars2.com/v2/achievements/daily
+    :param data: Data from wrapper
     :return: dict
     """
-
-    url = "/v2/achievements/daily"
-    parameters = default_parameters.copy()
-
-    r = requests.get(base_url + url, params=parameters)
 
     achies = {}
 
     # Process achievements.
-    for dtype in r.json():
+    for dtype in data:
         achies[dtype] = []
-        for achi in r.json()[dtype]:
+        for achi in data[dtype]:
             achies[dtype].append({
-                "achievement": get([achi['id']]),
+                "achievement": get(ids=[achi['id']]),
                 "level": achi['level'],
                 "required_access": achi.get('required_access', None)
             })
@@ -70,25 +48,23 @@ def get_dailies():
     return achies
 
 
-def get_dailies_tomorrow():
+@endpoint("/v2/achievements/daily/tomorrow")
+def get_dailies_tomorrow(data):
     """
     Get daily achievements for tomorrow from API.
     https://api.guildwars2.com/v2/achievements/daily/tomorrow
+    :param data: Data from wrapper
     :return: dict
     """
-    url = "/v2/achievements/daily/tomorrow"
-    parameters = default_parameters.copy()
-
-    r = requests.get(base_url + url, params=parameters)
 
     achies = {}
 
     # Process achievements.
-    for dtype in r.json():
+    for dtype in data:
         achies[dtype] = []
-        for achi in r.json()[dtype]:
+        for achi in data[dtype]:
             achies[dtype].append({
-                "achievement": get([achi['id']]),
+                "achievement": get(ids=[achi['id']]),
                 "level": achi['level'],
                 "required_access": achi.get('required_access', None)
             })
@@ -96,27 +72,15 @@ def get_dailies_tomorrow():
     return achies
 
 
-def get_groups(ids: list=[]):
+@endpoint("/v2/achievements/groups")
+def get_groups(data, ids: list=[]):
     """
     Get groups for achievements from API by list of IDs.
     https://api.guildwars2.com/v2/achievements/groups
+    :param data: Data from wrapper
     :param ids: list=[]
     :return: list
     """
-    url = "/v2/achievements/groups"
-    parameters = default_parameters.copy()
-
-    if len(ids) != 0:
-        ids = list_to_str(ids)
-        parameters['ids'] = ids
-
-    r = requests.get(base_url + url, params=parameters)
-
-    data = r.json()
-
-    # Check for errors
-    if 'text' in data:
-        raise ApiError(data['text'])
 
     # Return list of group ids.
     if len(ids) == 0:
@@ -130,19 +94,15 @@ def get_groups(ids: list=[]):
         return groups
 
 
-def get_group(g_id: str):
+@endpoint("/v2/achievements/groups/")
+def get_group(data, item_id):
     """
     Get group of achievements from API with ID.
     https://api.guildwars2.com/v2/achievements/groups/{g_id}
-    :param g_id:
+    :param data: Data from wrapper
+    :param item_id: ID of item
     :return:
     """
-    url = "/v2/achievements/groups/"
-    parameters = default_parameters.copy()
-
-    r = requests.get(base_url + url + g_id, params=parameters)
-
-    data = r.json()
 
     # Check for errors
     if 'text' in data:
@@ -151,23 +111,15 @@ def get_group(g_id: str):
     return AchievementGroup(data)
 
 
-def get_categories(ids: list=[]):
+@endpoint("/v2/achievements/categories")
+def get_categories(data, ids: list=[]):
     """
     Get categories for achievements from API by list of IDs.
     https://api.guildwars2.com/v2/achievements/categories
+    :param data: Data from wrapper
     :param ids: list=[]
     :return: list
     """
-    url = "/v2/achievements/categories"
-    parameters = default_parameters.copy()
-
-    if len(ids) != 0:
-        ids = list_to_str(ids)
-        parameters['ids'] = ids
-
-    r = requests.get(base_url + url, params=parameters)
-
-    data = r.json()
 
     # Check for errors
     if 'text' in data:
@@ -186,19 +138,15 @@ def get_categories(ids: list=[]):
         return groups
 
 
-def get_category(c_id: int):
+@endpoint("/v2/achievements/categories/")
+def get_category(data, item_id):
     """
     Get category of achievements from API with ID.
-    https://api.guildwars2.com/v2/achievements/categories/{g_id}
-    :param c_id:
+    https://api.guildwars2.com/v2/achievements/categories/{id}
+    :param data: Data from wrapper
+    :param item_id: ID of item
     :return:
     """
-    url = "/v2/achievements/categories/"
-    parameters = default_parameters.copy()
-
-    r = requests.get(base_url + url + str(c_id), params=parameters)
-
-    data = r.json()
 
     # Check for errors
     if 'text' in data:

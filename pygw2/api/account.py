@@ -1,51 +1,27 @@
-import requests
 from ..classes import *
 from ..utils import *
-from ..settings import *
 
 
-def get(api_key: str):
+@endpoint("/v2/account")
+def get(data, api_key: str):
     """
     Get account from API with api key.
+    :param data: Data from wrapper
     :param api_key: str
     :return: Account
     """
 
-    url = "/v2/account"
-
-    parameters = default_parameters.copy()
-    parameters['access_token'] = api_key
-
-    r = requests.get(base_url + url, params=parameters)
-
-    data = r.json()
-
-    # Check for errors.
-    if 'text' in data:
-        raise ApiError(data['text'])
-
     return Account(data)
 
 
-def get_achievements(api_key: str):
+@endpoint("/v2/account/achievements")
+def get_achievements(data, api_key: str):
     """
     Get achievements progress from API with api key.
+    :param data: Data from wrapper
     :param api_key: str
     :return: list
     """
-
-    url = "/v2/account/achievements"
-
-    parameters = default_parameters
-    parameters['access_token'] = api_key
-
-    r = requests.get(base_url + url, params=parameters)
-
-    data = r.json()
-
-    # Check for errors.
-    if 'text' in data:
-        raise ApiError(data['text'])
 
     achis = []
 
@@ -77,7 +53,7 @@ def get_achievements(api_key: str):
 
         # Get all ids.
         for i in new_com:
-            achios_t.append(achievements.get(i, json=True))
+            achios_t.append(achievements.get(ids=i, json=True))
 
         achios = []
 
@@ -86,7 +62,7 @@ def get_achievements(api_key: str):
             for n in i:
                 achios.append(n)
     else:
-        achios = achievements.get(completed, json=True)
+        achios = achievements.get(ids=completed, json=True)
 
     # Match all achievement objects
     for achi in data:
@@ -100,3 +76,5 @@ def get_achievements(api_key: str):
             achis.append(AchievementProgress(achi, {}))
 
     return achis
+
+
