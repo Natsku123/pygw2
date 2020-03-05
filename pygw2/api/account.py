@@ -89,17 +89,39 @@ def get_bank(data, api_key: str):
     """
 
     bank = []
+
+    # Blacklist of purged IDs
+    blacklist = [45022, 45023, 45024, 45025]
+
+    # Optimizing api calls to batches of ids
+    item_ids = []
+    i = 0
+    batch = 0
+    for item in data:
+        if item is not None and item['id'] not in blacklist:
+            if i % 200 == 0 or i == 0:
+                item_ids.append([])
+                batch = batch + 1
+
+            item_ids[batch-1].append(item['id'])
+            i = i + 1
+
+    items_ready = {}
+    for items in item_ids:
+        items_fetched = get_item(ids=items)
+        if isinstance(items_fetched, list):
+            for item in items_fetched:
+                items_ready[item.id] = item
+        else:
+            items_ready[items_fetched.id] = items_fetched
     for item in data:
         # TODO create more accurate item object
-
-        # TODO remove blacklist once API responds to these
-        blacklist = [45022, 45023, 45024, 45025]
 
         if item is None:
             bank.append(None)
         elif not item['id'] in blacklist:
             bank.append({
-                "item": get_item(ids=[item['id']]),
+                "item": items_ready[item['id']],
                 "count": item['count'],
                 "charges": item.get('charges', None),
                 "skin": item.get('skin', None),
@@ -121,3 +143,125 @@ def get_bank(data, api_key: str):
             })
 
     return bank
+
+
+@endpoint("/v2/account/dailycrafting")
+def get_dailycrafting(data, api_key: str):
+    """
+    Get crafted time-gated items from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+    # TODO resolve against /v2/dailycrafting
+    return data
+
+
+@endpoint("/v2/account/dungeons")
+def get_dungeons(data, api_key: str):
+    """
+    Get completed dungeon paths after last daily reset from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+    # TODO resolve against /v2/dungeons
+    return data
+
+
+@endpoint("/v2/account/dyes")
+def get_dyes(data, api_key: str):
+    """
+    Get unlocked dyes from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/colors
+    return data
+
+
+@endpoint("/v2/account/finishers")
+def get_finishers(data, api_key: str):
+    """
+    Get unlocked finishers from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    finishers = []
+    for finisher in data:
+        # TODO change finisher_id to finisher with resolve against /v2/finishers
+        finishers.append({
+            "finisher_id": finisher['id'],
+            "permanent": finisher['permanent'],
+            "quantity": finisher.get('quantity', None)
+        })
+    return finishers
+
+
+@endpoint("/v2/account/gliders")
+def get_gliders(data, api_key: str):
+    """
+    Get unlocked gliders from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/gliders
+    return data
+
+
+@endpoint("/v2/account/home/cats")
+def get_home_cats(data, api_key: str):
+    """
+    Get unlocked home instance cats from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/cats
+    return data
+
+
+@endpoint("/v2/account/home/nodes")
+def get_home_nodes(data, api_key: str):
+    """
+    Get unlocked home instance nodes from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/home/nodes
+    return data
+
+
+@endpoint("/v2/account/inventory")
+def get_inventory(data, api_key: str):
+    """
+    Get shared inventory from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+    inventory = []
+    for item in data:
+        # TODO change to more specific items
+        inventory.append({
+            "item": get_item(ids=[item['id']]),
+            "count": item['count'],
+            "charges": item.get('charges', None),
+            "skin": item.get('skin', None),
+            "upgrades": item.get('upgrades', None),
+            "infusions": item.get('infusions', None),
+            "binding": item.get('binding', None)
+        })
+    return inventory
+
+
+

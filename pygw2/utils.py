@@ -33,16 +33,19 @@ def endpoint(path: str):
                     if len(value) != 0:
                         parameters['ids'] = list_to_str(value)
                 elif key == "item_id":
-                    path_id = str(value)
+                    if not path.endswith("/"):
+                        path_id = "/" + str(value)
+                    else:
+                        path_id = str(value)
 
             if path.endswith("/") and path_id == "":
                 raise ApiError("ID needed.")
             r = requests.get(base_url + path + path_id, params=parameters)
 
             if r.status_code == 414:
-               raise ApiError("Too many IDs.")
+                raise ApiError("Too many IDs.")
             elif r.status_code == 404:
-               raise ApiError("File or directory not found")
+                raise ApiError("File or directory not found: " + str(base_url + path + path_id) + " Parameters: " + str(parameters))
 
             data = r.json()
 

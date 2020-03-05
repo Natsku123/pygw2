@@ -61,7 +61,7 @@ def get(data, ids: list=[], json=False):
             else:
                 items.append(Item(item))
 
-            if len(items) > 1:
-                return items
-            else:
-                return items[0]
+        if len(items) > 1:
+            return items
+        else:
+            return items[0]
