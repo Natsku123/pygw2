@@ -543,7 +543,7 @@ def get_worldbosses(data, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters")
+@endpoint("/v2/characters")
 def get_characters(data, api_key: str):
     """
     Get characters from API. Use item_id with character's name. If no item_id
@@ -559,7 +559,7 @@ def get_characters(data, api_key: str):
         return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/backstory")
+@endpoint("/v2/characters", subendpoint="/backstory")
 def get_character_backstory(data, item_id: str, api_key: str):
     """
     Get character's backstory from API.
@@ -573,7 +573,7 @@ def get_character_backstory(data, item_id: str, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/core")
+@endpoint("/v2/characters", subendpoint="/core")
 def get_character_core(data, item_id: str, api_key: str):
     """
     Get character's core from API.
@@ -587,7 +587,7 @@ def get_character_core(data, item_id: str, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/crafting")
+@endpoint("/v2/characters", subendpoint="/crafting")
 def get_character_crafting(data, item_id: str, api_key: str):
     """
     Get character's crafting from API.
@@ -601,7 +601,7 @@ def get_character_crafting(data, item_id: str, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/equipment")
+@endpoint("/v2/characters", subendpoint="/equipment")
 def get_character_equipment(data, item_id: str, api_key: str):
     """
     Get character's equipment from API.
@@ -643,7 +643,7 @@ def get_character_equipment(data, item_id: str, api_key: str):
     return equipment
 
 
-@endpoint("/v2/account/characters", subendpoint="/heropoints")
+@endpoint("/v2/characters", subendpoint="/heropoints")
 def get_character_heropoints(data, item_id: str, api_key: str):
     """
     Get character's heropoints from API.
@@ -657,7 +657,7 @@ def get_character_heropoints(data, item_id: str, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/inventory")
+@endpoint("/v2/characters", subendpoint="/inventory")
 def get_character_inventory(data, item_id: str, api_key: str):
     """
     Get character's inventory from API.
@@ -721,7 +721,7 @@ def get_character_inventory(data, item_id: str, api_key: str):
     return bags
 
 
-@endpoint("/v2/account/characters", subendpoint="/skills")
+@endpoint("/v2/characters", subendpoint="/skills")
 def get_character_skills(data, item_id: str, api_key: str):
     """
     Get character's skills from API.
@@ -735,7 +735,7 @@ def get_character_skills(data, item_id: str, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/specializations")
+@endpoint("/v2/characters", subendpoint="/specializations")
 def get_character_specializations(data, item_id: str, api_key: str):
     """
     Get character's specializations from API.
@@ -749,7 +749,7 @@ def get_character_specializations(data, item_id: str, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/training")
+@endpoint("/v2/characters", subendpoint="/training")
 def get_character_training(data, item_id: str, api_key: str):
     """
     Get character's training from API.
@@ -763,7 +763,7 @@ def get_character_training(data, item_id: str, api_key: str):
     return data
 
 
-@endpoint("/v2/account/characters", subendpoint="/sab")
+@endpoint("/v2/characters", subendpoint="/sab")
 def get_character_sab(data, item_id: str, api_key: str):
     """
     Get character's Super Adventure Box completion from API.
