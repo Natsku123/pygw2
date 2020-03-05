@@ -505,7 +505,7 @@ def get_skins(data, api_key: str):
 
 
 @endpoint("/v2/account/titles")
-def get_skins(data, api_key: str):
+def get_titles(data, api_key: str):
     """
     Get unlocked titles from API.
     :param data: Data from wrapper

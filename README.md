@@ -54,7 +54,7 @@ import pygw2
 |Account|https://api.guildwars2.com/v2/characters/:id/inventory|get_character_inventory|
 |Account|https://api.guildwars2.com/v2/characters/:id/sab|get_character_sab|
 |Account|https://api.guildwars2.com/v2/characters/:id/skills|get_character_skills|
-|Account|https://api.guildwars2.com/v2/characters/:id/specializations|get_specializations|
+|Account|https://api.guildwars2.com/v2/characters/:id/specializations|get_character_specializations|
 |Account|https://api.guildwars2.com/v2/characters/:id/training|get_character_training|
 
 
