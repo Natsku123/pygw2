@@ -1,4 +1,6 @@
+import datetime
 from .api import achievements
+from .api import items
 
 
 class ApiError(Exception):
@@ -12,6 +14,120 @@ class Coins:
         if 'type' in coins:
             del coins['type']
         self.json = coins
+
+
+class Character:
+    def __init__(self, chard):
+        self.name = chard.get('name', None)
+        self.race = chard.get('race', None)
+        self.gender = chard.get('gender', None)
+        self.profession = chard.get('profession', None)
+        self.level = chard.get('level', None)
+        self.guild = chard.get('guild', None)
+        self.age = chard.get('age', None)
+        self.created = datetime.datetime.fromisoformat(chard.get('created', None))
+        self.deaths = chard.get('deaths', None)
+        self.crafting = chard.get('crafting', None)
+        self.title = chard.get('title', None)
+        self.backstory = chard.get('backstory', None)
+        self.wvw_abilities = chard.get('wvw_abilities', None)
+        self.specializations = chard.get('specializations', None)
+        self.skills = chard.get('skills', None)
+        self.equipment = {}
+        items_list = []
+        for item in chard['equipment']:
+            items_list.append(item['id'])
+        items_list = items.get(ids=items_list)
+        for item in chard['equipment']:
+
+            infusions = item.get('infusions', None)
+            if infusions is not None:
+                infusions = items.get(ids=infusions)
+
+            upgrades = item.get('upgrades', None)
+            if upgrades is not None:
+                upgrades = items.get(ids=upgrades)
+
+            # TODO resolve skin against /v2/skins
+            # TODO resolve itemstats against /v2/itemstats
+            # TODO resolve dyes against /v2/colors
+            self.equipment[item['slot']] = {
+                "item": items_list[chard['equipment'].index(item)],
+                "infusions": infusions,
+                "upgrades": upgrades,
+                "skin": item.get('skin', None),
+                "stats": item.get('stats', None),
+                "binding": item.get('binding', None),
+                "charges": item.get('charges', None),
+                "bound_to": item.get('bound_to', None),
+                "dyes": item.get("dyes", None)
+            }
+        self.recipes = chard.get('recipes', None)
+        self.equipment_pvp = {
+            "amulet": chard['equipment_pvp']['amulet'],
+            "rune": items.get(ids=[chard['equipment_pvp']['rune']]),
+            "sigils": items.get(ids=chard['equipment_pvp']['sigils'])
+        }
+        self.training = chard.get('training', None),
+        self.bags = []
+        bags_ids = []
+        for bag in chard['bags']:
+            bags_ids.append(bag['id'])
+        bags_items = items.get(ids=bags_ids)
+        i = 0
+        for bag in chard['bags']:
+            items_ids = []
+            for item in bag['inventory']:
+                if item is not None:
+                    items_ids.append(item['id'])
+
+            items_list = items.get(ids=items_ids)
+
+            inventory = {}
+            n = 0
+            for item in bag['inventory']:
+                if item is not None:
+                    for itm_obj in items_list:
+                        if itm_obj.id == item['id']:
+                            infusions = item.get('infusions', None)
+                            if infusions is not None:
+                                infusions = items.get(ids=infusions)
+
+                            upgrades = item.get('upgrades', None)
+                            if upgrades is not None:
+                                upgrades = items.get(ids=upgrades)
+
+                            # TODO resolve skin against /v2/skins
+                            # TODO resolve itemstats against /v2/itemstats
+                            # TODO make item object more 'precise'
+                            inventory[n] = {
+                                "item": itm_obj,
+                                "count": item['count'],
+                                "infusions": infusions,
+                                "upgrades": upgrades,
+                                "skin": item.get('skin', None),
+                                "stats": item.get('stats', None),
+                                "binding": item.get('binding', None),
+                                "bound_to": item.get('bound_to', None)
+                            }
+                            break
+                else:
+                    inventory[n] = None
+                n = n + 1
+            self.bags.append({
+                "bag": bags_items[i],
+                "size": bag['size'],
+                "inventory": inventory
+            })
+            i = i + 1
+        # TODO resolve recipes
+        # TODO resolve skills
+        # TODO resolve specializations
+        # TODO resolve backstory
+        # TODO resolve title
+        # TODO resolve guild
+        # TODO resolve wvw abilities against /v2/wvw/abilities
+        # TODO resolve pvp amulet against /v2/wvw/amulets
 
 
 class Item:

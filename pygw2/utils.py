@@ -20,10 +20,15 @@ def list_to_str(l: list, delimiter: str=","):
     return string
 
 
-def endpoint(path: str):
+def endpoint(path: str, subendpoint: str = ""):
+    """
+    Endpoint wrapper
+    :param path: Endpoint path
+    :param subendpoint: Path of sub-endpoint
+    :return:
+    """
     def decorate(func):
         def get_data(*args, **kwargs):
-
             path_id = ""
             parameters = default_parameters.copy()
             for key, value in kwargs.items():
@@ -40,12 +45,18 @@ def endpoint(path: str):
 
             if path.endswith("/") and path_id == "":
                 raise ApiError("ID needed.")
-            r = requests.get(base_url + path + path_id, params=parameters)
+            r = requests.get(
+                base_url + path + path_id + subendpoint,
+                params=parameters
+            )
 
             if r.status_code == 414:
                 raise ApiError("Too many IDs.")
             elif r.status_code == 404:
-                raise ApiError("File or directory not found: " + str(base_url + path + path_id) + " Parameters: " + str(parameters))
+                raise ApiError("File or directory not found: " +
+                               str(base_url + path + path_id + subendpoint)
+                               + " Parameters: " + str(parameters)
+                               )
 
             data = r.json()
 

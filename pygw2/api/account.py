@@ -387,6 +387,394 @@ def get_materials(data, api_key: str):
     return items
 
 
+@endpoint("/v2/account/minis")
+def get_minis(data, api_key: str):
+    """
+    Get unlocked miniatures from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/minis
+    return data
+
+
+@endpoint("/v2/account/mounts/skins")
+def get_mounts_skins(data, api_key: str):
+    """
+    Get unlocked skins for mounts from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/mounts/skins
+    return data
+
+
+@endpoint("/v2/account/mounts/types")
+def get_mounts_types(data, api_key: str):
+    """
+    Get unlocked mounts from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/mounts/types
+    return data
+
+
+@endpoint("/v2/account/novelties")
+def get_novelties(data, api_key: str):
+    """
+    Get unlocked novelties from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/novelties
+    return data
+
+
+@endpoint("/v2/account/outfits")
+def get_outfits(data, api_key: str):
+    """
+    Get unlocked outfits from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/outfits
+    return data
+
+
+@endpoint("/v2/account/pvp/heroes")
+def get_pvp_heroes(data, api_key: str):
+    """
+    Get unlocked PvP heroes from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/pvp/heroes
+    return data
+
+
+@endpoint("/v2/account/raids")
+def get_raids(data, api_key: str):
+    """
+    Get completed weekly raid encounters from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/raids
+    return data
+
+
+@endpoint("/v2/account/recipes")
+def get_recipes(data, api_key: str):
+    """
+    Get unlocked recipes from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/recipes
+    return data
+
+
+@endpoint("/v2/account/skins")
+def get_skins(data, api_key: str):
+    """
+    Get unlocked skins from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/skins
+    return data
+
+
+@endpoint("/v2/account/titles")
+def get_skins(data, api_key: str):
+    """
+    Get unlocked titles from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/titles
+    return data
+
+
+@endpoint("/v2/account/wallet")
+def get_wallet(data, api_key: str):
+    """
+    Get wallet from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/currencies and 'better' format
+    return data
+
+
+@endpoint("/v2/account/worldbosses")
+def get_worldbosses(data, api_key: str):
+    """
+    Get world bosses defeated since daily reset from API.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/worldbosses
+    return data
+
+
+@endpoint("/v2/account/characters")
+def get_characters(data, api_key: str):
+    """
+    Get characters from API. Use item_id with character's name. If no item_id
+    is specified, returns all characters.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    if isinstance(data, dict):
+        return Character(data)
+    else:
+        return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/backstory")
+def get_character_backstory(data, item_id: str, api_key: str):
+    """
+    Get character's backstory from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/backstory/answers
+    return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/core")
+def get_character_core(data, item_id: str, api_key: str):
+    """
+    Get character's core from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO edit to 'better' format
+    return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/crafting")
+def get_character_crafting(data, item_id: str, api_key: str):
+    """
+    Get character's crafting from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO edit to 'better' format
+    return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/equipment")
+def get_character_equipment(data, item_id: str, api_key: str):
+    """
+    Get character's equipment from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    equipment = {}
+    items = []
+    for item in data:
+        items.append(item['id'])
+    items = get_item(ids=items)
+    for item in data:
+
+        infusions = item.get('infusions', None)
+        if infusions is not None:
+            infusions = get_item(ids=infusions)
+
+        upgrades = item.get('upgrades', None)
+        if upgrades is not None:
+            upgrades = get_item(ids=upgrades)
+
+        # TODO resolve skin against /v2/skins
+        # TODO resolve itemstats against /v2/itemstats
+        # TODO resolve dyes against /v2/colors
+        equipment[item['slot']] = {
+            "item": items[data.index(item)],
+            "infusions": infusions,
+            "upgrades": upgrades,
+            "skin": item.get('skin', None),
+            "stats": item.get('stats', None),
+            "binding": item.get('binding', None),
+            "charges": item.get('charges', None),
+            "bound_to": item.get('bound_to', None),
+            "dyes": item.get("dyes", None)
+        }
+    return equipment
+
+
+@endpoint("/v2/account/characters", subendpoint="/heropoints")
+def get_character_heropoints(data, item_id: str, api_key: str):
+    """
+    Get character's heropoints from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against skill_challenges in /v2/continents
+    return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/inventory")
+def get_character_inventory(data, item_id: str, api_key: str):
+    """
+    Get character's inventory from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    bags_ids = []
+    for bag in data:
+        bags_ids.append(bag['id'])
+    bags_items = get_item(ids=bags_ids)
+    bags = []
+    i = 0
+    for bag in data:
+        items_ids = []
+        for item in bag['inventory']:
+            if item is not None:
+                items_ids.append(item['id'])
+
+        items = get_item(ids=items_ids)
+
+        inventory = {}
+        n = 0
+        for item in bag['inventory']:
+            if item is not None:
+                for itm_obj in items:
+                    if itm_obj.id == item['id']:
+                        infusions = item.get('infusions', None)
+                        if infusions is not None:
+                            infusions = get_item(ids=infusions)
+
+                        upgrades = item.get('upgrades', None)
+                        if upgrades is not None:
+                            upgrades = get_item(ids=upgrades)
+
+                        # TODO resolve skin against /v2/skins
+                        # TODO resolve itemstats against /v2/itemstats
+                        # TODO make item object more 'precise'
+                        inventory[n] = {
+                            "item": itm_obj,
+                            "count": item['count'],
+                            "infusions": infusions,
+                            "upgrades": upgrades,
+                            "skin": item.get('skin', None),
+                            "stats": item.get('stats', None),
+                            "binding": item.get('binding', None),
+                            "bound_to": item.get('bound_to', None)
+                        }
+                        break
+            else:
+                inventory[n] = None
+            n = n + 1
+        bags.append({
+            "bag": bags_items[i],
+            "size": bag['size'],
+            "inventory": inventory
+        })
+        i = i + 1
+    return bags
+
+
+@endpoint("/v2/account/characters", subendpoint="/skills")
+def get_character_skills(data, item_id: str, api_key: str):
+    """
+    Get character's skills from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/skills and /v2/legends
+    return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/specializations")
+def get_character_specializations(data, item_id: str, api_key: str):
+    """
+    Get character's specializations from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/specializations and /v2/traits
+    return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/training")
+def get_character_training(data, item_id: str, api_key: str):
+    """
+    Get character's training from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO resolve against /v2/professions
+    return data
+
+
+@endpoint("/v2/account/characters", subendpoint="/sab")
+def get_character_sab(data, item_id: str, api_key: str):
+    """
+    Get character's Super Adventure Box completion from API.
+    :param data: Data from wrapper
+    :param item_id: Character name
+    :param api_key:
+    :return:
+    """
+
+    # TODO edit to 'better' format
+    return data
 
 
 
