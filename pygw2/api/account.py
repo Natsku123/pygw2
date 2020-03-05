@@ -1,3 +1,4 @@
+from .items import get as get_item
 from ..classes import *
 from ..utils import *
 
@@ -78,3 +79,45 @@ def get_achievements(data, api_key: str):
     return achis
 
 
+@endpoint("/v2/account/bank")
+def get_bank(data, api_key: str):
+    """
+    Get bank data from API with api key.
+    :param data: Data from wrapper
+    :param api_key:
+    :return:
+    """
+
+    bank = []
+    for item in data:
+        # TODO create more accurate item object
+
+        # TODO remove blacklist once API responds to these
+        blacklist = [45022, 45023, 45024, 45025]
+
+        if item is None:
+            bank.append(None)
+        elif not item['id'] in blacklist:
+            bank.append({
+                "item": get_item(ids=[item['id']]),
+                "count": item['count'],
+                "charges": item.get('charges', None),
+                "skin": item.get('skin', None),
+                "upgrades": item.get('upgrades', None),
+                "infusions": item.get('infusions', None),
+                "binding": item.get('binding', None),
+                "bound_to": item.get('bound_to', None)
+            })
+        else:
+            bank.append({
+                "item_id": item['id'],
+                "count": item['count'],
+                "charges": item.get('charges', None),
+                "skin": item.get('skin', None),
+                "upgrades": item.get('upgrades', None),
+                "infusions": item.get('infusions', None),
+                "binding": item.get('binding', None),
+                "bound_to": item.get('bound_to', None)
+            })
+
+    return bank
