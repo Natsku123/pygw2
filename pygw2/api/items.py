@@ -69,3 +69,6 @@ class ItemsApi:
                 return items
             else:
                 return items[0]
+
+
+items_api = ItemsApi()

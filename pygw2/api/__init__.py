@@ -1,6 +1,6 @@
-from .account import AccountApi
-from .achievements import AchievementsApi
-from .items import ItemsApi
+from .account import account_api
+from .achievements import achievements_api
+from .items import items_api
 
 
 class Api:
@@ -9,9 +9,9 @@ class Api:
     """
     def __init__(self):
         self.api_key: str = ""
-        self._account = AccountApi()
-        self._achievements = AchievementsApi()
-        self._items = ItemsApi()
+        self._account = account_api
+        self._achievements = achievements_api
+        self._items = items_api
 
     def setup(self, api_key: str):
         self.api_key = api_key

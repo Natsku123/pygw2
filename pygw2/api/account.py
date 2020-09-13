@@ -1,4 +1,4 @@
-from .items import get as get_item
+from .items import items_api
 from ..classes import *
 from ..utils import *
 
@@ -21,7 +21,7 @@ class AccountApi:
         return Account(data)
 
     @endpoint("/v2/account/achievements")
-    def get_achievements(self, data):
+    def achievements(self, data):
         """
         Get achievements progress from API with api key.
         :param data: Data from wrapper
@@ -34,7 +34,7 @@ class AccountApi:
         completed = []
         ids = [i['id'] for i in data]
 
-        all_ids = achievements.get()
+        all_ids = self.get()
 
         # Spare all ids that can be found and there is progress
         for ido in all_ids:
@@ -83,7 +83,7 @@ class AccountApi:
         return achis
 
     @endpoint("/v2/account/bank")
-    def get_bank(self, data):
+    def bank(self, data):
         """
         Get bank data from API with api key.
         :param data: Data from wrapper
@@ -112,7 +112,7 @@ class AccountApi:
 
         # Get dict of item and its id
         for items in item_ids:
-            items_fetched = get_item(ids=items)
+            items_fetched = items_api.get(ids=items)
             if isinstance(items_fetched, list):
                 for item in items_fetched:
                     items_ready[item.id] = item
@@ -151,7 +151,7 @@ class AccountApi:
         return bank
 
     @endpoint("/v2/account/dailycrafting")
-    def get_dailycrafting(self, data):
+    def dailycrafting(self, data):
         """
         Get crafted time-gated items from API.
         :param data: Data from wrapper
@@ -161,7 +161,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/dungeons")
-    def get_dungeons(self, data):
+    def dungeons(self, data):
         """
         Get completed dungeon paths after last daily reset from API.
         :param data: Data from wrapper
@@ -171,7 +171,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/dyes")
-    def get_dyes(self, data):
+    def dyes(self, data):
         """
         Get unlocked dyes from API.
         :param data: Data from wrapper
@@ -183,7 +183,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/finishers")
-    def get_finishers(self, data):
+    def finishers(self, data):
         """
         Get unlocked finishers from API.
         :param data: Data from wrapper
@@ -201,7 +201,7 @@ class AccountApi:
         return finishers
 
     @endpoint("/v2/account/gliders")
-    def get_gliders(self, data):
+    def gliders(self, data):
         """
         Get unlocked gliders from API.
         :param data: Data from wrapper
@@ -212,7 +212,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/home/cats")
-    def get_home_cats(self, data):
+    def home_cats(self, data):
         """
         Get unlocked home instance cats from API.
         :param data: Data from wrapper
@@ -223,7 +223,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/home/nodes")
-    def get_home_nodes(self, data):
+    def home_nodes(self, data):
         """
         Get unlocked home instance nodes from API.
         :param data: Data from wrapper
@@ -234,7 +234,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/inventory")
-    def get_inventory(self, data):
+    def inventory(self, data):
         """
         Get shared inventory from API.
         :param data: Data from wrapper
@@ -244,7 +244,7 @@ class AccountApi:
         ids = []
         for item in data:
             ids.append(item['id'])
-        items = get_item(ids=ids)
+        items = items_api.get(ids=ids)
         for item in data:
             corr_item = None
             for itm_obj in items:
@@ -265,7 +265,7 @@ class AccountApi:
         return inventory
 
     @endpoint("/v2/account/luck")
-    def get_luck(self, data):
+    def luck(self, data):
         """
         Get account luck from API.
         :param data: Data from wrapper
@@ -276,7 +276,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mailcarriers")
-    def get_mailcarriers(self, data):
+    def mailcarriers(self, data):
         """
         Get unlocked mailcarriers from API.
         :param data: Data from wrapper
@@ -287,7 +287,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mapchests")
-    def get_mapchests(self, data):
+    def mapchests(self, data):
         """
         Get mapchest unlocked since daily reset from API.
         :param data: Data from wrapper
@@ -298,7 +298,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/masteries")
-    def get_masteries(self, data):
+    def masteries(self, data):
         """
         Get unlocked masteries from API.
         :param data: Data from wrapper
@@ -309,7 +309,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mastery/points")
-    def get_mastery_points(self, data):
+    def mastery_points(self, data):
         """
         Get account mastery points from API.
         :param data: Data from wrapper
@@ -320,7 +320,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/materials")
-    def get_materials(self, data):
+    def materials(self, data):
         """
         Get contents of material storage from API.
         :param data: Data from wrapper
@@ -343,7 +343,7 @@ class AccountApi:
 
         # Get dict of item and its id
         for items in item_ids:
-            items_fetched = get_item(ids=items)
+            items_fetched = items_api.get(ids=items)
             if isinstance(items_fetched, list):
                 for item in items_fetched:
                     items_ready[item.id] = item
@@ -362,7 +362,7 @@ class AccountApi:
         return items
 
     @endpoint("/v2/account/minis")
-    def get_minis(self, data):
+    def minis(self, data):
         """
         Get unlocked miniatures from API.
         :param data: Data from wrapper
@@ -373,7 +373,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mounts/skins")
-    def get_mounts_skins(self, data):
+    def mounts_skins(self, data):
         """
         Get unlocked skins for mounts from API.
         :param data: Data from wrapper
@@ -395,7 +395,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/novelties")
-    def get_novelties(self, data):
+    def novelties(self, data):
         """
         Get unlocked novelties from API.
         :param data: Data from wrapper
@@ -406,7 +406,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/outfits")
-    def get_outfits(self, data):
+    def outfits(self, data):
         """
         Get unlocked outfits from API.
         :param data: Data from wrapper
@@ -417,7 +417,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/pvp/heroes")
-    def get_pvp_heroes(self, data):
+    def pvp_heroes(self, data):
         """
         Get unlocked PvP heroes from API.
         :param data: Data from wrapper
@@ -428,7 +428,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/raids")
-    def get_raids(self, data):
+    def raids(self, data):
         """
         Get completed weekly raid encounters from API.
         :param data: Data from wrapper
@@ -439,7 +439,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/recipes")
-    def get_recipes(self, data):
+    def recipes(self, data):
         """
         Get unlocked recipes from API.
         :param data: Data from wrapper
@@ -450,7 +450,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/skins")
-    def get_skins(self, data):
+    def skins(self, data):
         """
         Get unlocked skins from API.
         :param data: Data from wrapper
@@ -461,7 +461,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/titles")
-    def get_titles(self, data):
+    def titles(self, data):
         """
         Get unlocked titles from API.
         :param data: Data from wrapper
@@ -472,7 +472,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/wallet")
-    def get_wallet(self, data):
+    def wallet(self, data):
         """
         Get wallet from API.
         :param data: Data from wrapper
@@ -483,7 +483,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/worldbosses")
-    def get_worldbosses(self, data):
+    def worldbosses(self, data):
         """
         Get world bosses defeated since daily reset from API.
         :param data: Data from wrapper
@@ -494,7 +494,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters")
-    def get_characters(self, data):
+    def characters(self, data):
         """
         Get characters from API. Use item_id with character's name. If no item_id
         is specified, returns all characters.
@@ -508,7 +508,7 @@ class AccountApi:
             return data
 
     @endpoint("/v2/characters", subendpoint="/backstory")
-    def get_character_backstory(self, data, item_id: str):
+    def character_backstory(self, data, item_id: str):
         """
         Get character's backstory from API.
         :param data: Data from wrapper
@@ -520,7 +520,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/core")
-    def get_character_core(self, data, item_id: str):
+    def character_core(self, data, item_id: str):
         """
         Get character's core from API.
         :param data: Data from wrapper
@@ -532,7 +532,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/crafting")
-    def get_character_crafting(self, data, item_id: str):
+    def character_crafting(self, data, item_id: str):
         """
         Get character's crafting from API.
         :param data: Data from wrapper
@@ -544,7 +544,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/equipment")
-    def get_character_equipment(self, data, item_id: str):
+    def character_equipment(self, data, item_id: str):
         """
         Get character's equipment from API.
         :param data: Data from wrapper
@@ -556,16 +556,16 @@ class AccountApi:
         items = []
         for item in data:
             items.append(item['id'])
-        items = get_item(ids=items)
+        items = items_api.get(ids=items)
         for item in data:
 
             infusions = item.get('infusions', None)
             if infusions is not None:
-                infusions = get_item(ids=infusions)
+                infusions = items_api.get(ids=infusions)
 
             upgrades = item.get('upgrades', None)
             if upgrades is not None:
-                upgrades = get_item(ids=upgrades)
+                upgrades = items_api.get(ids=upgrades)
 
             # TODO resolve skin against /v2/skins
             # TODO resolve itemstats against /v2/itemstats
@@ -584,7 +584,7 @@ class AccountApi:
         return equipment
 
     @endpoint("/v2/characters", subendpoint="/heropoints")
-    def get_character_heropoints(self, data, item_id: str):
+    def character_heropoints(self, data, item_id: str):
         """
         Get character's heropoints from API.
         :param data: Data from wrapper
@@ -596,7 +596,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/inventory")
-    def get_character_inventory(self, data, item_id: str):
+    def character_inventory(self, data, item_id: str):
         """
         Get character's inventory from API.
         :param data: Data from wrapper
@@ -607,7 +607,7 @@ class AccountApi:
         bags_ids = []
         for bag in data:
             bags_ids.append(bag['id'])
-        bags_items = get_item(ids=bags_ids)
+        bags_items = items_api.get(ids=bags_ids)
         bags = []
         i = 0
         for bag in data:
@@ -616,7 +616,7 @@ class AccountApi:
                 if item is not None:
                     items_ids.append(item['id'])
 
-            items = get_item(ids=items_ids)
+            items = items_api.get(ids=items_ids)
 
             inventory = {}
             n = 0
@@ -626,11 +626,11 @@ class AccountApi:
                         if itm_obj.id == item['id']:
                             infusions = item.get('infusions', None)
                             if infusions is not None:
-                                infusions = get_item(ids=infusions)
+                                infusions = items_api.get(ids=infusions)
 
                             upgrades = item.get('upgrades', None)
                             if upgrades is not None:
-                                upgrades = get_item(ids=upgrades)
+                                upgrades = items_api.get(ids=upgrades)
 
                             # TODO resolve skin against /v2/skins
                             # TODO resolve itemstats against /v2/itemstats
@@ -658,7 +658,7 @@ class AccountApi:
         return bags
 
     @endpoint("/v2/characters", subendpoint="/skills")
-    def get_character_skills(self, data, item_id: str):
+    def character_skills(self, data, item_id: str):
         """
         Get character's skills from API.
         :param data: Data from wrapper
@@ -670,7 +670,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/specializations")
-    def get_character_specializations(self, data, item_id: str):
+    def character_specializations(self, data, item_id: str):
         """
         Get character's specializations from API.
         :param data: Data from wrapper
@@ -682,7 +682,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/training")
-    def get_character_training(self, data, item_id: str):
+    def character_training(self, data, item_id: str):
         """
         Get character's training from API.
         :param data: Data from wrapper
@@ -694,7 +694,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/sab")
-    def get_character_sab(self, data, item_id: str):
+    def character_sab(self, data, item_id: str):
         """
         Get character's Super Adventure Box completion from API.
         :param data: Data from wrapper
@@ -704,3 +704,6 @@ class AccountApi:
 
         # TODO edit to 'better' format
         return data
+
+
+account_api = AccountApi()

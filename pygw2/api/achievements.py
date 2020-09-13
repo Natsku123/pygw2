@@ -152,3 +152,6 @@ class AchievementsApi:
             raise ApiError(data['text'])
 
         return AchievementCategory(data)
+
+
+achievements_api = AchievementsApi()
