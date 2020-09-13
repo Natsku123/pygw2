@@ -31,10 +31,10 @@ def endpoint(path: str, subendpoint: str = ""):
         def get_data(*args, **kwargs):
             path_id = ""
             parameters = default_parameters.copy()
+            if args[0].api_key and args[0].api_key != "":
+                parameters['access_token'] = args[0].api_key
             for key, value in kwargs.items():
-                if key == "api_key":
-                    parameters['access_token'] = value
-                elif key == "ids":
+                if key == "ids":
                     if len(value) != 0:
                         parameters['ids'] = list_to_str(value)
                 elif key == "item_id":
