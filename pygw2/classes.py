@@ -1,6 +1,14 @@
 import datetime
-from .api import achievements
-from .api import items
+
+from .api.achievements import AchievementsApi
+from .api.items import ItemsApi
+
+from typing import Optional, List, Union
+from enum import Enum
+from pydantic import BaseModel
+
+achievements_api = AchievementsApi()
+items_api = ItemsApi()
 
 
 class ApiError(Exception):
@@ -8,126 +16,219 @@ class ApiError(Exception):
     pass
 
 
-class Coins:
-    def __init__(self, coins: dict):
-        self.count = coins['count']
-        if 'type' in coins:
-            del coins['type']
-        self.json = coins
+class Coins(BaseModel):
+    count: int
+    type: Optional[str]
 
 
-class Character:
-    def __init__(self, chard):
-        self.name = chard.get('name', None)
-        self.race = chard.get('race', None)
-        self.gender = chard.get('gender', None)
-        self.profession = chard.get('profession', None)
-        self.level = chard.get('level', None)
-        self.guild = chard.get('guild', None)
-        self.age = chard.get('age', None)
-        self.created = datetime.datetime.fromisoformat(chard.get('created', None))
-        self.deaths = chard.get('deaths', None)
-        self.crafting = chard.get('crafting', None)
-        self.title = chard.get('title', None)
-        self.backstory = chard.get('backstory', None)
-        self.wvw_abilities = chard.get('wvw_abilities', None)
-        self.specializations = chard.get('specializations', None)
-        self.skills = chard.get('skills', None)
-        self.equipment = {}
-        items_list = []
-        for item in chard['equipment']:
-            items_list.append(item['id'])
-        items_list = items.get(ids=items_list)
-        for item in chard['equipment']:
+class Race(str, Enum):
+    Asura = "Asura"
+    Charr = "Charr"
+    Human = "Human"
+    Norn = "Norn"
+    Sylvari = "Sylvari"
 
-            infusions = item.get('infusions', None)
-            if infusions is not None:
-                infusions = items.get(ids=infusions)
 
-            upgrades = item.get('upgrades', None)
-            if upgrades is not None:
-                upgrades = items.get(ids=upgrades)
+class Gender(str, Enum):
+    Male = "Male"
+    Female = "Female"
 
-            # TODO resolve skin against /v2/skins
-            # TODO resolve itemstats against /v2/itemstats
-            # TODO resolve dyes against /v2/colors
-            self.equipment[item['slot']] = {
-                "item": items_list[chard['equipment'].index(item)],
-                "infusions": infusions,
-                "upgrades": upgrades,
-                "skin": item.get('skin', None),
-                "stats": item.get('stats', None),
-                "binding": item.get('binding', None),
-                "charges": item.get('charges', None),
-                "bound_to": item.get('bound_to', None),
-                "dyes": item.get("dyes", None)
-            }
-        self.recipes = chard.get('recipes', None)
-        self.equipment_pvp = {
-            "amulet": chard['equipment_pvp']['amulet'],
-            "rune": items.get(ids=[chard['equipment_pvp']['rune']]),
-            "sigils": items.get(ids=chard['equipment_pvp']['sigils'])
-        }
-        self.training = chard.get('training', None),
-        self.bags = []
-        bags_ids = []
-        for bag in chard['bags']:
-            bags_ids.append(bag['id'])
-        bags_items = items.get(ids=bags_ids)
-        i = 0
-        for bag in chard['bags']:
-            items_ids = []
-            for item in bag['inventory']:
-                if item is not None:
-                    items_ids.append(item['id'])
 
-            items_list = items.get(ids=items_ids)
+class Profession(str, Enum):
+    Elementalist = "Elementalist"
+    Engineer = "Engineer"
+    Guardian = "Guardian"
+    Mesmer = "Mesmer"
+    Necromancer = "Necromancer"
+    Ranger = "Ranger"
+    Revenant = "Revenant"
+    Thief = "Thief"
+    Warrior = "Warrior"
 
-            inventory = {}
-            n = 0
-            for item in bag['inventory']:
-                if item is not None:
-                    for itm_obj in items_list:
-                        if itm_obj.id == item['id']:
-                            infusions = item.get('infusions', None)
-                            if infusions is not None:
-                                infusions = items.get(ids=infusions)
 
-                            upgrades = item.get('upgrades', None)
-                            if upgrades is not None:
-                                upgrades = items.get(ids=upgrades)
+class Discipline(str, Enum):
+    Armorsmith = "Armorsmith"
+    Artificer = "Artificer"
+    Chef = "Chef"
+    Huntsman = "Huntsman"
+    Jeweler = "Jeweler"
+    Leatherworker = "Leatherworker"
+    Scribe = "Scribe"
+    Tailor = "Tailor"
+    Weaponsmith = "Weaponsmith"
 
-                            # TODO resolve skin against /v2/skins
-                            # TODO resolve itemstats against /v2/itemstats
-                            # TODO make item object more 'precise'
-                            inventory[n] = {
-                                "item": itm_obj,
-                                "count": item['count'],
-                                "infusions": infusions,
-                                "upgrades": upgrades,
-                                "skin": item.get('skin', None),
-                                "stats": item.get('stats', None),
-                                "binding": item.get('binding', None),
-                                "bound_to": item.get('bound_to', None)
-                            }
-                            break
-                else:
-                    inventory[n] = None
-                n = n + 1
-            self.bags.append({
-                "bag": bags_items[i],
-                "size": bag['size'],
-                "inventory": inventory
-            })
-            i = i + 1
-        # TODO resolve recipes
-        # TODO resolve skills
-        # TODO resolve specializations
-        # TODO resolve backstory
-        # TODO resolve title
-        # TODO resolve guild
-        # TODO resolve wvw abilities against /v2/wvw/abilities
-        # TODO resolve pvp amulet against /v2/wvw/amulets
+
+class EquipmentSlot(str, Enum):
+    HelmAquatic = "HelmAquatic"
+    Backpack = "Backpack"
+    Coat = "Coat"
+    Boots = "Boots"
+    Gloves = "Gloves"
+    Helm = "Helm"
+    Leggings = "Leggings"
+    Shoulders = "Shoulder"
+    Accessory1 = "Accessory1"
+    Accessory2 = "Accessory2"
+    Ring1 = "Ring1"
+    Ring2 = "Ring2"
+    Amulet = "Amulet"
+    WeaponAquaticA = "WeaponAquaticA"
+    WeaponAquaticB = "WeaponAquaticB"
+    WeaponA1 = "WeaponA1"
+    WeaponA2 = "WeaponA2"
+    WeaponB1 = "WeaponB1"
+    WeaponB2 = "WeaponB2"
+    Sickle = "Sickle"
+    Axe = "Axe"
+    Pick = "Pick"
+
+
+class Binding(str, Enum):
+    Character = "Character"
+    Account = "Account"
+
+
+class Attributes(BaseModel):
+    Power: Optional[int] = 0
+    Precision: Optional[int] = 0
+    Toughness: Optional[int] = 0
+    Vitality: Optional[int] = 0
+    ConditionDamage: Optional[int] = 0
+    ConditionDuration: Optional[int] = 0
+    Healing: Optional[int] = 0
+    BoonDuration: Optional[int] = 0
+
+
+class Stats(BaseModel):
+    id: int     # TODO resolve against /v2/itemstats
+    attributes: Attributes
+
+
+class Equipment(BaseModel):
+    id: int                              # TODO resolve against /v2/items
+    slot: EquipmentSlot
+    infusions: Optional[List[int]] = []  # TODO resolve against /v2/items
+    upgrades: Optional[List[int]] = []   # TODO resolve against /v2/items
+    skin: Optional[int] = None           # TODO resolve against /v2/skins
+    stats: Optional[Stats] = None
+    binding: Optional[Binding] = None
+    charges: Optional[int] = None
+    bound_to: Optional[str] = None
+    dyes: Optional[List[int]] = None     # TODO resolve against /v2/colors
+
+
+class Crafting(BaseModel):
+    discipline: Discipline
+    rating: int
+    active: bool
+
+
+class ItemInventory(BaseModel):
+    id: int     # TODO resolve against /v2/items
+    count: int
+    infusions: Optional[List[int]] = []  # TODO resolve against /v2/items
+    upgrades: Optional[List[int]] = []  # TODO resolve against /v2/items
+    skin: Optional[int] = None  # TODO resolve against /v2/skins
+    stats: Optional[Stats] = None
+    binding: Optional[Binding] = None
+    bound_to: Optional[str] = None
+
+
+class Bag(BaseModel):
+    id: int     # TODO resolve against /v2/items
+    size: int
+    inventory: List[Union[ItemInventory, None]]
+
+
+class SkillsBase(BaseModel):
+    heal: int               # TODO resolve against /v2/skills
+    utilities: List[int]    # TODO resolve against /v2/skills
+    elite: int              # TODO resolve against /v2/skills
+    legends: Optional[List[str]] = None     # TODO resolve against /v2/legends
+
+
+class SkillTree(BaseModel):
+    id: int                 # TODO compared against the training section for each /v2/professions
+    spent: int
+    done: bool
+
+
+class Skills(BaseModel):
+    pve: SkillsBase
+    pvp: SkillsBase
+    wvw: SkillsBase
+
+
+class SpecializationBase(BaseModel):
+    id: int                     # TODO resolve against /v2/specializations
+    traits: List[int] = []      # TODO resolve agaisnt /v2/traits
+
+
+class Specializations(BaseModel):
+    pve: SpecializationBase
+    pvp: SpecializationBase
+    wvw: SpecializationBase
+
+
+class SABZones(BaseModel):
+    id: int
+    mode: str
+    world: int
+    zone: int
+
+
+class SABUnlocks(BaseModel):
+    id: int
+    name: str
+
+
+class SABSong(BaseModel):
+    id: int
+    name: str
+
+
+class SAB(BaseModel):
+    zones: List[SABZones] = []
+    unlocks: List[SABUnlocks] = []
+    songs: List[SABSong] = []
+
+
+class WvWAbility(BaseModel):
+    id: int     # TODO resolve against /v2/wvw/abilities
+    rank: int
+
+class PvPEquipment(BaseModel):
+    amulet: int # TODO resolve agaisnt /v2/pvp/amulets
+    rune: int # TODO resolve against /v2/items
+    sigils: List[int] # TODO resolve agaisnt /v2/items
+
+class CharacterFlag(str, Enum):
+    Beta = "Beta"
+
+
+class Character(BaseModel):
+    name: str
+    race: Race
+    gender: Gender
+    profession: Profession
+    lvl: int
+    guild: Optional[str] = None
+    age: int
+    created: datetime.datetime
+    deaths: int
+    title: Optional[int] = None      # TODO resolve against /v2/titles
+    backstory: List[int] = []        # TODO resolve against /v2/backstory/answers
+    crafting: List[Crafting] = []    # TODO get /v2/characters/:id/crafting
+    equipment: List[Equipment] = []  # TODO get /v2/characters/:id/equipment
+    heropoints: List[str] = []       # TODO checked against entries skill_challenges in /v2/continents maps
+    inventory: List[Bag] = []        # TODO get /v2/characters/:id/inventory
+    skils: List[Skills] = []         # TODO get /v2/characters/:id/skills
+    specialization: Optional[Specializations]  # TODO get /v2/characters/:id/specializations
+    training: List[SkillTree]        # TODO get /v2/characters/:id/training
+    sab: Optional[SAB]               # TODO get /v2/characters/:id/sab
+    wvw_abilities: List[WvWAbility]
+    equipment_pvp: PvPEquipment
+    flags: List[CharacterFlag] = []
 
 
 class Item:
@@ -269,7 +370,7 @@ class BackItem(Item):
         super().__init__(item)
 
 
-class Bag(Item):
+class BagItem(Item):
     def __init__(self, item: dict):
         self.size = item.get('size', None)
         self.no_sell_or_sort = item.get('no_sell_or_sort', None)
@@ -540,7 +641,7 @@ class AchievementCategory:
         self.description = achicategory['description']
         self.order = achicategory['order']
         self.icon = achicategory.get('icon', None)
-        self.achievements = achievements.get(ids=achicategory['achievements'])
+        self.achievements = achievements_api.get(ids=achicategory['achievements'])
 
     def __str__(self):
         return str(self.id)
@@ -638,7 +739,7 @@ class AchievementProgress(Achievement):
         # Add rest of achievement information.
         if achio is None:
             try:
-                achievement = achievements.get(ids=[achi['id']], json=True)[0]
+                achievement = achievements_api.get(ids=[achi['id']], json=True)[0]
 
                 super().__init__(achievement)
             except ApiError:
