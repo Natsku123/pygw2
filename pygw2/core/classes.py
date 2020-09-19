@@ -453,24 +453,56 @@ class VaultSlot(BaseModel):
     charges: Optional[int]
     skin: Optional[int]     # TODO resolve against skins
     upgrades: Optional[List[int]]     # TODO resolve against items (?)
-    infusions: Optional[List[int]]    # TODO resolve agaisnt items (?)
+    infusions: Optional[List[int]]    # TODO resolve against items (?)
     binding: Optional[Binding]
     bound_to: Optional[str]
 
 
-def create_object(d: dict):
-    """
-    Converts dict to object.
-    :param d: dict
-    :return: object
-    """
-    if d['type'] == "Mastery":
-        return Mastery(d)
-    elif d['type'] == "Coins":
-        return Coins(d)
-    elif d['type'] == "Title":
-        return Title(d)
-    elif d['type'] == "Item":
-        return Item(d)
-    else:
-        return None
+class Finisher(BaseModel):
+    id: int = 0
+    unlock_details: str = ""
+    unlock_items: Optional[List[int]]   # TODO resolve against items
+    order: int = 0
+    icon: str = ""
+    name: str = ""
+
+
+class StatAttributes(BaseModel):
+    attribute: Attribute
+    multiplier: float
+    value: int
+
+
+class Itemstat(BaseModel):
+    id: int = 0
+    name: str = ""
+    attributes: List[StatAttributes]
+
+
+class Material(BaseModel):
+    id: int
+    name: str
+    items: List[int]    # TODO resolve against items
+    order: int
+
+
+class PvpAttributes(BaseModel):
+    AgonyResistance: Optional[float]
+    BoonDuration: Optional[float]
+    ConditionDamage: Optional[float]
+    ConditionDuration: Optional[float]
+    CritDamage: Optional[float]
+    Healing: Optional[float]
+    Power: Optional[float]
+    Precision: Optional[float]
+    Toughness: Optional[float]
+    Vitality: Optional[float]
+
+
+class PvpAmulet(BaseModel):
+    id: int = 0
+    name: str = ""
+    icon: str = ""
+    attributes: PvpAttributes
+
+

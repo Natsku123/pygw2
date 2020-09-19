@@ -6,30 +6,37 @@ class AchievementsApi:
     def __init__(self):
         pass
 
-    @endpoint("/v2/achievements")
-    def get(self, data, ids: list=[], json=False):
+    @endpoint("/v2/achievements", has_ids=True)
+    def get(self, *, data, ids: list = None):
         """
         Get achievements from API by list of IDs.
         https://api.guildwars2.com/v2/achievements
         :param data: Data from endpoint wrapper
         :param ids: list=[]
-        :param json:
         :return: list
         """
 
         # Return list of ids.
-        if len(ids) == 0 or json:
+        if ids is None:
             return data
 
         # Return list of Achievements.
         else:
-            achis = []
-            for achi in data:
-                achis.append(Achievement(**achi))
-            return achis
+            if isinstance(data, dict):
+                return Achievement(**data)
+            elif isinstance(data, list):
+
+                achis = []
+                for achi in data:
+                    achis.append(Achievement(**achi))
+
+                if len(achis) > 1:
+                    return achis
+                else:
+                    return achis[0]
 
     @endpoint("/v2/achievements/daily")
-    def get_dailies(self, data):
+    def get_dailies(self, *, data):
         """
         Get daily achievements from API.
         https://api.guildwars2.com/v2/achievements/daily
@@ -39,7 +46,7 @@ class AchievementsApi:
         return DailyAchievements(**data)
 
     @endpoint("/v2/achievements/daily/tomorrow")
-    def get_dailies_tomorrow(self, data):
+    def get_dailies_tomorrow(self, *, data):
         """
         Get daily achievements for tomorrow from API.
         https://api.guildwars2.com/v2/achievements/daily/tomorrow
@@ -61,8 +68,8 @@ class AchievementsApi:
 
         return achies
 
-    @endpoint("/v2/achievements/groups")
-    def get_groups(self, data, ids: list=[]):
+    @endpoint("/v2/achievements/groups", has_ids=True)
+    def get_groups(self, *, data, ids: list = None):
         """
         Get groups for achievements from API by list of IDs.
         https://api.guildwars2.com/v2/achievements/groups
@@ -72,7 +79,7 @@ class AchievementsApi:
         """
 
         # Return list of group ids.
-        if len(ids) == 0:
+        if ids is None:
             return data
 
         # Return list of groups.
@@ -83,12 +90,11 @@ class AchievementsApi:
             return groups
 
     @endpoint("/v2/achievements/groups/")
-    def get_group(self, data, item_id):
+    def get_group(self, *, data):
         """
         Get group of achievements from API with ID.
         https://api.guildwars2.com/v2/achievements/groups/{g_id}
         :param data: Data from wrapper
-        :param item_id: ID of item
         :return:
         """
 
@@ -98,8 +104,8 @@ class AchievementsApi:
 
         return AchievementGroup(**data)
 
-    @endpoint("/v2/achievements/categories")
-    def get_categories(self, data, ids: list=[]):
+    @endpoint("/v2/achievements/categories", has_ids=True)
+    def get_categories(self, *, data, ids: list = None):
         """
         Get categories for achievements from API by list of IDs.
         https://api.guildwars2.com/v2/achievements/categories
@@ -113,7 +119,7 @@ class AchievementsApi:
             raise ApiError(data['text'])
 
         # Return list of group ids.
-        if len(ids) == 0:
+        if ids is None:
             return data
 
         # Return list of groups.
@@ -125,12 +131,11 @@ class AchievementsApi:
             return groups
 
     @endpoint("/v2/achievements/categories/")
-    def get_category(self, data, item_id):
+    def get_category(self, *, data):
         """
         Get category of achievements from API with ID.
         https://api.guildwars2.com/v2/achievements/categories/{id}
         :param data: Data from wrapper
-        :param item_id: ID of item
         :return:
         """
 

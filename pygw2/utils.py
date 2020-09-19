@@ -20,15 +20,17 @@ def list_to_str(l: list, delimiter: str=","):
     return string
 
 
-def endpoint(path: str, subendpoint: str = ""):
+def endpoint(path: str, subendpoint: str = "", *, has_ids: bool = False):
     """
     Endpoint wrapper
+    :param has_ids: bool does it have IDs
     :param path: Endpoint path
     :param subendpoint: Path of sub-endpoint
     :return:
     """
     def decorate(func):
         def get_data(self, *args, **kwargs):
+            ids = []
             path_id = ""
             parameters = default_parameters.copy()
 
@@ -41,15 +43,17 @@ def endpoint(path: str, subendpoint: str = ""):
                 else:
                     path_id = str(self.character_id)
 
-            for key, value in kwargs.items():
-                if key == "ids":
-                    if len(value) != 0:
-                        parameters['ids'] = list_to_str(value)
-                elif key == "item_id" and path_id == "":
-                    if not path.endswith("/"):
-                        path_id = "/" + str(value)
-                    else:
-                        path_id = str(value)
+            if len(args) == 1 and path_id == "":
+                if not path.endswith("/"):
+                    path_id = "/" + str(args[0])
+                else:
+                    path_id = str(args[0])
+            else:
+                for item_id in args:
+                    ids.append(item_id)
+
+                if len(ids) > 0:
+                    parameters['ids'] = list_to_str(ids)
 
             if path.endswith("/") and path_id == "":
                 raise classes.ApiError("ID needed.")
@@ -71,6 +75,11 @@ def endpoint(path: str, subendpoint: str = ""):
             # Check for errors.
             if 'text' in data:
                 raise classes.ApiError(data['text'])
-            return func(self, data, *args, **kwargs)
+            if has_ids:
+                if len(args) == 0:
+                    ids = None
+                return func(self, **kwargs, data=data, ids=ids)
+            else:
+                return func(self, **kwargs, data=data)
         return get_data
     return decorate

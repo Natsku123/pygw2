@@ -17,7 +17,7 @@ class HomeApi:
         self.api_key = api_key
 
     @endpoint("/v2/account/home/cats")
-    def cats(self, data):
+    def cats(self, *, data):
         """
         Get unlocked home instance cats from API.
         :param data: Data from wrapper
@@ -28,7 +28,7 @@ class HomeApi:
         return data
 
     @endpoint("/v2/account/home/nodes")
-    def nodes(self, data):
+    def nodes(self, *, data):
         """
         Get unlocked home instance nodes from API.
         :param data: Data from wrapper
@@ -47,7 +47,7 @@ class MountsApi:
         self.api_key = api_key
 
     @endpoint("/v2/account/mounts/skins")
-    def skins(self, data):
+    def skins(self, *, data):
         """
         Get unlocked skins for mounts from API.
         :param data: Data from wrapper
@@ -58,7 +58,7 @@ class MountsApi:
         return data
 
     @endpoint("/v2/account/mounts/types")
-    def types(self, data):
+    def types(self, *, data):
         """
         Get unlocked mounts from API.
         :param data: Data from wrapper
@@ -78,7 +78,7 @@ class CharactersApi:
         self.api_key = api_key
 
     @endpoint("/v2/characters")
-    def get(self, data):
+    def get(self, *, data):
         """
         Get characters from API. Use item_id with character's name. If no item_id
         is specified, returns all characters.
@@ -92,7 +92,7 @@ class CharactersApi:
             return data
 
     @endpoint("/v2/characters", subendpoint="/backstory")
-    def backstory(self, data):
+    def backstory(self, *, data):
         """
         Get character's backstory from API.
         :param data: Data from wrapper
@@ -103,7 +103,7 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/core")
-    def core(self, data):
+    def core(self, *, data):
         """
         Get character's core from API.
         :param data: Data from wrapper
@@ -114,7 +114,7 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/crafting")
-    def crafting(self, data):
+    def crafting(self, *, data):
         """
         Get character's crafting from API.
         :param data: Data from wrapper
@@ -125,7 +125,7 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/equipment")
-    def equipment(self, data):
+    def equipment(self, *, data):
         """
         Get character's equipment from API.
         :param data: Data from wrapper
@@ -164,7 +164,7 @@ class CharactersApi:
         return equipment
 
     @endpoint("/v2/characters", subendpoint="/heropoints")
-    def heropoints(self, data):
+    def heropoints(self, *, data):
         """
         Get character's heropoints from API.
         :param data: Data from wrapper
@@ -175,7 +175,7 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/inventory")
-    def inventory(self, data):
+    def inventory(self, *, data):
         """
         Get character's inventory from API.
         :param data: Data from wrapper
@@ -236,7 +236,7 @@ class CharactersApi:
         return bags
 
     @endpoint("/v2/characters", subendpoint="/skills")
-    def skills(self, data):
+    def skills(self, *, data):
         """
         Get character's skills from API.
         :param data: Data from wrapper
@@ -247,7 +247,7 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/specializations")
-    def specializations(self, data):
+    def specializations(self, *, data):
         """
         Get character's specializations from API.
         :param data: Data from wrapper
@@ -258,7 +258,7 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/training")
-    def training(self, data):
+    def training(self, *, data):
         """
         Get character's training from API.
         :param data: Data from wrapper
@@ -269,7 +269,7 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/sab")
-    def sab(self, data):
+    def sab(self, *, data):
         """
         Get character's Super Adventure Box completion from API.
         :param data: Data from wrapper
@@ -305,7 +305,7 @@ class AccountApi:
         return self._character(character_id, api_key=self.api_key)
 
     @endpoint("/v2/account")
-    def get(self, data):
+    def get(self, *, data):
         """
         Get account from API with api key.
         :param data: Data from wrapper
@@ -315,7 +315,7 @@ class AccountApi:
         return Account(**data)
 
     @endpoint("/v2/account/achievements")
-    def achievements(self, data):
+    def achievements(self, *, data):
         """
         Get achievements progress from API with api key.
         :param data: Data from wrapper
@@ -375,7 +375,7 @@ class AccountApi:
         return achis
 
     @endpoint("/v2/account/bank")
-    def bank(self, data):
+    def bank(self, *, data):
         """
         Get bank data from API with api key.
         :param data: Data from wrapper
@@ -423,7 +423,7 @@ class AccountApi:
         return bank
 
     @endpoint("/v2/account/dailycrafting")
-    def dailycrafting(self, data):
+    def dailycrafting(self, *, data):
         """
         Get crafted time-gated items from API.
         :param data: Data from wrapper
@@ -433,7 +433,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/dungeons")
-    def dungeons(self, data):
+    def dungeons(self, *, data):
         """
         Get completed dungeon paths after last daily reset from API.
         :param data: Data from wrapper
@@ -443,7 +443,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/dyes")
-    def dyes(self, data):
+    def dyes(self, *, data):
         """
         Get unlocked dyes from API.
         :param data: Data from wrapper
@@ -455,7 +455,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/finishers")
-    def finishers(self, data):
+    def finishers(self, *, data):
         """
         Get unlocked finishers from API.
         :param data: Data from wrapper
@@ -473,7 +473,7 @@ class AccountApi:
         return finishers
 
     @endpoint("/v2/account/gliders")
-    def gliders(self, data):
+    def gliders(self, *, data):
         """
         Get unlocked gliders from API.
         :param data: Data from wrapper
@@ -484,7 +484,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/inventory")
-    def inventory(self, data):
+    def inventory(self, *, data):
         """
         Get shared inventory from API.
         :param data: Data from wrapper
@@ -494,7 +494,7 @@ class AccountApi:
         ids = []
         for item in data:
             ids.append(item['id'])
-        items = items_api.get(ids=ids)
+        items = items_api.get(*ids)
         for item in data:
             corr_item = None
             for itm_obj in items:
@@ -515,7 +515,7 @@ class AccountApi:
         return inventory
 
     @endpoint("/v2/account/luck")
-    def luck(self, data):
+    def luck(self, *, data):
         """
         Get account luck from API.
         :param data: Data from wrapper
@@ -526,7 +526,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mailcarriers")
-    def mailcarriers(self, data):
+    def mailcarriers(self, *, data):
         """
         Get unlocked mailcarriers from API.
         :param data: Data from wrapper
@@ -537,7 +537,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mapchests")
-    def mapchests(self, data):
+    def mapchests(self, *, data):
         """
         Get mapchest unlocked since daily reset from API.
         :param data: Data from wrapper
@@ -548,7 +548,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/masteries")
-    def masteries(self, data):
+    def masteries(self, *, data):
         """
         Get unlocked masteries from API.
         :param data: Data from wrapper
@@ -559,7 +559,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mastery/points")
-    def mastery_points(self, data):
+    def mastery_points(self, *, data):
         """
         Get account mastery points from API.
         :param data: Data from wrapper
@@ -570,7 +570,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/materials")
-    def materials(self, data):
+    def materials(self, *, data):
         """
         Get contents of material storage from API.
         :param data: Data from wrapper
@@ -593,7 +593,7 @@ class AccountApi:
 
         # Get dict of item and its id
         for items in item_ids:
-            items_fetched = items_api.get(ids=items)
+            items_fetched = items_api.get(*items)
             if isinstance(items_fetched, list):
                 for item in items_fetched:
                     items_ready[item.id] = item
@@ -612,7 +612,7 @@ class AccountApi:
         return items
 
     @endpoint("/v2/account/minis")
-    def minis(self, data):
+    def minis(self, *, data):
         """
         Get unlocked miniatures from API.
         :param data: Data from wrapper
@@ -623,7 +623,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/novelties")
-    def novelties(self, data):
+    def novelties(self, *, data):
         """
         Get unlocked novelties from API.
         :param data: Data from wrapper
@@ -634,7 +634,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/outfits")
-    def outfits(self, data):
+    def outfits(self, *, data):
         """
         Get unlocked outfits from API.
         :param data: Data from wrapper
@@ -645,7 +645,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/pvp/heroes")
-    def pvp_heroes(self, data):
+    def pvp_heroes(self, *, data):
         """
         Get unlocked PvP heroes from API.
         :param data: Data from wrapper
@@ -656,7 +656,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/raids")
-    def raids(self, data):
+    def raids(self, *, data):
         """
         Get completed weekly raid encounters from API.
         :param data: Data from wrapper
@@ -667,7 +667,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/recipes")
-    def recipes(self, data):
+    def recipes(self, *, data):
         """
         Get unlocked recipes from API.
         :param data: Data from wrapper
@@ -678,7 +678,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/skins")
-    def skins(self, data):
+    def skins(self, *, data):
         """
         Get unlocked skins from API.
         :param data: Data from wrapper
@@ -689,7 +689,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/titles")
-    def titles(self, data):
+    def titles(self, *, data):
         """
         Get unlocked titles from API.
         :param data: Data from wrapper
@@ -700,7 +700,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/wallet")
-    def wallet(self, data):
+    def wallet(self, *, data):
         """
         Get wallet from API.
         :param data: Data from wrapper
@@ -711,7 +711,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/worldbosses")
-    def worldbosses(self, data):
+    def worldbosses(self, *, data):
         """
         Get world bosses defeated since daily reset from API.
         :param data: Data from wrapper
