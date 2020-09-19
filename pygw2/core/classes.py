@@ -1,15 +1,9 @@
 import datetime
 
-from pygw2.api.achievements import AchievementsApi
-from pygw2.api.items import ItemsApi
-
 from pygw2.core.enums import *
 
 from typing import Optional, List, Union
 from pydantic import BaseModel
-
-achievements_api = AchievementsApi()
-items_api = ItemsApi()
 
 
 class ApiError(Exception):
@@ -184,7 +178,7 @@ class Item(BaseModel):
     restrictions: List[Union[Race, Profession]] = []
     upgrades_into: Optional[List[Upgrade]] = []
     upgrades_from: Optional[List[Upgrade]] = []
-    details: Union[
+    details: Optional[Union[
         'ArmorDetails',
         'BackDetails',
         'BagDetails',
@@ -197,7 +191,7 @@ class Item(BaseModel):
         'TrinketDetails',
         'UpgradeComponentDetails',
         'WeaponDetails'
-    ]
+    ]]
 
 
 class InfixAttribute(BaseModel):
@@ -427,6 +421,41 @@ class AchievementProgress(BaseModel):
     done: bool
     repeated: Optional[int]
     unlocked: Optional[bool] = True
+
+
+class DailyAchievementLevel(BaseModel):
+    min: int
+    max: int
+
+
+class ProductAccess(BaseModel):
+    product: AccountAccess
+    condition: str
+
+
+class DailyAchievement(BaseModel):
+    id: int     # TODO resolve achievement
+    level: DailyAchievementLevel
+    required_access: Optional[ProductAccess]
+
+
+class DailyAchievements(BaseModel):
+    pve: List[DailyAchievement]
+    pvp: List[DailyAchievement]
+    wvw: List[DailyAchievement]
+    fractals: List[DailyAchievement]
+    special: List[DailyAchievement]
+
+
+class VaultSlot(BaseModel):
+    id: int     # TODO resolve against items
+    count: int
+    charges: Optional[int]
+    skin: Optional[int]     # TODO resolve against skins
+    upgrades: Optional[List[int]]     # TODO resolve against items (?)
+    infusions: Optional[List[int]]    # TODO resolve agaisnt items (?)
+    binding: Optional[Binding]
+    bound_to: Optional[str]
 
 
 def create_object(d: dict):

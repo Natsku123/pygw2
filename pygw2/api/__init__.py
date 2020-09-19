@@ -1,6 +1,10 @@
-from .account import account_api
-from .achievements import achievements_api
-from .items import items_api
+from .account import AccountApi
+from .achievements import AchievementsApi
+from .items import ItemsApi
+
+account_api = AccountApi()
+achievements_api = AchievementsApi()
+items_api = ItemsApi()
 
 
 class Api:

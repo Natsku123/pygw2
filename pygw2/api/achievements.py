@@ -1,5 +1,5 @@
-from ..utils import *
-from ..classes import *
+from pygw2.core.classes import *
+from ..utils import endpoint
 
 
 class AchievementsApi:
@@ -25,7 +25,7 @@ class AchievementsApi:
         else:
             achis = []
             for achi in data:
-                achis.append(Achievement(achi))
+                achis.append(Achievement(**achi))
             return achis
 
     @endpoint("/v2/achievements/daily")
@@ -36,20 +36,7 @@ class AchievementsApi:
         :param data: Data from wrapper
         :return: dict
         """
-
-        achies = {}
-
-        # Process achievements.
-        for dtype in data:
-            achies[dtype] = []
-            for achi in data[dtype]:
-                achies[dtype].append({
-                    "achievement": get(ids=[achi['id']]),
-                    "level": achi['level'],
-                    "required_access": achi.get('required_access', None)
-                })
-
-        return achies
+        return DailyAchievements(**data)
 
     @endpoint("/v2/achievements/daily/tomorrow")
     def get_dailies_tomorrow(self, data):
@@ -67,7 +54,7 @@ class AchievementsApi:
             achies[dtype] = []
             for achi in data[dtype]:
                 achies[dtype].append({
-                    "achievement": get(ids=[achi['id']]),
+                    "achievement": self.get(ids=[achi['id']]),
                     "level": achi['level'],
                     "required_access": achi.get('required_access', None)
                 })
@@ -92,7 +79,7 @@ class AchievementsApi:
         else:
             groups = []
             for group in data:
-                groups.append(AchievementGroup(group))
+                groups.append(AchievementGroup(**group))
             return groups
 
     @endpoint("/v2/achievements/groups/")
@@ -109,7 +96,7 @@ class AchievementsApi:
         if 'text' in data:
             raise ApiError(data['text'])
 
-        return AchievementGroup(data)
+        return AchievementGroup(**data)
 
     @endpoint("/v2/achievements/categories")
     def get_categories(self, data, ids: list=[]):
@@ -134,7 +121,7 @@ class AchievementsApi:
             groups = []
             for group in data:
                 print(data)
-                groups.append(AchievementCategory(group))
+                groups.append(AchievementCategory(**group))
             return groups
 
     @endpoint("/v2/achievements/categories/")
@@ -151,7 +138,4 @@ class AchievementsApi:
         if 'text' in data:
             raise ApiError(data['text'])
 
-        return AchievementCategory(data)
-
-
-achievements_api = AchievementsApi()
+        return AchievementCategory(**data)
