@@ -5,12 +5,33 @@ Python wrapper for Guild Wars 2 api.
 
 Basic principle is that every endpoint needing IDs to fetch, allow `0` to `n`
  positional arguments (IDs). But due to API limitation it will be from `0
- ` to `200` as it is the maximum number of items the API will return objects
-  for.
-  
-Function for endpoints are designed into an 'ORM' style, as you could
- recognize from SQLAlchemy for example.
+ ` to `200` as it is the maximum number objects the API will return.
+ 
+This wrapper is structured as follows:
+```
+api.<CATEGORY>.<ENDPOINT>(<ID(s)>)
+```
+or
+```
+api.<CATEGORY>.<SUBCATEGORY>.<ENDPOINT>(<ID(s)>)
+```
 
+Categories and endpoints somewhat match the Guild Wars 2 Wiki documentation
+ of the API.
+ 
+For example:
+You can access the items-endpoint from items-category:
+```
+api.items.get()
+```
+or you can access skins-endpoint from the items-category aswell:
+```
+api.items.skins()
+```
+
+The whole stucture will be documented later.
+
+### Example
 ```python
 from pygw2.api import api
 

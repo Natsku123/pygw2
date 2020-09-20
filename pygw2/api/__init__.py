@@ -8,7 +8,7 @@ account_api = AccountApi()
 achievements_api = AchievementsApi()
 items_api = ItemsApi()
 daily_api = DailyApi()
-mechanics_api = MechanicsApi
+mechanics_api = MechanicsApi()
 
 
 class Api:
