@@ -2,11 +2,13 @@ from .account import AccountApi
 from .achievements import AchievementsApi
 from .items import ItemsApi
 from .daily import DailyApi
+from .mechanics import MechanicsApi
 
 account_api = AccountApi()
 achievements_api = AchievementsApi()
 items_api = ItemsApi()
 daily_api = DailyApi()
+mechanics_api = MechanicsApi
 
 
 class Api:
@@ -19,6 +21,7 @@ class Api:
         self._achievements = achievements_api
         self._items = items_api
         self._daily = daily_api
+        self._mechanics = mechanics_api
 
     def setup(self, api_key: str):
         self.api_key = api_key
@@ -41,6 +44,10 @@ class Api:
     @property
     def daily(self):
         return self._daily
+
+    @property
+    def mechanics(self):
+        return self._mechanics
 
 
 api = Api()

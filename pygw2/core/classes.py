@@ -583,3 +583,23 @@ class DailyMapChest(BaseModel):
 class DailyWorldBoss(BaseModel):
     id: str
 
+
+class MountSkin(BaseModel):
+    id: int = 0
+    name: str = ""
+    icon: str = ""
+    mount: str = ""     # TODO resolve against mount types
+    dye_slots: List[DyeSlot]
+
+
+class MountSkill(BaseModel):
+    id: int
+    slot: str
+
+
+class MountType(BaseModel):
+    id: str = ""
+    name: str = ""
+    default_skin: int   # TODO resolve against mount skins
+    skins: List[int]    # TODO resolve against mount skins
+    skills: List[MountSkill]
