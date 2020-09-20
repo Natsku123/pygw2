@@ -1,5 +1,6 @@
-from ..utils import endpoint
-from pygw2.core.classes import Item, Finisher, Itemstat, Material, PvpAmulet
+from ..utils import endpoint, object_parse
+from pygw2.core.classes import Item, Finisher, Itemstat, Material, PvpAmulet, \
+    Recipe, Skin
 
 
 class ItemsApi:
@@ -23,19 +24,7 @@ class ItemsApi:
 
         # Return list of Achievements.
         else:
-            if isinstance(data, dict):
-                return Item(**data)
-            elif isinstance(data, list):
-
-                items = []
-                print(data)
-                for item in data:
-                    items.append(Item(**item))
-
-                if len(items) > 1:
-                    return items
-                else:
-                    return items[0]
+            return object_parse(data, Item)
 
     @endpoint("/v2/finishers", has_ids=True)
     def finishers(self, *, data, ids: list = None):
@@ -51,14 +40,7 @@ class ItemsApi:
             return data
 
         else:
-            finishers = []
-            for finisher in data:
-                finishers.append(Finisher(**finisher))
-
-            if len(finishers) > 1:
-                return finishers
-            else:
-                return finishers[0]
+            return object_parse(data, Finisher)
 
     @endpoint("/v2/itemstats", has_ids=True)
     def itemstats(self, *, data, ids: list = None):
@@ -73,14 +55,7 @@ class ItemsApi:
         if ids is None:
             return data
         else:
-            itemstats = []
-            for itemstat in data:
-                itemstats.append(Itemstat(**itemstat))
-
-            if len(itemstats) > 1:
-                return itemstats
-            else:
-                return itemstats[0]
+            return object_parse(data, Itemstat)
 
     @endpoint("/v2/materials", has_ids=True)
     def materials(self, *, data, ids: list = None):
@@ -95,14 +70,7 @@ class ItemsApi:
         if ids is None:
             return data
         else:
-            materials = []
-            for material in data:
-                materials.append(Material(**material))
-
-            if len(materials) > 1:
-                return materials
-            else:
-                return materials[0]
+            return object_parse(data, Material)
 
     @endpoint("/v2/pvp/amulets", has_ids=True)
     def pvp_amulets(self, *, data, ids: list = None):
@@ -117,11 +85,46 @@ class ItemsApi:
         if ids is None:
             return data
         else:
-            amulets = []
-            for amulet in data:
-                amulets.append(PvpAmulet(**amulet))
+            return object_parse(data, PvpAmulet)
 
-            if len(amulets) > 1:
-                return amulets
-            else:
-                return amulets[0]
+    @endpoint("/v2/recipes", has_ids=True)
+    def recipes(self, *, data, ids: list = None):
+        """
+        Get Recipes from API by list of IDs or one ID.
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        else:
+            return object_parse(data, Recipe)
+
+    @endpoint("/v2/recipes/search", is_search=True)
+    def search_recipes(self, *, data, input=None, output=None):
+        """
+        Search for recipes as ingredient (input) or as result (output).
+        :param output: as result
+        :param input: as ingredient
+        :param data:
+        :return:
+        """
+        if data:
+            return self.recipes(*data)
+        else:
+            return data
+
+    @endpoint("/v2/skins", has_ids=True)
+    def skins(self, *, data, ids: list = None):
+        """
+        Get Skins from API by list of IDs or one ID.
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        else:
+            return object_parse(data, Skin)

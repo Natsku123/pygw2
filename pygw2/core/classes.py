@@ -506,3 +506,69 @@ class PvpAmulet(BaseModel):
     attributes: PvpAttributes
 
 
+class RecipeIngredient(BaseModel):
+    item_id: int    # TODO resolve against items
+    count: int
+
+
+class RecipeGuildIngredient(BaseModel):
+    upgrade_id: int     # TODO resolve against guild upgrades
+    count: int
+
+
+class Recipe(BaseModel):
+    id: int
+    type: RecipeType
+    output_item_id: int     # TODO resolve against items
+    output_item_count: int
+    time_to_craft_ms: int
+    disciplines: List[Discipline]
+    min_rating: int
+    flags: List[RecipeFlag]
+    ingredients: List[RecipeIngredient]
+    guild_ingredients: Optional[List[RecipeGuildIngredient]]
+    output_upgrade_id: Optional[int]    # TODO resolve against guild upgrades
+    chat_link: str
+
+
+class Skin(BaseModel):
+    id: int
+    name: str
+    type: SkinType
+    flags: List[SkinFlag]
+    restrictions: List[Race]
+    icon: str
+    rarity: str     # TODO same as ItemRarity?
+    description: str
+    details: Optional[Union[
+        'ArmorSkinDetails',
+        'WeaponSkinDetails',
+        'GatheringSkinDetails'
+    ]]
+
+
+class DyeSlot(BaseModel):
+    color_id: int   # TODO resolve against colors
+    material: DyeSlotMaterial
+
+
+class SkinDyeSlots(BaseModel):
+    default: List[DyeSlot]
+    overrides: DyeSlot
+
+
+class ArmorSkinDetails(BaseModel):
+    type: ArmorSlot
+    weight_class: WeightClass
+    dye_slots: SkinDyeSlots
+
+
+class WeaponSkinDetails(BaseModel):
+    type: WeaponType
+    damage_type: DamageType
+
+
+class GatheringSkinDetails(BaseModel):
+    type: GatheringToolType
+
+
