@@ -9,7 +9,7 @@ achievements_api = AchievementsApi()
 items_api = ItemsApi()
 
 
-class HomeApi:
+class AccountHomeApi:
     def __init__(self):
         self.api_key: str = ""
 
@@ -39,7 +39,7 @@ class HomeApi:
         return data
 
 
-class MountsApi:
+class AccountMountsApi:
     def __init__(self):
         self.api_key: str = ""
 
@@ -283,8 +283,8 @@ class CharactersApi:
 class AccountApi:
     def __init__(self):
         self.api_key: str = ""
-        self._home = HomeApi()
-        self._mounts = MountsApi()
+        self._home = AccountHomeApi()
+        self._mounts = AccountMountsApi()
         self._character = CharactersApi
 
     def setup(self, api_key: str):

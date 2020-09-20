@@ -572,3 +572,14 @@ class GatheringSkinDetails(BaseModel):
     type: GatheringToolType
 
 
+class DailyCrafting(BaseModel):
+    id: str
+
+
+class DailyMapChest(BaseModel):
+    id: str
+
+
+class DailyWorldBoss(BaseModel):
+    id: str
+

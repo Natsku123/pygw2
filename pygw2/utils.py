@@ -1,4 +1,6 @@
 import requests
+from pydantic import parse_obj_as
+from typing import List
 from .settings import *
 from .core import classes
 
@@ -31,15 +33,7 @@ def object_parse(data, data_type):
     if isinstance(data, dict):
         return data_type(**data)
     elif isinstance(data, list):
-
-        objects = []
-        for obj in data:
-            objects.append(data_type(**obj))
-
-        if len(objects) > 1:
-            return objects
-        else:
-            return objects[0]
+        return parse_obj_as(List[data_type], data)
 
 
 def endpoint(

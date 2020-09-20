@@ -1,10 +1,12 @@
 from .account import AccountApi
 from .achievements import AchievementsApi
 from .items import ItemsApi
+from .daily import DailyApi
 
 account_api = AccountApi()
 achievements_api = AchievementsApi()
 items_api = ItemsApi()
+daily_api = DailyApi()
 
 
 class Api:
@@ -16,6 +18,7 @@ class Api:
         self._account = account_api
         self._achievements = achievements_api
         self._items = items_api
+        self._daily = daily_api
 
     def setup(self, api_key: str):
         self.api_key = api_key
@@ -34,6 +37,10 @@ class Api:
     @property
     def items(self):
         return self._items
+
+    @property
+    def daily(self):
+        return self._daily
 
 
 api = Api()
