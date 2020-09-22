@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Race(str, Enum):
+class Races(str, Enum):
     Asura = "Asura"
     Charr = "Charr"
     Human = "Human"
@@ -14,7 +14,7 @@ class Gender(str, Enum):
     Female = "Female"
 
 
-class Profession(str, Enum):
+class Professions(str, Enum):
     Elementalist = "Elementalist"
     Engineer = "Engineer"
     Guardian = "Guardian"
@@ -411,3 +411,193 @@ class DyeSlotMaterial(str, Enum):
     cloth = "cloth"
     leather = "leather"
     metal = "metal"
+
+
+class ProfessionTrainingCategory(str, Enum):
+    Skills = "Skills"
+    Specializations = "Specializations"
+    EliteSpecializations = "EliteSpecializations"
+
+
+class ProfessionTrainingTrackType(str, Enum):
+    Trait = "Trait"
+    Skill = "Skill"
+
+
+class ProfessionWeaponFlag(str, Enum):
+    Mainhand = "Mainhand"
+    Offhand = "Offhand"
+    TwoHand = "TwoHand"
+    Aquatic = "Aquatic"
+
+
+class ProfessionWeaponFlags(str, Enum):
+    NoRacialSkills = "NoRacialSkills"
+    NoWeaponSwap = "NoWeaponSwap"
+
+
+class ProfessionWeaponSkillSlot(str, Enum):
+    Profession_1 = "Profession_1"
+    Utility = "Utility"
+    Heal = "Heal"
+    Elite = "Elite"
+
+
+class SkillType(str, Enum):
+    Bundle = "Bundle"
+    Elite = "Elite"
+    Heal = "Heal"
+    Profession = "Profession"
+    Utility = "Utility"
+    Weapon = "Weapon"
+
+
+class SkillSlot(str, Enum):
+    Downed_1 = "Downed_1"
+    Downed_2 = "Downed_2"
+    Downed_3 = "Downed_3"
+    Downed_4 = "Downed_4"
+    Pet = "Pet"
+    Profession_1 = "Profession_1"
+    Profession_2 = "Profession_2"
+    Profession_3 = "Profession_3"
+    Profession_4 = "Profession_4"
+    Profession_5 = "Profession_5"
+    Utility = "Utility"
+    Weapon_1 = "Weapon_1"
+    Weapon_2 = "Weapon_2"
+    Weapon_3 = "Weapon_3"
+    Weapon_4 = "Weapon_4"
+    Weapon_5 = "Weapon_5"
+
+
+class SkillFactType(str, Enum):
+    AttributeAdjust = "AttributeAdjust"
+    Buff = "Buff"
+    ComboField = "ComboField"
+    ComboFinisher = "ComboFinisher"
+    Damage = "Damage"
+    Distance = "Distance"
+    Duration = "Duration"
+    Heal = "Heal"
+    HealingAdjust = "HealingAdjust"
+    NoData = "NoData"
+    Number = "Number"
+    Percent = "Percent"
+    PrefixedBuff = "PrefixedBuff"
+    Radius = "Radius"
+    Range = "Range"
+    Recharge = "Recharge"
+    Time = "Time"
+    Unblockable = "Unblockable"
+
+
+class ComboFieldType(str, Enum):
+    Air = "Air"
+    Dark = "Dark"
+    Fire = "Fire"
+    Ice = "Ice"
+    Light = "Light"
+    Lightning = "Lightning"
+    Poison = "Poison"
+    Smoke = "Smoke"
+    Ethereal = "Ethereal"
+    Water = "Water"
+
+
+class ComboFinisherType(str, Enum):
+    Blast = "Blast"
+    Leap = "Leap"
+    Projectile = "Projectile"
+    Whirl = "Whirl"
+
+
+class SkillCategories(str, Enum):
+    DualWield = "DualWield"
+    StealthAttack = "StealthAttack"
+    Signet = "Signet"
+    Cantrip = "Cantrip"
+    Deception = "Deception"
+    Glyph = "Glyph"
+    Mantra = "Mantra"
+    Meditation = "Meditation"
+    Physical = "Physical"
+    Shout = "Shout"
+    Stance = "Stance"
+    Trap = "Trap"
+    Well = "Well"
+    Consecration = "Consecration"
+    FinalCharge = "FinalCharge"
+    SpiritWeapon = "SpiritWeapon"
+    Symbol = "Symbol"
+    Tome = "Tome"
+    Virtue = "Virtue"
+    Ward = "Ward"
+    CitadelOrder = "CitadelOrder"
+    Consume = "Consume"
+    Facet = "Facet"
+    Legend = "Legend"
+    LegendaryAssassin = "LegendaryAssassin"
+    LegendaryCentaur = "LegendaryCentaur"
+    LegendaryDemon = "LegendaryDemon"
+    LegendaryDragon = "LegendaryDragon"
+    LegendaryDwarf = "LegendaryDwarf"
+    LegendaryRenegade = "LegendaryRenegade"
+    Banner = "Banner"
+    Burst = "Burst"
+    PrimalBurst = "PrimalBurst"
+    Rage = "Rage"
+    EngineeringKit = "EngineeringKit"
+    Elixir = "Elixir"
+    Exceed = "Exceed"
+    Gadget = "Gadget"
+    PhotonForge = "PhotonForge"
+    Toolbelt = "Toolbelt"
+    Turret = "Turret"
+    Beast = "Beast"
+    CelestialAvatar = "CelestialAvatar"
+    Pet = "Pet"
+    Command = "Command"
+    Spirit = "Spirit"
+    Survival = "Survival"
+    Kneel = "Kneel"
+    Preparation = "Preparation"
+    Stolenskill = "Stolenskill"
+    Trick = "Trick"
+    Venom = "Venom"
+    Arcane = "Arcane"
+    Attunement = "Attunement"
+    Conjure = "Conjure"
+    DualAttack = "DualAttack"
+    Overload = "Overload"
+    Ambush = "Ambush"
+    Clone = "Clone"
+    Glamour = "Glamour"
+    Manipulation = "Manipulation"
+    Phantasm = "Phantasm"
+    Shatter = "Shatter"
+    Corruption = "Corruption"
+    Mark = "Mark"
+    Minion = "Minion"
+    Punishment = "Punishment"
+    Shade = "Shade"
+    Spectral = "Spectral"
+
+
+class Attunement(str, Enum):
+    Fire = "Fire"
+    Water = "Water"
+    Air = "Air"
+    Earth = "Earth"
+
+
+class TraitTier(int, Enum):
+    Weapon = 0
+    Adept = 1
+    Master = 2
+    Grandmaster = 3
+
+
+class TraitSlot(str, Enum):
+    Major = "Major"
+    Minor = "Minor"

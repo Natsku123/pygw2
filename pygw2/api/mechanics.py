@@ -1,5 +1,6 @@
 from ..utils import endpoint, object_parse
-from pygw2.core.classes import Mastery, MountSkin, MountType
+from pygw2.core.classes import Mastery, MountSkin, MountType, Outfit, Pet,\
+    Profession, Race, Skill, Trait, Legend
 
 
 class MechanicsMountsApi:
@@ -54,4 +55,94 @@ class MechanicsApi:
             return data
         return object_parse(data, Mastery)
 
+    @endpoint('/v2/outfits', has_ids=True)
+    def outfits(self, *, data, ids: list = None):
+        """
+        Get outfits by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Outfit)
+
+    @endpoint('/v2/pets', has_ids=True)
+    def pets(self, *, data, ids: list = None):
+        """
+        Get Ranger pets by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Pet)
+
+    @endpoint('/v2/professions', has_ids=True)
+    def professions(self, *, data, ids: list = None):
+        """
+        Get professions by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Profession)
+
+    @endpoint('/v2/races', has_ids=True)
+    def races(self, *, data, ids: list = None):
+        """
+        Get races by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Race)
+
+    @endpoint('/v2/skills', has_ids=True)
+    def skills(self, *, data, ids: list = None):
+        """
+        Get skills by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Skill)
+
+    @endpoint('/v2/traits', has_ids=True)
+    def traits(self, *, data, ids: list = None):
+        """
+        Get traits by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Trait)
+
+    @endpoint('/v2/legends', has_ids=True)
+    def legends(self, *, data, ids: list = None):
+        """
+        Get legends by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Legend)
 

@@ -134,9 +134,9 @@ class PvPEquipment(BaseModel):
 
 class Character(BaseModel):
     name: str
-    race: Race
+    race: Races
     gender: Gender
-    profession: Profession
+    profession: Professions
     lvl: int
     guild: Optional[str] = None
     age: int
@@ -175,7 +175,7 @@ class Item(BaseModel):
     default_skin: Optional[int]     # TODO resolve against /v2/skins
     flags: List[ItemFlags] = []
     game_types: List[GameTypes] = []
-    restrictions: List[Union[Race, Profession]] = []
+    restrictions: List[Union[Races, Professions]] = []
     upgrades_into: Optional[List[Upgrade]] = []
     upgrades_from: Optional[List[Upgrade]] = []
     details: Optional[Union[
@@ -536,7 +536,7 @@ class Skin(BaseModel):
     name: str
     type: SkinType
     flags: List[SkinFlag]
-    restrictions: List[Race]
+    restrictions: List[Races]
     icon: str
     rarity: str     # TODO same as ItemRarity?
     description: str
@@ -603,3 +603,185 @@ class MountType(BaseModel):
     default_skin: int   # TODO resolve against mount skins
     skins: List[int]    # TODO resolve against mount skins
     skills: List[MountSkill]
+
+
+class Outfit(BaseModel):
+    id: int = 0
+    name: str = ""
+    icon: str = ""
+    unlock_items: List[int] = []    # TODO resolve against items
+
+
+class PetSkill(BaseModel):
+    id: int     # TODO resolve against skills
+
+
+class Pet(BaseModel):
+    id: int = 0
+    name: str = ""
+    description: str = ""
+    icon: str = ""
+    skills: List[PetSkill]
+
+
+class ProfessionTrainingTrack(BaseModel):
+    cost: int = 0
+    type: ProfessionTrainingTrackType
+    skill_id: Optional[int]     # TODO resolve against skills
+    trait_id: Optional[int]     # TODO resolve against traits
+
+
+class ProfessionTraining(BaseModel):
+    id: int     # TODO resolve against skills or specializations
+    category: ProfessionTrainingCategory
+    name: str
+    track: List[ProfessionTrainingTrack]
+
+
+class WeaponSkill(BaseModel):
+    id: int     # TODO resolve against skills
+    slot: ProfessionWeaponSkillSlot
+    offhand: str = ""
+    attunement: str = ""
+    source: str = ""
+
+
+class ProfessionWeapon(BaseModel):
+    flag: List[ProfessionWeaponFlag]
+    specialization: Optional[int]   # TODO resolve against specializations
+    skills: List[WeaponSkill]
+
+
+class ProfessionWeapons(BaseModel):
+    Axe: Optional['ProfessionWeapon']
+    Dagger: Optional['ProfessionWeapon']
+    Mace: Optional['ProfessionWeapon']
+    Pistol: Optional['ProfessionWeapon']
+    Sword: Optional['ProfessionWeapon']
+    Scepter: Optional['ProfessionWeapon']
+    Focus: Optional['ProfessionWeapon']
+    Shield: Optional['ProfessionWeapon']
+    Torch: Optional['ProfessionWeapon']
+    Warhorn: Optional['ProfessionWeapon']
+    Greatsword: Optional['ProfessionWeapon']
+    Hammer: Optional['ProfessionWeapon']
+    Longbow: Optional['ProfessionWeapon']
+    Rifle: Optional['ProfessionWeapon']
+    Shortbow: Optional['ProfessionWeapon']
+    Staff: Optional['ProfessionWeapon']
+    Speargun: Optional['ProfessionWeapon']
+    Spear: Optional['ProfessionWeapon']
+    Trident: Optional['ProfessionWeapon']
+
+
+class Profession(BaseModel):
+    id: str = ""
+    name: str = ""
+    icon: str = ""
+    icon_big: str = ""
+    specializations: List[int] = 0  # TODO resolve against specializations
+    training: List[ProfessionTraining]
+    weapons: ProfessionWeapons
+
+
+class Race(BaseModel):
+    id: str
+    skills: List[int] = []      # TODO resolve against skills
+
+
+class Specialization(BaseModel):
+    id: int
+    name: str
+    profession: str
+    elite: bool = False
+    icon: str
+    background: str
+    minor_traits: List[int]     # TODO resolve against traits
+    major_traits: List[int]     # TODO resolve against traits
+
+
+class SkillFactPrefix(BaseModel):
+    text: str
+    icon: str
+    status: str
+    description: str
+
+
+class SkillFact(BaseModel):
+    text: str
+    icon: Optional[str]
+    type: SkillFactType
+    value: Optional[Union[int, bool]]
+    target: Optional[str]
+    status: Optional[str]
+    description: Optional[str]
+    apply_count: Optional[int]
+    duration: Optional[int]
+    field_type: Optional[ComboFieldType]
+    finisher_type: Optional[ComboFinisherType]
+    percent: Optional[int]
+    hit_count: Optional[int]
+    dmg_multiplier: Optional[int]
+    distance: Optional[int]
+    prefix: Optional[SkillFactPrefix]
+
+
+class SkillTraitedFact(SkillFact):
+    requires_trait: int     # TODO resolve against traits
+    overrides: Optional[int]    # TODO resolve from facts
+
+
+class Skill(BaseModel):
+    id: int
+    name: str
+    description: Optional[str]
+    icon: str
+    chat_link: str
+    type: SkillType
+    weapon_type: Optional[str]
+    professions: List[str]
+    slot: SkillSlot
+    facts: Optional[List[SkillFact]]
+    traited_facts: Optional[List[SkillTraitedFact]]
+    categories: Optional[List[SkillCategories]]
+    attunement: Optional[Attunement]
+    cost: Optional[int]
+    dual_wield: Optional[str]
+    flip_skill: Optional[int]
+    initiative: Optional[int]
+    next_chain: Optional[int]   # TODO resolve against skills
+    prev_chain: Optional[int]   # TODO resolve against skills
+    transform_skills: Optional[List[int]]   # TODO resolve against skills
+    bundle_skills: Optional[List[int]]      # TODO resolve against skills
+    toolbelt_skill: Optional[int]   # TODO resolve against skills
+
+
+class TraitSkill(BaseModel):
+    id: int
+    name: str
+    description: str
+    icon: str
+    facts: Optional[List[SkillFact]]
+    traited_facts: Optional[List[SkillTraitedFact]]
+
+
+class Trait(BaseModel):
+    id: int
+    name: str
+    icon: str
+    description: str
+    specialization: int     # TODO resolve against specialization
+    tier: TraitTier
+    slot: TraitSlot
+    facts: Optional[List[SkillFact]]
+    traited_facts: Optional[List[SkillTraitedFact]]
+    skills: Optional[List[TraitSkill]]
+
+
+class Legend(BaseModel):
+    id: str = ""
+    swap: int = 0   # TODO resolve against skills
+    heal: int = 0   # TODO resolve against skills
+    elite: int = 0  # TODO resolve against skills
+    utilities: List[int]    # TODO resolve against skills
+
