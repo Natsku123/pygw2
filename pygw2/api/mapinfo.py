@@ -127,3 +127,16 @@ class MapInfoApi:
 
     def continent(self, continent_id: int = None):
         return self._continent(continent_id)
+
+    @endpoint('/v2/maps', has_ids=True)
+    def maps(self, *, data, ids: list = None):
+        """
+        Get maos by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+        return object_parse(data, Map)

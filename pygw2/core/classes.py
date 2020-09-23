@@ -952,6 +952,21 @@ class MapSector(BaseModel):
     chat_link: str
 
 
+class Map(BaseModel):
+    id: int
+    name: str
+    min_level: int
+    max_level: int
+    default_floor: int
+    floors: List[int]   # TODO resolve?
+    region_id: int      # TODO resolve region?
+    region_name: Optional[str]
+    continent_id: int   # TODO resolve continent?
+    continent_name: str
+    map_rect: List[List[int]]
+    continent_rect: List[List[int]]
+
+
 class PvpWinLoss(BaseModel):
     wins: int
     losses: int
