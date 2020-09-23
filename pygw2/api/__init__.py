@@ -3,12 +3,14 @@ from .achievements import AchievementsApi
 from .items import ItemsApi
 from .daily import DailyApi
 from .mechanics import MechanicsApi
+from .guild import GuildApi
 
 account_api = AccountApi()
 achievements_api = AchievementsApi()
 items_api = ItemsApi()
 daily_api = DailyApi()
 mechanics_api = MechanicsApi()
+guild_api = GuildApi()
 
 
 class Api:
@@ -22,6 +24,7 @@ class Api:
         self._items = items_api
         self._daily = daily_api
         self._mechanics = mechanics_api
+        self._guild = GuildApi
 
     def setup(self, api_key: str):
         self.api_key = api_key
@@ -48,6 +51,9 @@ class Api:
     @property
     def mechanics(self):
         return self._mechanics
+
+    def guild(self, guild_id=None):
+        return self._guild(guild_id=guild_id)
 
 
 api = Api()

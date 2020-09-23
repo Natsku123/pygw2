@@ -41,10 +41,14 @@ def endpoint(
         subendpoint: str = "",
         *,
         has_ids: bool = False,
-        is_search: bool = False
+        is_search: bool = False,
+        max_ids: int = 200,
+        min_ids: int = 0,
 ):
     """
     Endpoint wrapper
+    :param min_ids: Minimum number of IDs supported by endpoint.
+    :param max_ids: Maximum number of IDs supported by endpoint.
     :param is_search: bool if input/output used to search
     :param has_ids: bool does it have IDs
     :param path: Endpoint path
@@ -68,8 +72,21 @@ def endpoint(
                 else:
                     path_id = str(self.character_id)
 
+            # Check for guild_id
+            if hasattr(self, "guild_id") and self.guild_id is not None:
+                if not path.endswith("/"):
+                    path_id = "/" + str(self.guild_id)
+                else:
+                    path_id = str(self.guild_id)
+
             # Construct fetch with ID(s)
             if has_ids:
+
+                if len(args) > max_ids and path_id == "":
+                    raise classes.ApiError('Too many IDs for this endpoint.')
+                if len(args) < min_ids and path_id == "":
+                    raise classes.ApiError('Not enough IDs for this endpoint.')
+
                 if len(args) == 1 and path_id == "":
                     if not path.endswith("/"):
                         path_id = "/" + str(args[0])
@@ -88,6 +105,8 @@ def endpoint(
                         parameters['input'] = value
                     elif key == "output":
                         parameters['output'] = value
+                    elif key == "name":
+                        parameters['name'] = value
 
             # Check obvious ID error
             if path.endswith("/") and path_id == "":

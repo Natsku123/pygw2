@@ -447,7 +447,6 @@ class AccountApi:
         """
         Get unlocked dyes from API.
         :param data: Data from wrapper
-        :param api_key:
         :return:
         """
 

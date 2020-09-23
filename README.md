@@ -60,8 +60,8 @@ If you find that there is one or more endpoints not covered by this API
    
    
 ## API coverage
-TODO come up with a nice table or something.
 
+TODO nice table or something
 
 
 

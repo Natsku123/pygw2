@@ -601,3 +601,64 @@ class TraitTier(int, Enum):
 class TraitSlot(str, Enum):
     Major = "Major"
     Minor = "Minor"
+
+
+class GuildEmblemFlags(str, Enum):
+    FlipBackgroundHorizontal = "FlipBackgroundHorizontal"
+    FlipBackgroundVertical = "FlipBackgroundVertical"
+
+
+class GuildUpgradeType(str, Enum):
+    AccumulatingCurrency = "AccumulatingCurrency"
+    BankBag = "BankBag"
+    Boost = "Boost"
+    Claimable = "Claimable"
+    Consumable = "Consumable"
+    Decoration = "Decoration"
+    GuildHall = "GuildHall"
+    GuildHallExpedition = "GuildHallExpedition"
+    Hub = "Hub"
+    Queue = "Queue"
+    Unlock = "Unlock"
+
+
+class GuildUpgradeCostType(str, Enum):
+    Item = "Item"
+    Collectible = "Collectible"
+    Currency = "Currency"
+    Coins = "Coins"
+
+
+class GuildLogEntryType(str, Enum):
+    joined = "joined"
+    invited = "invited"
+    kick = "kick"
+    kicked_by = "kicked_by"
+    rank_change = "rank_change"
+    treasury = "treasury"
+    stash = "stash"
+    motd = "motd"
+    upgrade = "upgrade"
+
+
+class GuildStashOperation(str, Enum):
+    deposit = "deposit"
+    withdraw = "withdraw"
+    move = "move"
+
+
+class GuildUpgradeAction(str, Enum):
+    queued = "queued"
+    cancelled = "cancelled"
+    completed = "completed"
+    sped_up = "sped_up"
+
+
+class GuildTeamMemberRole(str, Enum):
+    Captain = "Captain"
+    Member = "Member"
+
+
+class PvpRatingType(str, Enum):
+    Ranked = "Ranked"
+    Unranked = "Unranked"
