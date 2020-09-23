@@ -925,6 +925,15 @@ class GuildTeam(BaseModel):
     seasons: List[GuildTeamSeason]
 
 
+class HomeCat(BaseModel):
+    id: int
+    hint: Optional[str]
+
+
+class HomeNode(BaseModel):
+    id: str
+
+
 class PvpWinLoss(BaseModel):
     wins: int
     losses: int

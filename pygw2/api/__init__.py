@@ -4,6 +4,7 @@ from .items import ItemsApi
 from .daily import DailyApi
 from .mechanics import MechanicsApi
 from .guild import GuildApi
+from .home import HomeApi
 
 account_api = AccountApi()
 achievements_api = AchievementsApi()
@@ -11,6 +12,7 @@ items_api = ItemsApi()
 daily_api = DailyApi()
 mechanics_api = MechanicsApi()
 guild_api = GuildApi()
+home_api = HomeApi()
 
 
 class Api:
@@ -25,6 +27,7 @@ class Api:
         self._daily = daily_api
         self._mechanics = mechanics_api
         self._guild = GuildApi
+        self._home = home_api
 
     def setup(self, api_key: str):
         self.api_key = api_key
@@ -54,6 +57,10 @@ class Api:
 
     def guild(self, guild_id=None):
         return self._guild(guild_id=guild_id)
+
+    @property
+    def home(self):
+        return self._home
 
 
 api = Api()
