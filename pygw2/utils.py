@@ -61,6 +61,8 @@ def endpoint(
             path_id = ""
             parameters = default_parameters.copy()
 
+            # TODO better key checks
+
             # Check for api key
             if hasattr(self, "api_key") and self.api_key and self.api_key != "":
                 parameters['access_token'] = getattr(self, "api_key")
@@ -78,6 +80,36 @@ def endpoint(
                     path_id = "/" + str(self.guild_id)
                 else:
                     path_id = str(self.guild_id)
+
+            # Continent path generation
+
+            # Check for continent_id
+            if hasattr(self, "continent_id") and self.continent_id is not None:
+                if not path.endswith("/"):
+                    path_id = "/" + str(self.continent_id)
+                else:
+                    path_id = str(self.continent_id)
+
+                # Check for floor_id
+                if hasattr(self, "floor_id") and self.floor_id is not None:
+                    if not path.endswith("/"):
+                        path_id += "/floors/" + str(self.floor_id)
+                    else:
+                        path_id += "floors/" + str(self.floor_id)
+
+                    # Check for region_id
+                    if hasattr(self, "region_id") and self.region_id is not None:
+                        if not path.endswith("/"):
+                            path_id += "/regions/" + str(self.region_id)
+                        else:
+                            path_id += "regions/" + str(self.region_id)
+
+                        # Check for map_id
+                        if hasattr(self, "map_id") and self.map_id is not None:
+                            if not path.endswith("/"):
+                                path_id += "/maps/" + str(self.map_id)
+                            else:
+                                path_id += "maps/" + str(self.map_id)
 
             # Construct fetch with ID(s)
             if has_ids:

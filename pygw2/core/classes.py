@@ -934,6 +934,24 @@ class HomeNode(BaseModel):
     id: str
 
 
+class Continent(BaseModel):
+    id: int
+    name: str
+    continent_dims: List[int]
+    min_zoom: int
+    max_zoom: int
+    floors: List[int]   # TODO parse subendpoints?
+
+
+class MapSector(BaseModel):
+    id: int
+    name: str
+    level: int
+    coord: List[int]
+    bounds: List[List[int]]
+    chat_link: str
+
+
 class PvpWinLoss(BaseModel):
     wins: int
     losses: int
