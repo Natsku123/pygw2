@@ -1,6 +1,6 @@
-from .account import AccountTests
-from .achievements import AchievementsTests
-from .items import ItemTests
+from .test_account import AccountTests
+from .test_achievements import AchievementsTests
+from .test_items import ItemTests
 
 import unittest
 

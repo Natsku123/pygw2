@@ -1,4 +1,6 @@
 # Pygw2
+[![Build Status](https://travis-ci.org/Natsku123/pygw2.svg?branch=master)](https://travis-ci.org/Natsku123/pygw2)
+
 Python wrapper for Guild Wars 2 api.
 
 ## How to use
@@ -29,7 +31,14 @@ or you can access skins-endpoint from the items-category aswell:
 api.items.skins()
 ```
 
-The whole stucture will be documented later.
+The whole structure will be documented later.
+
+### Sub-endpoints
+
+Subenpoints are handled by classes, by giving them the ID like so:
+```python
+api.account.character(character_id).core()
+```
 
 ### Example
 ```python

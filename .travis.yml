@@ -1,0 +1,14 @@
+language: python
+python:
+  - "3.9"
+  - "3.8"
+  - "3.7"
+install:
+  - pip install -r requirements.txt
+  - pip install pytest
+  - pip install pytest-cov
+  - pip install coveralls
+script:
+  - pytest --cov=pygw2/
+after_success:
+  - coveralls

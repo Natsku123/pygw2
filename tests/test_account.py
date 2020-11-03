@@ -4,7 +4,7 @@ from pygw2.core.classes import Account
 import unittest
 import os
 
-api.setup(os.getenv('test_key'))
+api.setup(os.environ.get("api_key", "NO-KEY"))
 
 
 class AccountTests(unittest.TestCase):
