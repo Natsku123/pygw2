@@ -2,8 +2,7 @@ import datetime
 from typing import Optional, List
 from pydantic import BaseModel
 
-from pygw2.core.enums import Binding, AccountAccess
-from pygw2.core.models import Region
+from pygw2.core.enums import Binding, AccountAccess, Region
 
 
 class VaultSlot(BaseModel):
