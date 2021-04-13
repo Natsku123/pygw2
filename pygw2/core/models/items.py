@@ -164,3 +164,5 @@ class Outfit(BaseModel):
     icon: str = ""
     unlock_items: List[int] = []    # TODO resolve against items
 
+
+Item.update_forward_refs()

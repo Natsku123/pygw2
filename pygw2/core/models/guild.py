@@ -146,3 +146,6 @@ class GuildTeam(BaseModel):
     ladders: 'PvpLadderStats'
     games: List['PvpGame']
     seasons: List[GuildTeamSeason]
+
+
+Guild.update_forward_refs()

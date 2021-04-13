@@ -84,3 +84,6 @@ class MountSkin(BaseModel):
     icon: str = ""
     mount: str = ""     # TODO resolve against mount types
     dye_slots: List[DyeSlot]
+
+
+Skin.update_forward_refs()
