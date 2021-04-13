@@ -1,5 +1,6 @@
 from pygw2.api import api
-from pygw2.core.classes import Item, Recipe
+from pygw2.core.models.crafting import Recipe
+from pygw2.core.models.items import Item
 
 import unittest
 

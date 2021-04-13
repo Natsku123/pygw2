@@ -1,6 +1,8 @@
+from ..core.models.account import MountType, Mastery, Pet
+from ..core.models.character import Profession, Race, Skill, Trait, Legend
+from ..core.models.general import MountSkin
+from ..core.models.items import Outfit
 from ..utils import endpoint, object_parse
-from pygw2.core.classes import Mastery, MountSkin, MountType, Outfit, Pet,\
-    Profession, Race, Skill, Trait, Legend
 
 
 class MechanicsMountsApi:

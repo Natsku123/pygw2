@@ -1,4 +1,6 @@
-from pygw2.core.classes import *
+from ..core.models.guild import GuildEmblemImages, Guild, GuildPermission, \
+    GuildUpgrade, GuildLogEntry, GuildMember, GuildRank, GuildStash, \
+    GuildTreasury, GuildTeam
 from ..utils import endpoint, object_parse
 
 

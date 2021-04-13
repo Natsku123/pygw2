@@ -1,5 +1,5 @@
 from pygw2.api import api
-from pygw2.core.classes import Achievement, DailyAchievements, \
+from pygw2.core.models.achievements import Achievement, DailyAchievements, \
     AchievementCategory, AchievementGroup
 
 import unittest

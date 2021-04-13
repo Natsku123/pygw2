@@ -1,4 +1,6 @@
-from pygw2.core.classes import *
+from ..core.exceptions import ApiError
+from ..core.models.achievements import Achievement, DailyAchievements, \
+    AchievementGroup, AchievementCategory
 from ..utils import endpoint, object_parse
 
 

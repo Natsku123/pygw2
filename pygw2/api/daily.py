@@ -1,5 +1,5 @@
+from ..core.models.general import DailyCrafting, DailyMapChest, DailyWorldBoss
 from ..utils import endpoint, object_parse
-from pygw2.core.classes import DailyCrafting, DailyMapChest, DailyWorldBoss
 
 
 class DailyApi:

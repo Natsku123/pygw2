@@ -1,11 +1,12 @@
 import requests
 from pydantic import parse_obj_as
 from typing import List
+
+from .core.exceptions import ApiError
 from .settings import *
-from .core import classes
 
 
-def list_to_str(l: list, delimiter: str=","):
+def list_to_str(l: list, delimiter: str = ","):
     """
     Convert list to string with delimiter.
     :param l: list
@@ -14,7 +15,7 @@ def list_to_str(l: list, delimiter: str=","):
     """
     string = ""
     for item in l:
-        if l.index(item) == len(l)-1:
+        if l.index(item) == len(l) - 1:
             string += str(item)
         else:
             string += str(item) + delimiter
@@ -55,6 +56,7 @@ def endpoint(
     :param subendpoint: Path of sub-endpoint
     :return:
     """
+
     def decorate(func):
         def get_data(self, *args, **kwargs):
             ids = []
@@ -64,7 +66,8 @@ def endpoint(
             # TODO better key checks
 
             # Check for api key
-            if hasattr(self, "api_key") and self.api_key and self.api_key != "":
+            if hasattr(self,
+                       "api_key") and self.api_key and self.api_key != "":
                 parameters['access_token'] = getattr(self, "api_key")
 
             # Check for character_id
@@ -98,7 +101,8 @@ def endpoint(
                         path_id += "floors/" + str(self.floor_id)
 
                     # Check for region_id
-                    if hasattr(self, "region_id") and self.region_id is not None:
+                    if hasattr(self,
+                               "region_id") and self.region_id is not None:
                         if not path.endswith("/"):
                             path_id += "/regions/" + str(self.region_id)
                         else:
@@ -115,9 +119,9 @@ def endpoint(
             if has_ids:
 
                 if len(args) > max_ids and path_id == "":
-                    raise classes.ApiError('Too many IDs for this endpoint.')
+                    raise ApiError('Too many IDs for this endpoint.')
                 if len(args) < min_ids and path_id == "":
-                    raise classes.ApiError('Not enough IDs for this endpoint.')
+                    raise ApiError('Not enough IDs for this endpoint.')
 
                 if len(args) == 1 and path_id == "":
                     if not path.endswith("/"):
@@ -142,7 +146,7 @@ def endpoint(
 
             # Check obvious ID error
             if path.endswith("/") and path_id == "":
-                raise classes.ApiError("ID needed.")
+                raise ApiError("ID needed.")
 
             # Get data from API
             r = requests.get(
@@ -152,7 +156,7 @@ def endpoint(
 
             # Check known status codes
             if r.status_code == 414:
-                raise classes.ApiError("Too many IDs.")
+                raise ApiError("Too many IDs.")
             elif r.status_code == 404:
                 # Not found
                 return None
@@ -162,7 +166,7 @@ def endpoint(
 
             # Check for errors.
             if 'text' in data:
-                raise classes.ApiError(data['text'])
+                raise ApiError(data['text'])
 
             # Check if IDs used
             if has_ids:
@@ -176,4 +180,5 @@ def endpoint(
                 return func(self, **kwargs, data=data)
 
         return get_data
+
     return decorate

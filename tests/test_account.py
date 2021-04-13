@@ -1,8 +1,8 @@
 from pygw2.api import api
-from pygw2.core.classes import Account
-
 import unittest
 import os
+
+from pygw2.core.models.account import Account
 
 api.setup(os.environ.get("api_key", "NO-KEY"))
 

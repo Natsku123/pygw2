@@ -1,4 +1,4 @@
-from pygw2.core.classes import *
+from ..core.models.map import MapSector, Continent, Map
 from ..utils import endpoint, object_parse
 
 

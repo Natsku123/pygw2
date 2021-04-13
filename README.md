@@ -1,5 +1,6 @@
 # Pygw2
 [![Build Status](https://travis-ci.org/Natsku123/pygw2.svg?branch=master)](https://travis-ci.org/Natsku123/pygw2)
+[![Coverage Status](https://coveralls.io/repos/github/Natsku123/pygw2/badge.svg?branch=master)](https://coveralls.io/github/Natsku123/pygw2?branch=master)
 
 Python wrapper for Guild Wars 2 api.
 

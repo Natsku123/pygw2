@@ -1,4 +1,4 @@
-from pygw2.core.classes import *
+from ..core.models.account import HomeCat, HomeNode
 from ..utils import endpoint, object_parse
 
 

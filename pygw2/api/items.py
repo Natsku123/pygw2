@@ -1,6 +1,8 @@
+from ..core.models.crafting import Material, Recipe
+from ..core.models.general import Finisher, ItemStat, Skin
+from ..core.models.items import Item
+from ..core.models.pvp import PvpAmulet
 from ..utils import endpoint, object_parse
-from pygw2.core.classes import Item, Finisher, Itemstat, Material, PvpAmulet, \
-    Recipe, Skin
 
 
 class ItemsApi:
@@ -55,7 +57,7 @@ class ItemsApi:
         if ids is None:
             return data
         else:
-            return object_parse(data, Itemstat)
+            return object_parse(data, ItemStat)
 
     @endpoint("/v2/materials", has_ids=True)
     def materials(self, *, data, ids: list = None):
