@@ -3,6 +3,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 
 from pygw2.core.enums import Binding, AccountAccess
+from pygw2.core.models import Region
 
 
 class VaultSlot(BaseModel):
