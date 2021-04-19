@@ -1,4 +1,4 @@
-from pygw2.core.models.account import Account, VaultSlot
+from ..core.models.account import Account, VaultSlot
 from ..core.models.achievements import AchievementProgress
 from ..core.models.character import Character
 from ..utils import endpoint

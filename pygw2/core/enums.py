@@ -662,3 +662,28 @@ class GuildTeamMemberRole(str, Enum):
 class PvpRatingType(str, Enum):
     Ranked = "Ranked"
     Unranked = "Unranked"
+
+
+class ColorCategoryHue(str, Enum):
+    Gray = "Gray"
+    Brown = "Brown"
+    Red = "Red"
+    Orange = "Orange"
+    Yellow = "Yellow"
+    Green = "Green"
+    Blue = "Blue"
+    Purple = "Purple"
+
+
+class ColorCategoryMaterial(str, Enum):
+    Vibrant = "Vibrant"
+    Leather = "Leather"
+    Metal = "Metal"
+
+
+class ColorCategoryRarity(str, Enum):
+    Starter = "Starter"
+    Common = "Common"
+    Uncommon = "Uncommon"
+    Rare = "Rare"
+    Exclusive = "Exclusive"
