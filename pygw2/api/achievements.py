@@ -91,10 +91,10 @@ class AchievementsApi:
         if 'text' in data:
             raise ApiError(data['text'])
 
-        # Return list of group ids.
+        # Return list of category ids.
         if ids is None:
             return data
 
-        # Return list of groups.
+        # Return list of categories.
         else:
             return object_parse(data, AchievementCategory)
