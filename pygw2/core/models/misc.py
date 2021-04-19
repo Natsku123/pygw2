@@ -21,4 +21,14 @@ class Color(BaseModel):
     metal: ColorDetails
     fur: Optional[ColorDetails] = None
     item: Optional[int] = None  # TODO Resolve with dye
-    categories: List[Union[ColorCategoryHue, ColorCategoryRarity, ColorCategoryMaterial]] = []
+    categories: List[
+        Union[ColorCategoryHue, ColorCategoryRarity, ColorCategoryMaterial]
+    ] = []
+
+
+class Currency(BaseModel):
+    id: int
+    name: str
+    description: str
+    icon: str
+    order: int
