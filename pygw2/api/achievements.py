@@ -9,7 +9,7 @@ class AchievementsApi:
         pass
 
     @endpoint("/v2/achievements", has_ids=True)
-    def get(self, *, data, ids: list = None):
+    async def get(self, *, data, ids: list = None):
         """
         Get achievements from API by list of IDs.
         https://api.guildwars2.com/v2/achievements
@@ -27,7 +27,7 @@ class AchievementsApi:
             return object_parse(data, Achievement)
 
     @endpoint("/v2/achievements/daily")
-    def daily(self, *, data):
+    async def daily(self, *, data):
         """
         Get daily achievements from API.
         https://api.guildwars2.com/v2/achievements/daily
@@ -37,7 +37,7 @@ class AchievementsApi:
         return DailyAchievements(**data)
 
     @endpoint("/v2/achievements/daily/tomorrow")
-    def daily_tomorrow(self, *, data):
+    async def daily_tomorrow(self, *, data):
         """
         Get daily achievements for tomorrow from API.
         https://api.guildwars2.com/v2/achievements/daily/tomorrow
@@ -52,7 +52,7 @@ class AchievementsApi:
             achies[dtype] = []
             for achi in data[dtype]:
                 achies[dtype].append({
-                    "achievement": self.get(ids=[achi['id']]),
+                    "achievement": await self.get(ids=[achi['id']]),
                     "level": achi['level'],
                     "required_access": achi.get('required_access', None)
                 })
@@ -60,7 +60,7 @@ class AchievementsApi:
         return achies
 
     @endpoint("/v2/achievements/groups", has_ids=True)
-    def groups(self, *, data, ids: list = None):
+    async def groups(self, *, data, ids: list = None):
         """
         Get groups for achievements from API by list of IDs or one ID.
         https://api.guildwars2.com/v2/achievements/groups
@@ -78,7 +78,7 @@ class AchievementsApi:
             return object_parse(data, AchievementGroup)
 
     @endpoint("/v2/achievements/categories", has_ids=True)
-    def categories(self, *, data, ids: list = None):
+    async def categories(self, *, data, ids: list = None):
         """
         Get categories for achievements from API by list of IDs or one ID.
         https://api.guildwars2.com/v2/achievements/categories

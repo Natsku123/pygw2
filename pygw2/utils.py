@@ -1,4 +1,5 @@
-import requests
+import inspect
+from aiohttp import ClientSession
 from pydantic import parse_obj_as
 from typing import List
 
@@ -58,7 +59,7 @@ def endpoint(
     """
 
     def decorate(func):
-        def get_data(self, *args, **kwargs):
+        async def get_data(self, *args, **kwargs):
             ids = []
             path_id = ""
             parameters = default_parameters.copy()
@@ -149,35 +150,38 @@ def endpoint(
                 raise ApiError("ID needed.")
 
             # Get data from API
-            r = requests.get(
-                base_url + path + path_id + subendpoint,
-                params=parameters
-            )
+            async with ClientSession() as session:
+                async with session.get(
+                        base_url + path + path_id + subendpoint,
+                        params=parameters
+                ) as r:
 
-            # Check known status codes
-            if r.status_code == 414:
-                raise ApiError("Too many IDs.")
-            elif r.status_code == 404:
-                # Not found
-                return None
+                    # Check known status codes
+                    if r.status == 414:
+                        raise ApiError("Too many IDs.")
+                    elif r.status == 404:
+                        # Not found
+                        return None
 
-            # Parse json
-            data = r.json()
+                    # Parse json
+                    data = await r.json()
 
-            # Check for errors.
-            if 'text' in data:
-                raise ApiError(data['text'])
+                    # Check for errors.
+                    if 'text' in data:
+                        raise ApiError(data['text'])
 
-            # Check if IDs used
-            if has_ids:
+                    # Check if IDs used
+                    if has_ids:
 
-                # Check if fetched all
-                if len(args) == 0:
-                    ids = None
+                        # Check if fetched all
+                        if len(args) == 0:
+                            ids = None
 
-                return func(self, **kwargs, data=data, ids=ids)
-            else:
-                return func(self, **kwargs, data=data)
+                        return await func(
+                            self, **kwargs, data=data, ids=ids
+                        )
+                    else:
+                        return await func(self, **kwargs, data=data)
 
         return get_data
 

@@ -9,7 +9,7 @@ class GuildEmblemApi:
         pass
 
     @endpoint('/v2/emblem/backgrounds', has_ids=True)
-    def backgrounds(self, *, data, ids: list = None):
+    async def backgrounds(self, *, data, ids: list = None):
         """
         Get Guild Emblem backgrounds by ID(s).
         None returns all IDs.
@@ -22,7 +22,7 @@ class GuildEmblemApi:
         return object_parse(data, GuildEmblemImages)
 
     @endpoint('/v2/emblem/foregrounds', has_ids=True)
-    def foregrounds(self, *, data, ids: list = None):
+    async def foregrounds(self, *, data, ids: list = None):
         """
         Get Guild Emblem foregrounds by ID(s).
         None returns all IDs.
@@ -49,7 +49,7 @@ class GuildApi:
         return self._emblem
 
     @endpoint('/v2/guild', has_ids=True, max_ids=1, min_ids=1)
-    def get(self, *, data, ids: list = None):
+    async def get(self, *, data, ids: list = None):
         """
         Get info of Guild by ID.
         :param data: Guild data
@@ -59,7 +59,7 @@ class GuildApi:
         return object_parse(data, Guild)
 
     @endpoint('/v2/guild/permissions', has_ids=True)
-    def permissions(self, *, data, ids: list = None):
+    async def permissions(self, *, data, ids: list = None):
         """
         Get Guild Permissions by ID(s).
         None returns all IDs.
@@ -72,7 +72,7 @@ class GuildApi:
         return object_parse(data, GuildPermission)
 
     @endpoint('/v2/guild/search', is_search=True)
-    def search(self, *, data, name: str = None):
+    async def search(self, *, data, name: str = None):
         """
         Search for guild by name.
         Returns Guild IDs.
@@ -84,7 +84,7 @@ class GuildApi:
         return data
 
     @endpoint('/v2/guild/upgrades', has_ids=True)
-    def upgrades(self, *, data, ids: list = None):
+    async def upgrades(self, *, data, ids: list = None):
         """
         Get Guild Upgrades by ID(s).
         None returns all IDs.
@@ -97,7 +97,7 @@ class GuildApi:
         return object_parse(data, GuildUpgrade)
 
     @endpoint('/v2/guild', subendpoint='/log')
-    def log(self, *, data):
+    async def log(self, *, data):
         """
         Get Guild log.
         :param data:
@@ -107,7 +107,7 @@ class GuildApi:
         return object_parse(data, GuildLogEntry)
 
     @endpoint('/v2/guild', subendpoint='/members')
-    def members(self, *, data):
+    async def members(self, *, data):
         """
         Get members of the Guild.
         :param data:
@@ -116,7 +116,7 @@ class GuildApi:
         return object_parse(data, GuildMember)
 
     @endpoint('/v2/guild', subendpoint='/ranks')
-    def ranks(self, *, data):
+    async def ranks(self, *, data):
         """
         Get ranks of the Guild.
         :param data:
@@ -125,7 +125,7 @@ class GuildApi:
         return object_parse(data, GuildRank)
 
     @endpoint('/v2/guild', subendpoint='/stash')
-    def stash(self, *, data):
+    async def stash(self, *, data):
         """
         Get Guild stash.
         :param data:
@@ -134,7 +134,7 @@ class GuildApi:
         return object_parse(data, GuildStash)
 
     @endpoint('/v2/guild', subendpoint='/treasury')
-    def treasury(self, *, data):
+    async def treasury(self, *, data):
         """
         Get Guild treasury.
         :param data:
@@ -143,7 +143,7 @@ class GuildApi:
         return object_parse(data, GuildTreasury)
 
     @endpoint('/v2/guild', subendpoint='/teams')
-    def teams(self, *, data):
+    async def teams(self, *, data):
         """
         Get Guild Teams.
         :param data:
@@ -152,7 +152,7 @@ class GuildApi:
         return object_parse(data, GuildTeam)
 
     @endpoint('/v2/guild', subendpoint='/upgrades')
-    def upgrades(self, *, data):
+    async def upgrades(self, *, data):
         """
         Get Guild's upgrades.
         :param data:
