@@ -1,4 +1,5 @@
-from ..utils import endpoint
+from ..utils import endpoint, object_parse
+from ..core.models.misc import Color
 
 
 class MiscellaneousApi:
@@ -25,4 +26,10 @@ class MiscellaneousApi:
         :param ids: List of IDs
         :return: list
         """
-        return data
+
+        # Return ids
+        if ids is None:
+            return data
+
+        # Return object(s)
+        return object_parse(data, Color)
