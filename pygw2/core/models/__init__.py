@@ -20,3 +20,5 @@ GuildTeam.update_forward_refs(
 )
 
 Mini.update_forward_refs(Item=Item)
+Novelty.update_forward_refs(Item=Item)
+Title.update_forward_refs(Achievement=Achievement)

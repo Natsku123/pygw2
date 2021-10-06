@@ -63,6 +63,14 @@ class EquipmentSlot(str, Enum):
     Pick = "Pick"
 
 
+class NoveltySlot(str, Enum):
+    Chair = "Chair"
+    Music = "Music"
+    HeldItem = "HeldItem"
+    Miscellaneous = "Miscellaneous"
+    Tonic = "Tonic"
+
+
 class Binding(str, Enum):
     Character = "Character"
     Account = "Account"
@@ -692,3 +700,21 @@ class ColorCategoryRarity(str, Enum):
 class DungeonPathType(str, Enum):
     Story = "Story"
     Explorable = "Explorable"
+
+
+class RaidWingEventType(str, Enum):
+    Boss = "Boss"
+    Checkpoint = "Checkpoint"
+
+
+class WorldPopulation(str, Enum):
+    Low = "Low"
+    Medium = "Medium"
+    High = "High"
+    VeryHigh = "VeryHigh"
+    Full = "Full"
+
+
+class WorldRegion(int, Enum):
+    NorthAmerica = 1
+    Europe = 2

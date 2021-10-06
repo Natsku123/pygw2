@@ -5,10 +5,15 @@ from pygw2.core.enums import (
     ColorCategoryRarity,
     ColorCategoryMaterial,
     DungeonPathType,
+    NoveltySlot,
+    RaidWingEventType,
+    WorldPopulation,
+    WorldRegion,
 )
 
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item
+    from pygw2.core.models.achievements import Achievement
 
 
 class ColorDetails(BaseModel):
@@ -69,3 +74,41 @@ class Mini(BaseModel):
     order: int
     item_id: int
     item: Item
+
+
+class Novelty(BaseModel):
+    id: int
+    name: str
+    description: str
+    icon: str
+    slot: NoveltySlot
+    unlock_item: Optional[List[Item]]
+
+
+class RaidWingEvent(BaseModel):
+    id: str
+    type: RaidWingEventType
+
+
+class RaidWing(BaseModel):
+    id: str
+    events: List[RaidWingEvent]
+
+
+class Raid(BaseModel):
+    id: str
+    wings: List[RaidWing]
+
+
+class Title(BaseModel):
+    id: int
+    name: str
+    achievements: List[Achievement]
+    ap_required: int
+
+
+class World(BaseModel):
+    id: int
+    name: str
+    population: WorldPopulation
+    region: WorldRegion

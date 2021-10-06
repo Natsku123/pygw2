@@ -6,12 +6,12 @@ from pygw2.core.enums import Binding, AccountAccess, Region
 
 
 class VaultSlot(BaseModel):
-    id: int     # TODO resolve against items
+    id: int  # TODO resolve against items
     count: int
     charges: Optional[int]
-    skin: Optional[int]     # TODO resolve against skins
-    upgrades: Optional[List[int]]     # TODO resolve against items (?)
-    infusions: Optional[List[int]]    # TODO resolve against items (?)
+    skin: Optional[int]  # TODO resolve against skins
+    upgrades: Optional[List[int]]  # TODO resolve against items (?)
+    infusions: Optional[List[int]]  # TODO resolve against items (?)
     binding: Optional[Binding]
     bound_to: Optional[str]
 
@@ -35,28 +35,20 @@ class Mastery(BaseModel):
     requirement: str = ""
     order: int = 0
     background: str = ""
-    region: 'Region'
+    region: "Region"
     levels: List[MasteryLevel]
 
 
 class MasteryProgress(BaseModel):
-    id: int     # TODO resolve against mastery
+    id: int  # TODO resolve against mastery
     level: int
-
-
-class Title(BaseModel):
-    id: int = 0
-    name: str = ""
-    achievement: int = 0            # TODO resolve against achievements
-    achievements: List[int] = []    # TODO resolve against achievements
-    ap_required: int
 
 
 class Account(BaseModel):
     id: str
     age: int
     name: str
-    world: int      # TODO resolve against /v2/worlds
+    world: int  # TODO resolve against /v2/worlds
     guilds: List[str] = []
     guild_leader: List[str] = []
     created: datetime.datetime
@@ -75,7 +67,7 @@ class ProductAccess(BaseModel):
 
 
 class PetSkill(BaseModel):
-    id: int     # TODO resolve against skills
+    id: int  # TODO resolve against skills
 
 
 class Pet(BaseModel):
@@ -103,6 +95,6 @@ class MountSkill(BaseModel):
 class MountType(BaseModel):
     id: str = ""
     name: str = ""
-    default_skin: int   # TODO resolve against mount skins
-    skins: List[int]    # TODO resolve against mount skins
+    default_skin: int  # TODO resolve against mount skins
+    skins: List[int]  # TODO resolve against mount skins
     skills: List[MountSkill]
