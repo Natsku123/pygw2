@@ -9,6 +9,7 @@ from .map import *
 from .pvp import *
 from .sab import *
 from .misc import *
+from .backstory import *
 
 # Update forward refs
 DailyAchievement.update_forward_refs(ProductAccess=ProductAccess)

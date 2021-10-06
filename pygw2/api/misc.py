@@ -127,7 +127,8 @@ class MiscellaneousApi:
         if ids is None:
             return data
 
-        data["item"] = await items_api.get(ids=[data["item_id"]])
+        for mini in data:
+            mini["item"] = await items_api.get(ids=[mini["item_id"]])
 
         return object_parse(data, Mini)
 
@@ -145,11 +146,8 @@ class MiscellaneousApi:
         if ids is None:
             return data
 
-        if isinstance(data, list):
-            for nov in data:
-                nov["unlock_item"] = await items_api.get(ids=nov["unlock_item"])
-        elif isinstance(data, dict):
-            data["unlock_item"] = await items_api.get(ids=data["unlock_item"])
+        for nov in data:
+            nov["unlock_item"] = await items_api.get(ids=nov["unlock_item"])
 
         return object_parse(data, Novelty)
 
@@ -193,10 +191,7 @@ class MiscellaneousApi:
         if ids is None:
             return data
 
-        if isinstance(data, list):
-            for world in data:
-                world["region"] = int(str(world["id"])[0])
-        elif isinstance(data, dict):
-            data["region"] = int(str(data["id"])[0])
+        for world in data:
+            world["region"] = int(str(world["id"])[0])
 
         return object_parse(data, World)

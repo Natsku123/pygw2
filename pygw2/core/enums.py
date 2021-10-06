@@ -718,3 +718,7 @@ class WorldPopulation(str, Enum):
 class WorldRegion(int, Enum):
     NorthAmerica = 1
     Europe = 2
+
+
+class StoryFlags(str, Enum):
+    RequiresUnlock = "RequiresUnlock"

@@ -26,7 +26,7 @@ def list_to_str(l: list, delimiter: str = ","):
 
 def object_parse(
     data: Union[List[Dict[Any, Any]], Dict[Any, Any]], data_type: Type[BaseModel]
-):
+) -> Union[List[Any], Any]:
     """
     Parse object from incoming data
     :param data: Dict/list
@@ -118,7 +118,6 @@ def endpoint(
 
             # Construct fetch with ID(s)
             if has_ids:
-
                 if len(args) > max_ids and path_id == "":
                     raise ApiError("Too many IDs for this endpoint.")
                 if len(args) < min_ids and path_id == "":
