@@ -687,3 +687,8 @@ class ColorCategoryRarity(str, Enum):
     Uncommon = "Uncommon"
     Rare = "Rare"
     Exclusive = "Exclusive"
+
+
+class DungeonPathType(str, Enum):
+    Story = "Story"
+    Explorable = "Explorable"

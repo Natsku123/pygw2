@@ -1,6 +1,14 @@
-from typing import Optional, List, Union
+from typing import Optional, List, Union, TYPE_CHECKING
 from pydantic import BaseModel
-from pygw2.core.enums import ColorCategoryHue, ColorCategoryRarity, ColorCategoryMaterial
+from pygw2.core.enums import (
+    ColorCategoryHue,
+    ColorCategoryRarity,
+    ColorCategoryMaterial,
+    DungeonPathType,
+)
+
+if TYPE_CHECKING:
+    from pygw2.core.models.items import Item
 
 
 class ColorDetails(BaseModel):
@@ -32,3 +40,32 @@ class Currency(BaseModel):
     description: str
     icon: str
     order: int
+
+
+class DungeonPath(BaseModel):
+    id: str
+    type: DungeonPathType
+
+
+class Dungeon(BaseModel):
+    id: str
+    paths: List[DungeonPath]
+
+
+class File(BaseModel):
+    id: str
+    icon: str
+
+
+class Quaggan(BaseModel):
+    id: str
+    url: str
+
+
+class Mini(BaseModel):
+    id: int
+    name: str
+    icon: str
+    order: int
+    item_id: int
+    item: Item
