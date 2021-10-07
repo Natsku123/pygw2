@@ -84,7 +84,7 @@ class DailyAchievementLevel(BaseModel):
 class DailyAchievement(BaseModel):
     id: int  # TODO resolve achievement
     level: DailyAchievementLevel
-    required_access: Optional[ProductAccess]
+    required_access: Optional["ProductAccess"]
 
 
 class DailyAchievements(BaseModel):

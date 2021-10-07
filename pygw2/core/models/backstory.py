@@ -1,9 +1,6 @@
-from typing import Optional, List, Union, TYPE_CHECKING
+from typing import Optional, List
 from pydantic import BaseModel
 from pygw2.core.enums import Professions, Races, StoryFlags
-
-if TYPE_CHECKING:
-    pass
 
 
 class BiographyAnswer(BaseModel):

@@ -73,7 +73,7 @@ class Mini(BaseModel):
     icon: str
     order: int
     item_id: int
-    item: Item
+    item: "Item"
 
 
 class Novelty(BaseModel):
@@ -82,7 +82,7 @@ class Novelty(BaseModel):
     description: str
     icon: str
     slot: NoveltySlot
-    unlock_item: Optional[List[Item]]
+    unlock_item: Optional[List["Item"]]
 
 
 class RaidWingEvent(BaseModel):
@@ -103,7 +103,7 @@ class Raid(BaseModel):
 class Title(BaseModel):
     id: int
     name: str
-    achievements: List[Achievement]
+    achievements: List["Achievement"]
     ap_required: int
 
 

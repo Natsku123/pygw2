@@ -722,3 +722,9 @@ class WorldRegion(int, Enum):
 
 class StoryFlags(str, Enum):
     RequiresUnlock = "RequiresUnlock"
+
+
+class PvpDivisionFlags(str, Enum):
+    CanLosePoints = "CanLosePoints"
+    CanLoseTiers = "CanLoseTiers"
+    Repeatable = "Repeatable"
