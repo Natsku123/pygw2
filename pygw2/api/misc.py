@@ -128,7 +128,7 @@ class MiscellaneousApi:
             return data
 
         for mini in data:
-            mini["item"] = await items_api.get(ids=[mini["item_id"]])
+            mini["item"] = await items_api.get(mini["item_id"])
 
         return object_parse(data, Mini)
 
@@ -147,7 +147,7 @@ class MiscellaneousApi:
             return data
 
         for nov in data:
-            nov["unlock_item"] = await items_api.get(ids=nov["unlock_item"])
+            nov["unlock_item"] = await items_api.get(*nov["unlock_item"])
 
         return object_parse(data, Novelty)
 

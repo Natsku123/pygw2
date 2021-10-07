@@ -35,7 +35,7 @@ class BackstoryApi:
         for answer in data:
             if deep:
                 answer["question"] = await self.questions(
-                    ids=[answer["question"]], deep=False
+                    answer["question"], deep=False
                 )
             else:
                 del answer["question"]
@@ -60,7 +60,7 @@ class BackstoryApi:
         for question in data:
             if deep:
                 question["answers"] = await self.answers(
-                    ids=question["answers"], deep=False
+                    *question["answers"], deep=False
                 )
             else:
                 del question["answers"]
@@ -84,7 +84,7 @@ class BackstoryApi:
 
         for story in data:
             if deep:
-                story["season"] = await self.seasons(ids=[story["season"]], deep=False)
+                story["season"] = await self.seasons(story["season"], deep=False)
             else:
                 del story["season"]
 
@@ -107,9 +107,7 @@ class BackstoryApi:
 
         for season in data:
             if deep:
-                season["stories"] = await self.stories(
-                    ids=season["stories"], deep=False
-                )
+                season["stories"] = await self.stories(*season["stories"], deep=False)
             else:
                 del season["stories"]
 
@@ -132,7 +130,7 @@ class BackstoryApi:
 
         for quest in data:
             if deep:
-                quest["story"] = await self.stories(ids=[quest["story"]])
+                quest["story"] = await self.stories(quest["story"])
             else:
                 del quest["story"]
 

@@ -1,6 +1,10 @@
 from ..core.exceptions import ApiError
-from ..core.models.achievements import Achievement, DailyAchievements, \
-    AchievementGroup, AchievementCategory
+from ..core.models.achievements import (
+    Achievement,
+    DailyAchievements,
+    AchievementGroup,
+    AchievementCategory,
+)
 from ..utils import endpoint, object_parse
 
 
@@ -51,11 +55,13 @@ class AchievementsApi:
         for dtype in data:
             achies[dtype] = []
             for achi in data[dtype]:
-                achies[dtype].append({
-                    "achievement": await self.get(ids=[achi['id']]),
-                    "level": achi['level'],
-                    "required_access": achi.get('required_access', None)
-                })
+                achies[dtype].append(
+                    {
+                        "achievement": await self.get(achi["id"]),
+                        "level": achi["level"],
+                        "required_access": achi.get("required_access", None),
+                    }
+                )
 
         return achies
 
@@ -88,8 +94,8 @@ class AchievementsApi:
         """
 
         # Check for errors
-        if 'text' in data:
-            raise ApiError(data['text'])
+        if "text" in data:
+            raise ApiError(data["text"])
 
         # Return list of category ids.
         if ids is None:

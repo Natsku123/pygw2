@@ -37,7 +37,12 @@ def object_parse(
     if isinstance(data, dict):
         return data_type(**data)
     elif isinstance(data, list):
-        return parse_obj_as(List[data_type], data)
+        result = parse_obj_as(List[data_type], data)
+
+        if len(result) == 1:
+            return result[0]
+        else:
+            return result
 
 
 def endpoint(
@@ -48,6 +53,7 @@ def endpoint(
     is_search: bool = False,
     max_ids: int = 200,
     min_ids: int = 0,
+    override_ids: str = None
 ):
     """
     Endpoint wrapper
@@ -57,6 +63,7 @@ def endpoint(
     :param has_ids: bool does it have IDs
     :param path: Endpoint path
     :param subendpoint: Path of sub-endpoint
+    :param override_ids: Override 'ids' parameter name
     :return:
     """
 
@@ -130,17 +137,14 @@ def endpoint(
                 if len(args) < min_ids and path_id == "":
                     raise ApiError("Not enough IDs for this endpoint.")
 
-                if len(args) == 1 and path_id == "":
-                    if not path.endswith("/"):
-                        path_id = "/" + str(args[0])
-                    else:
-                        path_id = str(args[0])
-                else:
-                    for item_id in args:
-                        ids.append(item_id)
+                for item_id in args:
+                    ids.append(item_id)
 
-                    if len(ids) > 0:
+                if len(ids) > 0:
+                    if not override_ids:
                         parameters["ids"] = list_to_str(ids)
+                    else:
+                        parameters[override_ids] = list_to_str(ids)
 
             if is_search:
                 for key, value in kwargs.items():
@@ -154,6 +158,10 @@ def endpoint(
             # Check obvious ID error
             if path.endswith("/") and path_id == "":
                 raise ApiError("ID needed.")
+
+            if "params" in kwargs:
+                for key, value in kwargs["params"].items():
+                    parameters[key] = value
 
             # Get data from API
             async with ClientSession() as session:

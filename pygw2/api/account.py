@@ -136,31 +136,31 @@ class CharactersApi:
         equipment = {}
         items = []
         for item in data:
-            items.append(item['id'])
+            items.append(item["id"])
         items = await items_api.get(ids=items)
         for item in data:
 
-            infusions = item.get('infusions', None)
+            infusions = item.get("infusions", None)
             if infusions is not None:
                 infusions = await items_api.get(ids=infusions)
 
-            upgrades = item.get('upgrades', None)
+            upgrades = item.get("upgrades", None)
             if upgrades is not None:
                 upgrades = await items_api.get(ids=upgrades)
 
             # TODO resolve skin against /v2/skins
             # TODO resolve itemstats against /v2/itemstats
             # TODO resolve dyes against /v2/colors
-            equipment[item['slot']] = {
+            equipment[item["slot"]] = {
                 "item": items[data.index(item)],
                 "infusions": infusions,
                 "upgrades": upgrades,
-                "skin": item.get('skin', None),
-                "stats": item.get('stats', None),
-                "binding": item.get('binding', None),
-                "charges": item.get('charges', None),
-                "bound_to": item.get('bound_to', None),
-                "dyes": item.get("dyes", None)
+                "skin": item.get("skin", None),
+                "stats": item.get("stats", None),
+                "binding": item.get("binding", None),
+                "charges": item.get("charges", None),
+                "bound_to": item.get("bound_to", None),
+                "dyes": item.get("dyes", None),
             }
         return equipment
 
@@ -185,54 +185,52 @@ class CharactersApi:
 
         bags_ids = []
         for bag in data:
-            bags_ids.append(bag['id'])
-        bags_items = await items_api.get(ids=bags_ids)
+            bags_ids.append(bag["id"])
+        bags_items = await items_api.get(*bags_ids)
         bags = []
         i = 0
         for bag in data:
             items_ids = []
-            for item in bag['inventory']:
+            for item in bag["inventory"]:
                 if item is not None:
-                    items_ids.append(item['id'])
+                    items_ids.append(item["id"])
 
-            items = await items_api.get(ids=items_ids)
+            items = await items_api.get(*items_ids)
 
             inventory = {}
             n = 0
-            for item in bag['inventory']:
+            for item in bag["inventory"]:
                 if item is not None:
                     for itm_obj in items:
-                        if itm_obj.id == item['id']:
-                            infusions = item.get('infusions', None)
+                        if itm_obj.id == item["id"]:
+                            infusions = item.get("infusions", None)
                             if infusions is not None:
-                                infusions = await items_api.get(ids=infusions)
+                                infusions = await items_api.get(*infusions)
 
-                            upgrades = item.get('upgrades', None)
+                            upgrades = item.get("upgrades", None)
                             if upgrades is not None:
-                                upgrades = await items_api.get(ids=upgrades)
+                                upgrades = await items_api.get(*upgrades)
 
                             # TODO resolve skin against /v2/skins
                             # TODO resolve itemstats against /v2/itemstats
                             # TODO make item object more 'precise'
                             inventory[n] = {
                                 "item": itm_obj,
-                                "count": item['count'],
+                                "count": item["count"],
                                 "infusions": infusions,
                                 "upgrades": upgrades,
-                                "skin": item.get('skin', None),
-                                "stats": item.get('stats', None),
-                                "binding": item.get('binding', None),
-                                "bound_to": item.get('bound_to', None)
+                                "skin": item.get("skin", None),
+                                "stats": item.get("stats", None),
+                                "binding": item.get("binding", None),
+                                "bound_to": item.get("bound_to", None),
                             }
                             break
                 else:
                     inventory[n] = None
                 n = n + 1
-            bags.append({
-                "bag": bags_items[i],
-                "size": bag['size'],
-                "inventory": inventory
-            })
+            bags.append(
+                {"bag": bags_items[i], "size": bag["size"], "inventory": inventory}
+            )
             i = i + 1
         return bags
 
@@ -465,11 +463,13 @@ class AccountApi:
         finishers = []
         for finisher in data:
             # TODO change finisher_id to finisher with resolve against /v2/finishers
-            finishers.append({
-                "finisher_id": finisher['id'],
-                "permanent": finisher['permanent'],
-                "quantity": finisher.get('quantity', None)
-            })
+            finishers.append(
+                {
+                    "finisher_id": finisher["id"],
+                    "permanent": finisher["permanent"],
+                    "quantity": finisher.get("quantity", None),
+                }
+            )
         return finishers
 
     @endpoint("/v2/account/gliders")
@@ -493,25 +493,27 @@ class AccountApi:
         inventory = []
         ids = []
         for item in data:
-            ids.append(item['id'])
+            ids.append(item["id"])
         items = await items_api.get(*ids)
         for item in data:
             corr_item = None
             for itm_obj in items:
-                if item['id'] == itm_obj.id:
+                if item["id"] == itm_obj.id:
                     corr_item = itm_obj
                     break
 
             # TODO change to more specific items
-            inventory.append({
-                "item": corr_item,
-                "count": item['count'],
-                "charges": item.get('charges', None),
-                "skin": item.get('skin', None),
-                "upgrades": item.get('upgrades', None),
-                "infusions": item.get('infusions', None),
-                "binding": item.get('binding', None)
-            })
+            inventory.append(
+                {
+                    "item": corr_item,
+                    "count": item["count"],
+                    "charges": item.get("charges", None),
+                    "skin": item.get("skin", None),
+                    "upgrades": item.get("upgrades", None),
+                    "infusions": item.get("infusions", None),
+                    "binding": item.get("binding", None),
+                }
+            )
         return inventory
 
     @endpoint("/v2/account/luck")
@@ -586,7 +588,7 @@ class AccountApi:
                 item_ids.append([])
                 batch = batch + 1
 
-            item_ids[batch - 1].append(item['id'])
+            item_ids[batch - 1].append(item["id"])
             i = i + 1
 
         items_ready = {}
@@ -602,12 +604,14 @@ class AccountApi:
 
         items = []
         for item in data:
-            items.append({
-                "item": items_ready[item['id']],
-                "category": item['category'],
-                "binding": item.get('binding', None),
-                "count": item['count']
-            })
+            items.append(
+                {
+                    "item": items_ready[item["id"]],
+                    "category": item["category"],
+                    "binding": item.get("binding", None),
+                    "count": item["count"],
+                }
+            )
 
         return items
 
