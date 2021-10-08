@@ -2,13 +2,13 @@ import datetime
 from pydantic import BaseModel
 from typing import Optional, Union, List
 
-from pygw2.core.enums import PvpRatingType
+from pygw2.core.enums import PvpRatingType, PvpDivisionFlags
 
 
 class PvPEquipment(BaseModel):
-    amulet: int         # TODO resolve agaisnt /v2/pvp/amulets
-    rune: int           # TODO resolve against /v2/items
-    sigils: List[int]   # TODO resolve agaisnt /v2/items
+    amulet: int  # TODO resolve agaisnt /v2/pvp/amulets
+    rune: int  # TODO resolve against /v2/items
+    sigils: List[int]  # TODO resolve agaisnt /v2/items
 
 
 class PvpAttributes(BaseModel):
@@ -72,7 +72,7 @@ class PvpScores(BaseModel):
 
 class PvpGame(BaseModel):
     id: str
-    map_id: int     # TODO resolve agaisnt pvp maps
+    map_id: int  # TODO resolve agaisnt pvp maps
     started: datetime.datetime
     ended: datetime.datetime
     result: str
@@ -81,4 +81,86 @@ class PvpGame(BaseModel):
     scores: PvpScores
     rating_type: Union[PvpRatingType, None]
     rating_change: int
-    season: Optional[str]   # TODO resolve against pvp seasons
+    season: Optional[str]  # TODO resolve against pvp seasons
+
+
+class PvpRankLevel(BaseModel):
+    min_rank: int
+    max_rank: int
+    points: int
+
+
+class PvpRank(BaseModel):
+    id: int
+    finisher_id: int  # TODO resolve against /v2/finishers
+    name: str
+    icon: str
+    min_rank: int
+    max_rank: int
+    levels: List[PvpRankLevel]
+
+
+class PvpDivisionTier(BaseModel):
+    points: int
+
+
+class PvpDivision(BaseModel):
+    name: str
+    flags: List[PvpDivisionFlags]
+    large_icon: str
+    small_icon: str
+    pip_icon: str
+    tiers: List[PvpDivisionTier]
+
+
+class PvpLeaderboardsLadderSettingsTier(BaseModel):
+    range: List[int]
+
+
+class PvpLeaderboardsLadderSettings(BaseModel):
+    name: str
+    duration: Optional[int]
+    scoring: str
+    tiers: List[PvpLeaderboardsLadderSettingsTier]
+
+
+class PvpLeaderboardsLadderScoring(BaseModel):
+    id: str
+    type: str
+    description: str
+    name: str
+    ordering: str
+
+
+class PvpLeaderboardsLadder(BaseModel):
+    settings: PvpLeaderboardsLadderSettings
+    scorings: List[PvpLeaderboardsLadderScoring]
+
+
+class PvpLeaderboards(BaseModel):
+    ladder: PvpLeaderboardsLadder
+
+
+class PvpSeason(BaseModel):
+    id: str
+    name: str
+    start: datetime.datetime
+    end: datetime.datetime
+    active: bool
+    divisions: List[PvpDivision]
+    leaderboards: PvpLeaderboards
+
+
+class PvpLeaderboardScore(BaseModel):
+    id: str
+    value: int
+
+
+class PvpLeaderboard(BaseModel):
+    name: str
+    rank: int
+    id: str
+    team: Optional[str]
+    team_id: Optional[str]
+    date: datetime.datetime
+    scores: List[PvpLeaderboardScore]

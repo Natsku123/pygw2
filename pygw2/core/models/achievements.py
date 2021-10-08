@@ -1,9 +1,15 @@
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from pydantic import BaseModel
 
-from pygw2.core.enums import Region, AchievementBitsType, AchievementType, \
-    AchievementFlag
-from pygw2.core.models.account import ProductAccess
+from pygw2.core.enums import (
+    Region,
+    AchievementBitsType,
+    AchievementType,
+    AchievementFlag,
+)
+
+if TYPE_CHECKING:
+    from pygw2.core.models.account import ProductAccess
 
 
 class AchievementCategory(BaseModel):
@@ -12,7 +18,7 @@ class AchievementCategory(BaseModel):
     description: str
     order: int
     icon: str
-    achievements: List[int]     # TODO resolve against achievements
+    achievements: List[int]  # TODO resolve against achievements
 
 
 class AchievementGroup(BaseModel):
@@ -20,7 +26,7 @@ class AchievementGroup(BaseModel):
     name: str
     description: str
     order: int
-    categories: List[int]   # TODO resolve against achievement categories
+    categories: List[int]  # TODO resolve against achievement categories
 
 
 class AchievementTier(BaseModel):
@@ -54,14 +60,14 @@ class Achievement(BaseModel):
     type: AchievementType
     flags: List[AchievementFlag]
     tiers: List[AchievementTier]
-    prerequisites: Optional[List[int]] = []     # TODO resolve achievements
+    prerequisites: Optional[List[int]] = []  # TODO resolve achievements
     rewards: Optional[List[AchievementReward]]
     bits: Optional[List[AchievementBits]]
     point_cap: Optional[int]
 
 
 class AchievementProgress(BaseModel):
-    id: int     # TODO resolve against achievement
+    id: int  # TODO resolve against achievement
     bits: Optional[List[int]]
     current: Optional[int]
     max: Optional[int]
@@ -76,9 +82,9 @@ class DailyAchievementLevel(BaseModel):
 
 
 class DailyAchievement(BaseModel):
-    id: int     # TODO resolve achievement
+    id: int  # TODO resolve achievement
     level: DailyAchievementLevel
-    required_access: Optional[ProductAccess]
+    required_access: Optional["ProductAccess"]
 
 
 class DailyAchievements(BaseModel):

@@ -5,6 +5,8 @@ from .daily import DailyApi
 from .mechanics import MechanicsApi
 from .guild import GuildApi
 from .home import HomeApi
+from .mapinfo import MapInfoApi
+from .misc import MiscellaneousApi
 
 account_api = AccountApi()
 achievements_api = AchievementsApi()
@@ -13,12 +15,15 @@ daily_api = DailyApi()
 mechanics_api = MechanicsApi()
 guild_api = GuildApi()
 home_api = HomeApi()
+mapinfo_api = MapInfoApi()
+misc_api = MiscellaneousApi()
 
 
 class Api:
     """
     Main class for API usage.
     """
+
     def __init__(self):
         self.api_key: str = ""
         self._account = account_api
@@ -28,6 +33,8 @@ class Api:
         self._mechanics = mechanics_api
         self._guild = GuildApi
         self._home = home_api
+        self._mapinfo = mapinfo_api
+        self._misc = misc_api
 
     def setup(self, api_key: str):
         self.api_key = api_key
@@ -61,6 +68,14 @@ class Api:
     @property
     def home(self):
         return self._home
+
+    @property
+    def mapinfo(self):
+        return self._mapinfo
+
+    @property
+    def miscellaneous(self):
+        return self._misc
 
 
 api = Api()

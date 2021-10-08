@@ -1,22 +1,28 @@
 import datetime
 
 from pydantic import BaseModel
-from typing import List, Optional, Union
+from typing import List, Optional, Union, TYPE_CHECKING
 
-from pygw2.core.enums import GuildEmblemFlags, GuildUpgradeCostType, \
-    GuildUpgradeType, GuildLogEntryType, GuildTeamMemberRole
+from pygw2.core.enums import (
+    GuildEmblemFlags,
+    GuildUpgradeCostType,
+    GuildUpgradeType,
+    GuildLogEntryType,
+    GuildTeamMemberRole,
+)
 
-from pygw2.core.models.pvp import PvpWinLoss, PvpLadderStats, PvpGame
+if TYPE_CHECKING:
+    from pygw2.core.models.pvp import PvpWinLoss, PvpLadderStats, PvpGame
 
 
 class GuildEmblemBackground(BaseModel):
-    id: int     # TODO resolve against backgrounds
-    colors: List[int]   # TODO resolve against colors
+    id: int  # TODO resolve against backgrounds
+    colors: List[int]  # TODO resolve against colors
 
 
 class GuildEmblemForeground(BaseModel):
-    id: int     # TODO resolve against foregrounds
-    colors: List[int]   # TODO resolve against colors
+    id: int  # TODO resolve against foregrounds
+    colors: List[int]  # TODO resolve against colors
 
 
 class GuildEmblem(BaseModel):
@@ -54,7 +60,7 @@ class GuildUpgradeCost(BaseModel):
     type: GuildUpgradeCostType
     name: str
     count: int
-    item_id: Optional[int]      # TODO resolve against items
+    item_id: Optional[int]  # TODO resolve against items
 
 
 class GuildUpgrade(BaseModel):
@@ -66,7 +72,7 @@ class GuildUpgrade(BaseModel):
     build_time: int
     required_level: int
     experience: int
-    prerequisites: List[int]    # TODO resolve against other upgrades
+    prerequisites: List[int]  # TODO resolve against other upgrades
     bag_max_items: Optional[int]
     bag_max_coins: Optional[int]
     costs: List[GuildUpgradeCost]
@@ -81,34 +87,34 @@ class GuildLogEntry(BaseModel):
     changed_by: Optional[str]
     old_rank: Optional[str]
     new_rank: Optional[str]
-    item_id: Optional[int]      # TODO resolve against items
+    item_id: Optional[int]  # TODO resolve against items
     count: Optional[int]
     coins: Optional[int]
     motd: Optional[str]
-    upgrade_id: Optional[int]   # TODO resolve against upgrades
-    recipe_id: Optional[int]    # TODO resolve against recipes
+    upgrade_id: Optional[int]  # TODO resolve against upgrades
+    recipe_id: Optional[int]  # TODO resolve against recipes
 
 
 class GuildMember(BaseModel):
     name: str
-    rank: str   # TODO resolve against guild ranks
+    rank: str  # TODO resolve against guild ranks
     joined: datetime.datetime
 
 
 class GuildRank(BaseModel):
     id: str
     order: int
-    permissions: List[str]      # TODO resolve against permissions
+    permissions: List[str]  # TODO resolve against permissions
     icon: str
 
 
 class GuildStashSlot(BaseModel):
-    id: int     # TODO resolve against items
+    id: int  # TODO resolve against items
     count: int
 
 
 class GuildStash(BaseModel):
-    upgrade_id: int     # TODO resolve against guild upgrades
+    upgrade_id: int  # TODO resolve against guild upgrades
     size: int
     coins: int
     note: str
@@ -116,18 +122,18 @@ class GuildStash(BaseModel):
 
 
 class GuildTreasuryNeeded(BaseModel):
-    upgrade_id: int     # TODO resolve against upgrades
+    upgrade_id: int  # TODO resolve against upgrades
     count: int
 
 
 class GuildTreasury(BaseModel):
-    item_id: int    # TODO resolve against items
+    item_id: int  # TODO resolve against items
     count: int
     needed_by: List[GuildTreasuryNeeded]
 
 
 class GuildTeamMember(BaseModel):
-    name: str   # TODO resolve against guild members
+    name: str  # TODO resolve against guild members
     role: GuildTeamMemberRole
 
 
@@ -142,9 +148,9 @@ class GuildTeam(BaseModel):
     id: int
     members: List
     name: str
-    aggregate: 'PvpWinLoss'
-    ladders: 'PvpLadderStats'
-    games: List['PvpGame']
+    aggregate: "PvpWinLoss"
+    ladders: "PvpLadderStats"
+    games: List["PvpGame"]
     seasons: List[GuildTeamSeason]
 
 

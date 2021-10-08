@@ -8,7 +8,7 @@ class ContinentApi:
         self._floor_api = ContinentFloorApi
 
     @endpoint('/v2/continents', subendpoint='/floors')
-    def floors(self, *, data):
+    async def floors(self, *, data):
         """
         Get floors of continent.
         :param data:
@@ -31,7 +31,7 @@ class ContinentFloorApi:
         self._region_api = ContinentFloorRegionApi
 
     @endpoint('/v2/continents', subendpoint='/regions')
-    def regions(self, *, data):
+    async def regions(self, *, data):
         """
         Get regions of floor.
         :param data:
@@ -56,7 +56,7 @@ class ContinentFloorRegionApi:
         self._map_api = ContinentFloorRegionMapApi
 
     @endpoint('/v2/continents', subendpoint='/maps')
-    def maps(self, *, data):
+    async def maps(self, *, data):
         """
         Get maps of region.
         :param data:
@@ -79,7 +79,7 @@ class ContinentFloorRegionMapApi:
         self.map_id = map_id
 
     @endpoint('/v2/continents', subendpoint='/sectors')
-    def sectors(self, *, data):
+    async def sectors(self, *, data):
         """
         Get sectors of map.
         :param data:
@@ -88,7 +88,7 @@ class ContinentFloorRegionMapApi:
         return object_parse(data, MapSector)
 
     @endpoint('/v2/continents', subendpoint='/pois')
-    def pois(self, *, data):
+    async def pois(self, *, data):
         """
         Get pois of map.
         :param data:
@@ -98,7 +98,7 @@ class ContinentFloorRegionMapApi:
         return data
 
     @endpoint('/v2/continents', subendpoint='/tasks')
-    def tasks(self, *, data):
+    async def tasks(self, *, data):
         """
         Get tasks of map.
         :param data:
@@ -113,7 +113,7 @@ class MapInfoApi:
         self._continent = ContinentApi
 
     @endpoint('/v2/continents', has_ids=True)
-    def continents(self, *, data, ids: list = None):
+    async def continents(self, *, data, ids: list = None):
         """
         Get continents by ID(s).
         None returns all IDs.
@@ -129,7 +129,7 @@ class MapInfoApi:
         return self._continent(continent_id)
 
     @endpoint('/v2/maps', has_ids=True)
-    def maps(self, *, data, ids: list = None):
+    async def maps(self, *, data, ids: list = None):
         """
         Get maos by ID(s).
         None returns all IDs.

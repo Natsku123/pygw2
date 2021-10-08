@@ -63,6 +63,14 @@ class EquipmentSlot(str, Enum):
     Pick = "Pick"
 
 
+class NoveltySlot(str, Enum):
+    Chair = "Chair"
+    Music = "Music"
+    HeldItem = "HeldItem"
+    Miscellaneous = "Miscellaneous"
+    Tonic = "Tonic"
+
+
 class Binding(str, Enum):
     Character = "Character"
     Account = "Account"
@@ -662,3 +670,61 @@ class GuildTeamMemberRole(str, Enum):
 class PvpRatingType(str, Enum):
     Ranked = "Ranked"
     Unranked = "Unranked"
+
+
+class ColorCategoryHue(str, Enum):
+    Gray = "Gray"
+    Brown = "Brown"
+    Red = "Red"
+    Orange = "Orange"
+    Yellow = "Yellow"
+    Green = "Green"
+    Blue = "Blue"
+    Purple = "Purple"
+
+
+class ColorCategoryMaterial(str, Enum):
+    Vibrant = "Vibrant"
+    Leather = "Leather"
+    Metal = "Metal"
+
+
+class ColorCategoryRarity(str, Enum):
+    Starter = "Starter"
+    Common = "Common"
+    Uncommon = "Uncommon"
+    Rare = "Rare"
+    Exclusive = "Exclusive"
+
+
+class DungeonPathType(str, Enum):
+    Story = "Story"
+    Explorable = "Explorable"
+
+
+class RaidWingEventType(str, Enum):
+    Boss = "Boss"
+    Checkpoint = "Checkpoint"
+
+
+class WorldPopulation(str, Enum):
+    Low = "Low"
+    Medium = "Medium"
+    High = "High"
+    VeryHigh = "VeryHigh"
+    Full = "Full"
+
+
+class WorldRegion(int, Enum):
+    NorthAmerica = 1
+    Europe = 2
+
+
+class StoryFlags(str, Enum):
+    RequiresUnlock = "RequiresUnlock"
+
+
+class PvpDivisionFlags(str, Enum):
+    CanLosePoints = "CanLosePoints"
+    CanLoseTiers = "CanLoseTiers"
+    Repeatable = "Repeatable"
