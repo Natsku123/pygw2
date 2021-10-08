@@ -27,7 +27,7 @@ You can access the items-endpoint from items-category:
 ```
 api.items.get()
 ```
-or you can access skins-endpoint from the items-category aswell:
+or you can access skins-endpoint from the items-category as well:
 ```
 api.items.skins()
 ```
@@ -71,7 +71,6 @@ If you find that there is one or more endpoints not covered by this API
    
 ## API coverage
 
-TODO nice table or something
-
+This library SHOULD cover the non-deprecated part of the [Version 2](https://wiki.guildwars2.com/wiki/API:Main#Version_2_endpoints).
 
 

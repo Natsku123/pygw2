@@ -7,6 +7,10 @@ from .guild import GuildApi
 from .home import HomeApi
 from .mapinfo import MapInfoApi
 from .misc import MiscellaneousApi
+from .backstory import BackstoryApi
+from .pvp import PvpApi
+from .commerce import TradingPostApi
+from .wvw import WvWApi
 
 account_api = AccountApi()
 achievements_api = AchievementsApi()
@@ -17,6 +21,10 @@ guild_api = GuildApi()
 home_api = HomeApi()
 mapinfo_api = MapInfoApi()
 misc_api = MiscellaneousApi()
+backstory_api = BackstoryApi()
+trading_api = TradingPostApi()
+pvp_api = PvpApi()
+wvw_api = WvWApi()
 
 
 class Api:
@@ -35,6 +43,10 @@ class Api:
         self._home = home_api
         self._mapinfo = mapinfo_api
         self._misc = misc_api
+        self._backstory = backstory_api
+        self._trading = trading_api
+        self._pvp = pvp_api
+        self._wvw = wvw_api
 
     def setup(self, api_key: str):
         self.api_key = api_key
@@ -62,8 +74,9 @@ class Api:
     def mechanics(self):
         return self._mechanics
 
-    def guild(self, guild_id=None):
-        return self._guild(guild_id=guild_id)
+    @property
+    def guild(self):
+        return self._guild
 
     @property
     def home(self):
@@ -76,6 +89,22 @@ class Api:
     @property
     def miscellaneous(self):
         return self._misc
+
+    @property
+    def backstory(self):
+        return self._backstory
+
+    @property
+    def commerce(self):
+        return self._trading
+
+    @property
+    def pvp(self):
+        return self._pvp
+
+    @property
+    def wvw(self):
+        return self._wvw
 
 
 api = Api()
