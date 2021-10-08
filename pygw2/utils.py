@@ -100,6 +100,13 @@ def endpoint(
                 else:
                     path_id = str(self.season_id)
 
+            # Check for season_id
+            if hasattr(self, "match_id") and self.match_id is not None:
+                if not path.endswith("/"):
+                    path_id = "/" + str(self.match_id)
+                else:
+                    path_id = str(self.match_id)
+
             # Continent path generation
 
             # Check for continent_id

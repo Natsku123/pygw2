@@ -10,6 +10,7 @@ from .pvp import *
 from .sab import *
 from .misc import *
 from .backstory import *
+from .wvw import *
 
 # Update forward refs
 DailyAchievement.update_forward_refs(ProductAccess=ProductAccess)
@@ -23,3 +24,7 @@ GuildTeam.update_forward_refs(
 Mini.update_forward_refs(Item=Item)
 Novelty.update_forward_refs(Item=Item)
 Title.update_forward_refs(Achievement=Achievement)
+
+WvWMatchWorlds.update_forward_refs(World=World)
+WvWMapObjectives.update_forward_refs(Guild=Guild, GuildUpgrade=GuildUpgrade)
+WvWObjective.update_forward_refs(MapSector=MapSector, Map=Map)

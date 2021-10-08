@@ -115,12 +115,12 @@ class Character(BaseModel):
     ]  # TODO get /v2/characters/:id/specializations
     training: List[SkillTree]  # TODO get /v2/characters/:id/training
     sab: Optional["SAB"]  # TODO get /v2/characters/:id/sab
-    wvw_abilities: List["WvWAbility"]
+    wvw_abilities: List["CharacterWvWAbility"]
     equipment_pvp: "PvPEquipment"
     flags: List[CharacterFlag] = []
 
 
-class WvWAbility(BaseModel):
+class CharacterWvWAbility(BaseModel):
     id: int  # TODO resolve against /v2/wvw/abilities
     rank: int
 

@@ -728,3 +728,32 @@ class PvpDivisionFlags(str, Enum):
     CanLosePoints = "CanLosePoints"
     CanLoseTiers = "CanLoseTiers"
     Repeatable = "Repeatable"
+
+
+class WvWMapTypes(str, Enum):
+    RedHome = "RedHome"
+    GreenHome = "GreenHome"
+    BlueHome = "BlueHome"
+    Center = "Center"
+    EdgeOfTheMists = "EdgeOfTheMists"
+
+
+class WvWObjectiveTypes(str, Enum):
+    Spawn = "Spawn"
+    Camp = "Camp"
+    Ruins = "Ruins"
+    Tower = "Tower"
+    Keep = "Keep"
+    Castle = "Castle"
+    Mercenary = "Mercenary"
+
+
+class WvWTeams(str, Enum):
+    Red = "Red"
+    Green = "Green"
+    Blue = "Blue"
+    Neutral = "Neutral"
+
+
+class WvWMapBonusTypes(str, Enum):
+    Bloodlust = "Bloodlust"
