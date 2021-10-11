@@ -95,6 +95,7 @@ class CharacterFlag(str, Enum):
 class ItemType(str, Enum):
     Armor = "Armor"
     Back = "Back"
+    Bag = "Bag"
     Consumable = "Consumable"
     Container = "Container"
     CraftingMaterial = "CraftingMaterial"

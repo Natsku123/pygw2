@@ -39,10 +39,11 @@ class TradingPostApi:
         max_ids=1,
         min_ids=1,
     )
-    async def exchange_coins(self, *, data) -> ExchangeRate:
+    async def exchange_coins(self, *, data, ids: list = None) -> ExchangeRate:
         """
         Get coins -> gems exchange rate from API.
         :param data: data from wrapper
+        :param ids: List with number of coins
         :return: object
         """
 
@@ -55,10 +56,11 @@ class TradingPostApi:
         max_ids=1,
         min_ids=1,
     )
-    async def exchange_gems(self, *, data) -> ExchangeRate:
+    async def exchange_gems(self, *, data, ids: list = None) -> ExchangeRate:
         """
         Get gems -> coins exchange rate from API.
         :param data: data from wrapper
+        :param ids: List with number of gems
         :return: object
         """
 

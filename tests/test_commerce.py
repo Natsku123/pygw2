@@ -19,7 +19,7 @@ class CommerceTests(aiounittest.AsyncTestCase):
         self.assertIsInstance(delivery_box, DeliveryBox)
 
     async def test_exchange_coins(self):
-        rate = await self.api.commerce.exchange_coins(100)
+        rate = await self.api.commerce.exchange_coins(1000000)
         self.assertIsInstance(rate, ExchangeRate)
 
     async def test_exchange_gems(self):

@@ -55,4 +55,4 @@ class Transaction(BaseModel):
     price: int
     quantity: int
     created: datetime.datetime
-    purchased: datetime.datetime
+    purchased: Optional[datetime.datetime]

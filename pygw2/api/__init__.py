@@ -53,6 +53,7 @@ class Api:
 
         # Setup sub-APIs
         self._account.setup(api_key)
+        self._trading.setup(api_key)
 
     @property
     def account(self):

@@ -25,12 +25,16 @@ def list_to_str(l: list, delimiter: str = ","):
 
 
 def object_parse(
-    data: Union[List[Dict[Any, Any]], Dict[Any, Any]], data_type: Type[BaseModel]
+    data: Union[List[Dict[Any, Any]], Dict[Any, Any]],
+    data_type: Type[BaseModel],
+    *,
+    force_list: bool = False,
 ) -> Union[List[Any], Any]:
     """
     Parse object from incoming data
     :param data: Dict/list
     :param data_type: Type to convert to
+    :param force_list: Force output to be list
     :return:
     """
 
@@ -39,7 +43,7 @@ def object_parse(
     elif isinstance(data, list):
         result = parse_obj_as(List[data_type], data)
 
-        if len(result) == 1:
+        if len(result) == 1 and not force_list:
             return result[0]
         else:
             return result
@@ -53,7 +57,7 @@ def endpoint(
     is_search: bool = False,
     max_ids: int = 200,
     min_ids: int = 0,
-    override_ids: str = None
+    override_ids: str = None,
 ):
     """
     Endpoint wrapper

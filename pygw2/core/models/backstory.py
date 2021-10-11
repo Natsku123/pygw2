@@ -9,8 +9,8 @@ class BiographyAnswer(BaseModel):
     description: str
     journal: str
     question: Optional["BiographyQuestion"]
-    professions: List[Professions]
-    races: List[Races]
+    professions: Optional[List[Professions]]
+    races: Optional[List[Races]]
 
 
 class BiographyQuestion(BaseModel):
@@ -19,8 +19,8 @@ class BiographyQuestion(BaseModel):
     description: str
     answers: Optional[List[BiographyAnswer]]
     order: int
-    races: List[Races]
-    professions: List[Professions]
+    races: Optional[List[Races]]
+    professions: Optional[List[Professions]]
 
 
 class StoryChapter(BaseModel):

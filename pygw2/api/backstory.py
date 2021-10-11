@@ -69,13 +69,14 @@ class BackstoryApi:
 
     @endpoint("/v2/stories", has_ids=True)
     async def stories(
-        self, *, data, ids: list = None, deep: bool = True
+        self, *, data, ids: list = None, deep: bool = True, force_list: bool = False
     ) -> List[Union[Story, int, str]]:
         """
         Get stories from API by list of IDs or one ID.
         :param data: Data from wrapper
         :param ids: List of IDs
         :param deep:
+        :param force_list: Force output to be a list
         :return: list
         """
 
@@ -88,17 +89,18 @@ class BackstoryApi:
             else:
                 del story["season"]
 
-        return object_parse(data, Story)
+        return object_parse(data, Story, force_list=force_list)
 
     @endpoint("/v2/stories/seasons", has_ids=True)
     async def seasons(
-        self, *, data, ids: list = None, deep: bool = True
+        self, *, data, ids: list = None, deep: bool = True, force_list: bool = False
     ) -> List[Union[Season, int, str]]:
         """
         Get seasons from API by list of IDs or one ID.
         :param data: Data from wrapper
         :param ids: List of IDs
         :param deep:
+        :param force_list: Force output to be a list
         :return: list
         """
 
@@ -107,11 +109,13 @@ class BackstoryApi:
 
         for season in data:
             if deep:
-                season["stories"] = await self.stories(*season["stories"], deep=False)
+                season["stories"] = await self.stories(
+                    *season["stories"], deep=False, force_list=True
+                )
             else:
                 del season["stories"]
 
-        return object_parse(data, Season)
+        return object_parse(data, Season, force_list=force_list)
 
     @endpoint("/v2/quests", has_ids=True)
     async def quests(
