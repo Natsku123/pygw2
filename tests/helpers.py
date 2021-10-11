@@ -2,9 +2,7 @@ from typing import Type, Callable
 from pydantic import BaseModel
 
 
-async def test_with_ids(
-    cls, func: Callable, t: Type[BaseModel], default_length: int = 10
-):
+async def ids_helper(cls, func: Callable, t: Type[BaseModel], default_length: int = 10):
     """
     Helper to test with IDs
     :param cls: self of Testcase
