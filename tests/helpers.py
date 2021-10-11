@@ -20,6 +20,10 @@ async def test_with_ids(
     # Check that it is a list of IDs
     cls.assertIsInstance(a, list)
 
+    # Stop if nothing was found:
+    if len(a) == 0:
+        return
+
     # Select some IDs
     length = default_length if len(a) > default_length else len(a)
     a = a[:length]
