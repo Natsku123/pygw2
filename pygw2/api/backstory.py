@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
 from ..core.models.backstory import (
     BiographyAnswer,
     BiographyQuestion,
@@ -19,13 +19,12 @@ class BackstoryApi:
 
     @endpoint("/v2/backstory/answers", has_ids=True)
     async def answers(
-        self, *, data, ids: list = None, deep: bool = True
+        self, *, data, ids: list = None
     ) -> List[Union[BiographyAnswer, int, str]]:
         """
         Get Biography answers from API by list of IDs or one ID.
         :param data: Data from wrapper
         :param ids: List of IDs
-        :param deep:
         :return: list
         """
 
@@ -33,24 +32,18 @@ class BackstoryApi:
             return data
 
         for answer in data:
-            if deep:
-                answer["question"] = await self.questions(
-                    answer["question"], deep=False
-                )
-            else:
-                del answer["question"]
+            answer["_question"] = LazyLoader(self.questions, answer["question"])
 
         return object_parse(data, BiographyAnswer)
 
     @endpoint("/v2/backstory/questions", has_ids=True)
     async def questions(
-        self, *, data, ids: list = None, deep: bool = True
+        self, *, data, ids: list = None
     ) -> List[Union[BiographyQuestion, int, str]]:
         """
         Get Biography questions from API by list of IDs or one ID.
         :param data: Data from wrapper
         :param ids: List of IDs
-        :param deep:
         :return: list
         """
 
@@ -58,25 +51,16 @@ class BackstoryApi:
             return data
 
         for question in data:
-            if deep:
-                question["answers"] = await self.answers(
-                    *question["answers"], deep=False
-                )
-            else:
-                del question["answers"]
+            question["_answers"] = LazyLoader(self.answers, *question["answers"])
 
         return object_parse(data, BiographyQuestion)
 
     @endpoint("/v2/stories", has_ids=True)
-    async def stories(
-        self, *, data, ids: list = None, deep: bool = True, force_list: bool = False
-    ) -> List[Union[Story, int, str]]:
+    async def stories(self, *, data, ids: list = None) -> List[Union[Story, int, str]]:
         """
         Get stories from API by list of IDs or one ID.
         :param data: Data from wrapper
         :param ids: List of IDs
-        :param deep:
-        :param force_list: Force output to be a list
         :return: list
         """
 
@@ -84,23 +68,16 @@ class BackstoryApi:
             return data
 
         for story in data:
-            if deep:
-                story["season"] = await self.seasons(story["season"], deep=False)
-            else:
-                del story["season"]
+            story["_season"] = LazyLoader(self.seasons, story["season"])
 
-        return object_parse(data, Story, force_list=force_list)
+        return object_parse(data, Story)
 
     @endpoint("/v2/stories/seasons", has_ids=True)
-    async def seasons(
-        self, *, data, ids: list = None, deep: bool = True, force_list: bool = False
-    ) -> List[Union[Season, int, str]]:
+    async def seasons(self, *, data, ids: list = None) -> List[Union[Season, int, str]]:
         """
         Get seasons from API by list of IDs or one ID.
         :param data: Data from wrapper
         :param ids: List of IDs
-        :param deep:
-        :param force_list: Force output to be a list
         :return: list
         """
 
@@ -108,24 +85,16 @@ class BackstoryApi:
             return data
 
         for season in data:
-            if deep:
-                season["stories"] = await self.stories(
-                    *season["stories"], deep=False, force_list=True
-                )
-            else:
-                del season["stories"]
+            season["_stories"] = LazyLoader(self.stories, *season["stories"])
 
-        return object_parse(data, Season, force_list=force_list)
+        return object_parse(data, Season)
 
     @endpoint("/v2/quests", has_ids=True)
-    async def quests(
-        self, *, data, ids: list = None, deep: bool = True
-    ) -> List[Union[Quest, int, str]]:
+    async def quests(self, *, data, ids: list = None) -> List[Union[Quest, int, str]]:
         """
         Get quests from API by list of IDs or one ID.
         :param data: Data from wrapper
         :param ids: List of IDs
-        :param deep:
         :return: list
         """
 
@@ -133,9 +102,6 @@ class BackstoryApi:
             return data
 
         for quest in data:
-            if deep:
-                quest["story"] = await self.stories(quest["story"])
-            else:
-                del quest["story"]
+            quest["_story"] = LazyLoader(self.stories, quest["story"])
 
         return object_parse(data, Quest)

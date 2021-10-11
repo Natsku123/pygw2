@@ -1,10 +1,57 @@
-import inspect
+import asyncio, concurrent.futures
 from aiohttp import ClientSession
 from pydantic import parse_obj_as, BaseModel
-from typing import List, Dict, Union, Any, Type
+from typing import List, Dict, Union, Any, Type, Callable
 
 from .core.exceptions import ApiError
 from .settings import *
+
+pool = concurrent.futures.ThreadPoolExecutor()
+
+
+def function_call_key(func: Callable, args, kwargs) -> str:
+    return f"{func.__qualname__}{args}{kwargs}"
+
+
+class LazyLoader:
+    _loaded = {}
+
+    def __new__(cls, func: Callable, *args, **kwargs):
+        print(func, args, kwargs)
+        loader = cls._loaded.get(function_call_key(func, args, kwargs))
+        if loader is not None:
+            return loader
+
+        loader = super().__new__(cls)
+        cls._loaded[function_call_key(func, args, kwargs)] = loader
+        return loader
+
+    def __init__(self, func: Callable, *args, **kwargs):
+        """
+        Lazy load with given function with arguments
+        :param func: Function to be used in loading
+        :param args: Arguments to be used
+        :param kwargs: Keyword arguments to be used
+        """
+        self.__func = func
+        self.__args = args
+        self.__kwargs = kwargs
+        self.__result = None
+
+    def __call__(self, force=False, *args, **kwargs) -> Union[List[Any], Any]:
+        """
+        Run lazy loaded function on call or return already found result
+        :param force: Force reload
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        if not self.__result or not force:
+            self.__result = pool.submit(
+                asyncio.run, self.__func(*self.__args, **self.__kwargs)
+            ).result()
+
+        return self.__result
 
 
 def list_to_str(l: list, delimiter: str = ","):

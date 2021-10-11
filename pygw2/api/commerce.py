@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
 from ..core.models.commerce import (
     DeliveryBox,
     ExchangeRate,
@@ -29,7 +29,7 @@ class TradingPostApi:
         :return: object
         """
         for item in data["items"]:
-            item["item"] = (await items_api.get(ids=[item["id"]]))[0]
+            item["_item"] = LazyLoader(items_api.get, item["id"])
         return object_parse(data, DeliveryBox)
 
     @endpoint(
@@ -81,7 +81,7 @@ class TradingPostApi:
             return data
 
         for listing in data:
-            listing["item"] = await items_api.get(listing["id"])
+            listing["_item"] = LazyLoader(items_api.get, listing["id"])
 
         return object_parse(data, ItemListing)
 
@@ -98,7 +98,7 @@ class TradingPostApi:
             return data
 
         for price in data:
-            price["item"] = await items_api.get(price["id"])
+            price["_item"] = LazyLoader(items_api.get, price["id"])
 
         return object_parse(data, Price)
 
@@ -111,7 +111,7 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -124,7 +124,7 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -137,7 +137,7 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -150,6 +150,6 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
