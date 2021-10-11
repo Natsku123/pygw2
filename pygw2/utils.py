@@ -17,7 +17,6 @@ class LazyLoader:
     _loaded = {}
 
     def __new__(cls, func: Callable, *args, **kwargs):
-        print(func, args, kwargs)
         loader = cls._loaded.get(function_call_key(func, args, kwargs))
         if loader is not None:
             return loader
