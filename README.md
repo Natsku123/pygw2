@@ -1,6 +1,6 @@
 # Pygw2
 [![Tests and Coverage](https://github.com/Natsku123/pygw2/actions/workflows/test.yml/badge.svg)](https://github.com/Natsku123/pygw2/actions/workflows/test.yml)
-[![Coverage Status](https://coveralls.io/repos/github/Natsku123/pygw2/badge.svg?branch=master)](https://coveralls.io/github/Natsku123/pygw2?branch=master)
+[![codecov](https://codecov.io/gh/Natsku123/pygw2/branch/master/graph/badge.svg?token=JKBG2ALQXE)](https://codecov.io/gh/Natsku123/pygw2)
 
 Python wrapper for Guild Wars 2 api.
 
