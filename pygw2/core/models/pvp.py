@@ -1,14 +1,32 @@
 import datetime
 from pydantic import BaseModel
-from typing import Optional, Union, List
+from typing import Optional, Union, List, TYPE_CHECKING
 
+from pygw2.utils import LazyLoader
 from pygw2.core.enums import PvpRatingType, PvpDivisionFlags
+
+if TYPE_CHECKING:
+    from pygw2.core.models.items import Item
 
 
 class PvPEquipment(BaseModel):
-    amulet: int  # TODO resolve agaisnt /v2/pvp/amulets
-    rune: int  # TODO resolve against /v2/items
-    sigils: List[int]  # TODO resolve agaisnt /v2/items
+    _amulet: Optional[LazyLoader]
+
+    @property
+    def amulet(self) -> Optional["PvpAmulet"]:
+        return self._amulet() if self._amulet is not None else None
+
+    _rune: Optional[LazyLoader]
+
+    @property
+    def rune(self) -> Optional["Item"]:
+        return self._rune() if self._rune is not None else None
+
+    _sigils: Optional[LazyLoader]
+
+    @property
+    def sigils(self) -> List["Item"]:
+        return self._sigils() if self._sigils is not None else None
 
 
 class PvpAttributes(BaseModel):

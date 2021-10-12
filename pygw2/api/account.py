@@ -1,13 +1,40 @@
-from ..core.models.account import Account, VaultSlot
+from typing import List, Union
+
+from ..core.models.account import Account, VaultSlot, HomeNode, HomeCat, MountType
 from ..core.models.achievements import AchievementProgress
-from ..core.models.character import Character
-from ..utils import endpoint
+from ..core.models.character import (
+    Character,
+    CharacterCore,
+    Crafting,
+    Equipment,
+    Bag,
+    Skills,
+    Specializations,
+    SkillTree,
+)
+from ..core.models.general import MountSkin
+from ..core.models.backstory import BiographyAnswer
+from ..core.models.sab import SAB
+from ..utils import endpoint, LazyLoader, object_parse
+from ..core import parse_item
 
 from .achievements import AchievementsApi
 from .items import ItemsApi
+from .home import HomeApi
+from .misc import MiscellaneousApi
+from .mechanics import MechanicsApi
+from .guild import GuildApi
+from .backstory import BackstoryApi
+from .wvw import WvWApi
 
 achievements_api = AchievementsApi()
 items_api = ItemsApi()
+home_api = HomeApi()
+misc_api = MiscellaneousApi()
+mecha_api = MechanicsApi()
+guild_api = GuildApi()
+backstory_api = BackstoryApi()
+wvw_api = WvWApi()
 
 
 class AccountHomeApi:
@@ -18,26 +45,24 @@ class AccountHomeApi:
         self.api_key = api_key
 
     @endpoint("/v2/account/home/cats")
-    async def cats(self, *, data):
+    async def cats(self, *, data) -> List[HomeCat]:
         """
         Get unlocked home instance cats from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO resolve against /v2/cats
-        return data
+        return await home_api.cats(*data)
 
     @endpoint("/v2/account/home/nodes")
-    async def nodes(self, *, data):
+    async def nodes(self, *, data) -> List[HomeNode]:
         """
         Get unlocked home instance nodes from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO resolve against /v2/home/nodes
-        return data
+        return await home_api.nodes(*data)
 
 
 class AccountMountsApi:
@@ -48,26 +73,24 @@ class AccountMountsApi:
         self.api_key = api_key
 
     @endpoint("/v2/account/mounts/skins")
-    async def skins(self, *, data):
+    async def skins(self, *, data) -> List[MountSkin]:
         """
         Get unlocked skins for mounts from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO resolve against /v2/mounts/skins
-        return data
+        return await mecha_api.mounts.skins(*data)
 
     @endpoint("/v2/account/mounts/types")
-    async def types(self, *, data):
+    async def types(self, *, data) -> List[MountType]:
         """
         Get unlocked mounts from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO resolve against /v2/mounts/types
-        return data
+        return await mecha_api.mounts.types(*data)
 
 
 class CharactersApi:
@@ -79,7 +102,7 @@ class CharactersApi:
         self.api_key = api_key
 
     @endpoint("/v2/characters")
-    async def get(self, *, data):
+    async def get(self, *, data) -> Union[Character, List[str]]:
         """
         Get characters from API. Use item_id with character's name. If no item_id
         is specified, returns all characters.
@@ -88,81 +111,114 @@ class CharactersApi:
         """
 
         if isinstance(data, dict):
-            return Character(**data)
+            if data["guild"]:
+                data["_guild"] = LazyLoader(guild_api.get, data["guild"])
+            if data["title"]:
+                data["_title"] = LazyLoader(misc_api.titles, data["title"])
+            data["_backstory"] = LazyLoader(backstory_api.answers, *data["backstory"])
+
+            # Parse all items in equipment
+            for i, e in enumerate(data["equipment"]):
+                data["equipment"][i] = parse_item(e)
+
+            data["_heropoints"] = LazyLoader(self.heropoints)
+
+            # Parse all items in bags / inventory
+            for b in data["bags"]:
+                b["_item"] = LazyLoader(items_api.get, b["id"])
+
+                for i, v in enumerate(b["inventory"]):
+                    if v:
+                        b["inventory"][i] = parse_item(v)
+
+            # Parse all skills
+            for v in data["skills"]:
+                v["_heal"] = LazyLoader(mecha_api.skills, v["heal"])
+                v["_utilities"] = LazyLoader(mecha_api.skills, v["utilities"])
+                v["_elite"] = LazyLoader(mecha_api.skills, v["elite"])
+                if v["legends"]:
+                    v["_legends"] = LazyLoader(mecha_api.skills, v["legends"])
+
+            # Parse all specializations
+            for v in data["specializations"]:
+                for s in v:
+                    s["_specialization"] = LazyLoader(
+                        mecha_api.specializations, s["id"]
+                    )
+                    s["_traits"] = LazyLoader(mecha_api.traits, *s["traits"])
+
+            data["_sab"] = LazyLoader(self.sab)
+
+            # Parse all WvW abilities
+            for a in data["wvw_abilities"]:
+                a["_ability"] = LazyLoader(wvw_api.abilities, a["id"])
+
+            # Parse PvP equipment
+            if data["equipment_pvp"]["amulet"]:
+                data["equipment_pvp"]["_amulet"] = LazyLoader(
+                    items_api.pvp_amulets, data["equipment_pvp"]["amulet"]
+                )
+            if data["equipment_pvp"]["rune"]:
+                data["equipment_pvp"]["_rune"] = LazyLoader(
+                    items_api.get, data["equipment_pvp"]["rune"]
+                )
+            if data["equipment_pvp"]["sigils"]:
+                data["equipment_pvp"]["_sigils"] = LazyLoader(
+                    items_api.get, data["equipment_pvp"]["sigils"]
+                )
+
+            return object_parse(data, Character)
         else:
             return data
 
     @endpoint("/v2/characters", subendpoint="/backstory")
-    async def backstory(self, *, data):
+    async def backstory(self, *, data) -> List[BiographyAnswer]:
         """
         Get character's backstory from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO resolve against /v2/backstory/answers
-        return data
+        return await backstory_api.answers(*data)
 
     @endpoint("/v2/characters", subendpoint="/core")
-    async def core(self, *, data):
+    async def core(self, *, data) -> CharacterCore:
         """
         Get character's core from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO edit to 'better' format
-        return data
+        if data["guild"]:
+            data["_guild"] = LazyLoader(guild_api.get, data["guild"])
+        if data["title"]:
+            data["_title"] = LazyLoader(misc_api.titles, data["title"])
+        return object_parse(data, CharacterCore)
 
     @endpoint("/v2/characters", subendpoint="/crafting")
-    async def crafting(self, *, data):
+    async def crafting(self, *, data) -> Union[Crafting, List[Crafting]]:
         """
         Get character's crafting from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO edit to 'better' format
-        return data
+        return object_parse(data, Crafting)
 
     @endpoint("/v2/characters", subendpoint="/equipment")
-    async def equipment(self, *, data):
+    async def equipment(self, *, data) -> Union[Equipment, List[Equipment]]:
         """
         Get character's equipment from API.
         :param data: Data from wrapper
         :return:
         """
+        if isinstance(data, dict):
+            data = data["equipment"]
 
-        equipment = {}
-        items = []
-        for item in data:
-            items.append(item["id"])
-        items = await items_api.get(ids=items)
-        for item in data:
+        for i, e in enumerate(data):
+            data[i] = parse_item(e)
 
-            infusions = item.get("infusions", None)
-            if infusions is not None:
-                infusions = await items_api.get(ids=infusions)
-
-            upgrades = item.get("upgrades", None)
-            if upgrades is not None:
-                upgrades = await items_api.get(ids=upgrades)
-
-            # TODO resolve skin against /v2/skins
-            # TODO resolve itemstats against /v2/itemstats
-            # TODO resolve dyes against /v2/colors
-            equipment[item["slot"]] = {
-                "item": items[data.index(item)],
-                "infusions": infusions,
-                "upgrades": upgrades,
-                "skin": item.get("skin", None),
-                "stats": item.get("stats", None),
-                "binding": item.get("binding", None),
-                "charges": item.get("charges", None),
-                "bound_to": item.get("bound_to", None),
-                "dyes": item.get("dyes", None),
-            }
-        return equipment
+        return object_parse(data, Equipment)
 
     @endpoint("/v2/characters", subendpoint="/heropoints")
     async def heropoints(self, *, data):
@@ -176,107 +232,81 @@ class CharactersApi:
         return data
 
     @endpoint("/v2/characters", subendpoint="/inventory")
-    async def inventory(self, *, data):
+    async def inventory(self, *, data) -> Union[Bag, List[Bag]]:
         """
         Get character's inventory from API.
         :param data: Data from wrapper
         :return:
         """
+        if isinstance(data, dict):
+            data = data["bags"]
 
-        bags_ids = []
-        for bag in data:
-            bags_ids.append(bag["id"])
-        bags_items = await items_api.get(*bags_ids)
-        bags = []
-        i = 0
-        for bag in data:
-            items_ids = []
-            for item in bag["inventory"]:
-                if item is not None:
-                    items_ids.append(item["id"])
+        for b in data:
+            b["_item"] = LazyLoader(items_api.get, b["id"])
 
-            items = await items_api.get(*items_ids)
+            for i, v in enumerate(b["inventory"]):
+                if v:
+                    b["inventory"][i] = parse_item(v)
 
-            inventory = {}
-            n = 0
-            for item in bag["inventory"]:
-                if item is not None:
-                    for itm_obj in items:
-                        if itm_obj.id == item["id"]:
-                            infusions = item.get("infusions", None)
-                            if infusions is not None:
-                                infusions = await items_api.get(*infusions)
-
-                            upgrades = item.get("upgrades", None)
-                            if upgrades is not None:
-                                upgrades = await items_api.get(*upgrades)
-
-                            # TODO resolve skin against /v2/skins
-                            # TODO resolve itemstats against /v2/itemstats
-                            # TODO make item object more 'precise'
-                            inventory[n] = {
-                                "item": itm_obj,
-                                "count": item["count"],
-                                "infusions": infusions,
-                                "upgrades": upgrades,
-                                "skin": item.get("skin", None),
-                                "stats": item.get("stats", None),
-                                "binding": item.get("binding", None),
-                                "bound_to": item.get("bound_to", None),
-                            }
-                            break
-                else:
-                    inventory[n] = None
-                n = n + 1
-            bags.append(
-                {"bag": bags_items[i], "size": bag["size"], "inventory": inventory}
-            )
-            i = i + 1
-        return bags
+        return object_parse(data, Bag)
 
     @endpoint("/v2/characters", subendpoint="/skills")
-    async def skills(self, *, data):
+    async def skills(self, *, data) -> Skills:
         """
         Get character's skills from API.
         :param data: Data from wrapper
         :return:
         """
+        if "skills" in data:
+            data = data["skills"]
 
-        # TODO resolve against /v2/skills and /v2/legends
-        return data
+        for v in data:
+            v["_heal"] = LazyLoader(mecha_api.skills, v["heal"])
+            v["_utilities"] = LazyLoader(mecha_api.skills, v["utilities"])
+            v["_elite"] = LazyLoader(mecha_api.skills, v["elite"])
+            if v["legends"]:
+                v["_legends"] = LazyLoader(mecha_api.skills, v["legends"])
+
+        return object_parse(data, Skills)
 
     @endpoint("/v2/characters", subendpoint="/specializations")
-    async def specializations(self, *, data):
+    async def specializations(self, *, data) -> Specializations:
         """
         Get character's specializations from API.
         :param data: Data from wrapper
         :return:
         """
+        if "specializations" in data:
+            data = data["specializations"]
 
-        # TODO resolve against /v2/specializations and /v2/traits
-        return data
+        for v in data:
+            for s in v:
+                s["_specialization"] = LazyLoader(mecha_api.specializations, s["id"])
+                s["_traits"] = LazyLoader(mecha_api.traits, *s["traits"])
+
+        return object_parse(data, Specializations)
 
     @endpoint("/v2/characters", subendpoint="/training")
-    async def training(self, *, data):
+    async def training(self, *, data) -> Union[SkillTree, List[SkillTree]]:
         """
         Get character's training from API.
         :param data: Data from wrapper
         :return:
         """
+        if "training" in data:
+            data = data["training"]
 
-        # TODO resolve against /v2/professions
-        return data
+        return object_parse(data, SkillTree)
 
     @endpoint("/v2/characters", subendpoint="/sab")
-    async def sab(self, *, data):
+    async def sab(self, *, data) -> SAB:
         """
         Get character's Super Adventure Box completion from API.
         :param data: Data from wrapper
         :return:
         """
 
-        # TODO edit to 'better' format
-        return data
+        return object_parse(data, SAB)
 
 
 class AccountApi:
