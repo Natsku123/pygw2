@@ -182,3 +182,31 @@ class PvpLeaderboard(BaseModel):
     team_id: Optional[str]
     date: datetime.datetime
     scores: List[PvpLeaderboardScore]
+
+
+class PvpHeroStats(BaseModel):
+    offense: int
+    defense: int
+    speed: int
+
+
+class PvpHeroSkin(BaseModel):
+    id: int
+    name: str
+    icon: str
+    default: bool
+    _unlock_items: Optional[LazyLoader]
+
+    @property
+    def unlock_items(self) -> Union[List["Item"], "Item"]:
+        return self._unlock_items() if self._unlock_items is not None else None
+
+
+class PvpHero(BaseModel):
+    id: str
+    name: str
+    type: str
+    stats: PvpHeroStats
+    overlay: str
+    underlay: str
+    skins: List[PvpHeroSkin]

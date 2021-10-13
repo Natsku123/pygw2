@@ -1,6 +1,16 @@
-from typing import List, Union
+from typing import List, Union, Optional
 
-from ..core.models.account import Account, VaultSlot, HomeNode, HomeCat, MountType
+from ..core.models.account import (
+    Account,
+    VaultSlot,
+    HomeNode,
+    HomeCat,
+    MountType,
+    UnlockedFinisher,
+    SharedInventorySlot,
+    Material,
+    WalletCurrency,
+)
 from ..core.models.achievements import AchievementProgress
 from ..core.models.character import (
     Character,
@@ -12,29 +22,12 @@ from ..core.models.character import (
     Specializations,
     SkillTree,
 )
-from ..core.models.general import MountSkin
+from ..core.models.general import MountSkin, DailyCrafting
 from ..core.models.backstory import BiographyAnswer
+from ..core.models.misc import Color
 from ..core.models.sab import SAB
 from ..utils import endpoint, LazyLoader, object_parse
 from ..core import parse_item
-
-from .achievements import AchievementsApi
-from .items import ItemsApi
-from .home import HomeApi
-from .misc import MiscellaneousApi
-from .mechanics import MechanicsApi
-from .guild import GuildApi
-from .backstory import BackstoryApi
-from .wvw import WvWApi
-
-achievements_api = AchievementsApi()
-items_api = ItemsApi()
-home_api = HomeApi()
-misc_api = MiscellaneousApi()
-mecha_api = MechanicsApi()
-guild_api = GuildApi()
-backstory_api = BackstoryApi()
-wvw_api = WvWApi()
 
 
 class AccountHomeApi:
@@ -51,6 +44,9 @@ class AccountHomeApi:
         :param data: Data from wrapper
         :return:
         """
+        from .home import HomeApi
+
+        home_api = HomeApi()
 
         return await home_api.cats(*data)
 
@@ -61,6 +57,9 @@ class AccountHomeApi:
         :param data: Data from wrapper
         :return:
         """
+        from .home import HomeApi
+
+        home_api = HomeApi()
 
         return await home_api.nodes(*data)
 
@@ -79,6 +78,9 @@ class AccountMountsApi:
         :param data: Data from wrapper
         :return:
         """
+        from .mechanics import MechanicsApi
+
+        mecha_api = MechanicsApi()
 
         return await mecha_api.mounts.skins(*data)
 
@@ -89,6 +91,9 @@ class AccountMountsApi:
         :param data: Data from wrapper
         :return:
         """
+        from .mechanics import MechanicsApi
+
+        mecha_api = MechanicsApi()
 
         return await mecha_api.mounts.types(*data)
 
@@ -109,6 +114,24 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi()
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi()
+        from .mechanics import MechanicsApi
+
+        mecha_api = MechanicsApi()
+        from .guild import GuildApi
+
+        guild_api = GuildApi()
+        from .backstory import BackstoryApi
+
+        backstory_api = BackstoryApi()
+        from .wvw import WvWApi
+
+        wvw_api = WvWApi()
 
         if isinstance(data, dict):
             if data["guild"]:
@@ -178,6 +201,9 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+        from .backstory import BackstoryApi
+
+        backstory_api = BackstoryApi()
 
         return await backstory_api.answers(*data)
 
@@ -188,6 +214,12 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi()
+        from .guild import GuildApi
+
+        guild_api = GuildApi()
 
         if data["guild"]:
             data["_guild"] = LazyLoader(guild_api.get, data["guild"])
@@ -238,6 +270,10 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi()
+
         if isinstance(data, dict):
             data = data["bags"]
 
@@ -257,6 +293,10 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+        from .mechanics import MechanicsApi
+
+        mecha_api = MechanicsApi()
+
         if "skills" in data:
             data = data["skills"]
 
@@ -276,6 +316,10 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+        from .mechanics import MechanicsApi
+
+        mecha_api = MechanicsApi()
+
         if "specializations" in data:
             data = data["specializations"]
 
@@ -334,132 +378,59 @@ class AccountApi:
         return self._character(character_id, api_key=self.api_key)
 
     @endpoint("/v2/account")
-    async def get(self, *, data):
+    async def get(self, *, data) -> Account:
         """
         Get account from API with api key.
         :param data: Data from wrapper
         :return: Account
         """
 
-        return Account(**data)
+        return object_parse(data, Account)
 
     @endpoint("/v2/account/achievements")
-    async def achievements(self, *, data):
+    async def achievements(self, *, data) -> List[AchievementProgress]:
         """
         Get achievements progress from API with api key.
         :param data: Data from wrapper
         :return: list
         """
+        from .achievements import AchievementsApi
 
-        achis = []
+        achievements_api = AchievementsApi()
 
-        # Get all achievement ids
-        # completed = []
-        # ids = [i['id'] for i in data]
+        for a in data:
+            a["_achievement"] = LazyLoader(achievements_api.get, a["id"])
 
-        # all_ids = await achievements_api.get()
-
-        # Spare all ids that can be found and there is progress
-        # for ido in all_ids:
-        #     if ido in ids:
-        #         completed.append(ido)
-
-        # Cut list into several 'packages' since endpoint supports max 200 ids.
-        # package_size = 200
-
-        # if len(completed) > package_size:
-        #     new_com = []
-        #
-        #     # Cut to 200 ids per get.
-        #     for i in range(0, package_size, len(completed)):
-        #         if len(completed) - i >= package_size:
-        #             new_com.append(completed[i:package_size+i])
-        #         else:
-        #             new_com.append(completed[i:len(completed)])
-
-        #     achios_t = []
-
-        #     # Get all ids.
-        #     for i in new_com:
-        #         achios_t.append(await achievements_api.get(ids=i))
-
-        #     achios = []
-
-        #     # Combine lists.
-        #     for i in achios_t:
-        #         for n in i:
-        #             achios.append(n)
-        # else:
-        #     achios = await achievements_api.get(ids=completed)
-
-        # Match all achievement objects
-        # for achi in data:
-        #     for achio in achios:
-        #         if achi['id'] == achio.id:
-        #             achis.append(AchievementProgress(**achios))
-        #            break
-        achis = []
-        for achi in data:
-            achis.append(AchievementProgress(**achi))
-        return achis
+        return object_parse(data, AchievementProgress)
 
     @endpoint("/v2/account/bank")
-    async def bank(self, *, data):
+    async def bank(self, *, data) -> List[Optional[VaultSlot]]:
         """
         Get bank data from API with api key.
         :param data: Data from wrapper
         :return:
         """
 
-        bank = []
-
         # Blacklist of purged IDs
         blacklist = [45022, 45023, 45024, 45025]
 
-        # Optimizing api calls to batches of 200 ids
-        # item_ids = []
-        # i = 0
-        # batch = 0
-        # for item in data:
-        #     if item is not None and item['id'] not in blacklist:
-        #         if i % 200 == 0 or i == 0:
-        #             item_ids.append([])
-        #             batch = batch + 1
-        #
-        #         item_ids[batch-1].append(item['id'])
-        #         i = i + 1
-        #
-        # items_ready = {}
-        #
-        # Get dict of item and its id
-        # for items in item_ids:
-        #     items_fetched = await items_api.get(ids=items)
-        #     if isinstance(items_fetched, list):
-        #         for item in items_fetched:
-        #             items_ready[item.id] = item
-        #     else:
-        #         items_ready[items_fetched.id] = items_fetched
-        #
-        # Combine information
-        for item in data:
-            # TODO create more accurate item object
+        for i, item in enumerate(data):
+            data[i] = parse_item(item)
 
-            if item is None:
-                bank.append(None)
-            else:
-                bank.append(VaultSlot(**item))
-
-        return bank
+        return object_parse(data, Optional[VaultSlot])
 
     @endpoint("/v2/account/dailycrafting")
-    async def dailycrafting(self, *, data):
+    async def dailycrafting(self, *, data) -> List["DailyCrafting"]:
         """
         Get crafted time-gated items from API.
         :param data: Data from wrapper
         :return:
         """
-        # TODO resolve against /v2/dailycrafting
-        return data
+        from .daily import DailyApi
+
+        daily_api = DailyApi()
+
+        return await daily_api.crafting(*data)
 
     @endpoint("/v2/account/dungeons")
     async def dungeons(self, *, data):
@@ -468,39 +439,37 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
-        # TODO resolve against /v2/dungeons
+        # TODO resolve against /v2/dungeons with path id!
         return data
 
     @endpoint("/v2/account/dyes")
-    async def dyes(self, *, data):
+    async def dyes(self, *, data) -> List["Color"]:
         """
         Get unlocked dyes from API.
         :param data: Data from wrapper
         :return:
         """
+        from .misc import MiscellaneousApi
 
-        # TODO resolve against /v2/colors
-        return data
+        misc_api = MiscellaneousApi()
+
+        return await misc_api.colors(*data)
 
     @endpoint("/v2/account/finishers")
-    async def finishers(self, *, data):
+    async def finishers(self, *, data) -> UnlockedFinisher:
         """
         Get unlocked finishers from API.
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
 
-        finishers = []
-        for finisher in data:
-            # TODO change finisher_id to finisher with resolve against /v2/finishers
-            finishers.append(
-                {
-                    "finisher_id": finisher["id"],
-                    "permanent": finisher["permanent"],
-                    "quantity": finisher.get("quantity", None),
-                }
-            )
-        return finishers
+        items_api = ItemsApi()
+
+        for f in data:
+            f["_finisher"] = LazyLoader(items_api.finishers, f["id"])
+
+        return object_parse(data, UnlockedFinisher)
 
     @endpoint("/v2/account/gliders")
     async def gliders(self, *, data):
@@ -509,42 +478,22 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
 
-        # TODO resolve against /v2/gliders
-        return data
+        items_api = ItemsApi()
+
+        return await items_api.gliders(*data)
 
     @endpoint("/v2/account/inventory")
-    async def inventory(self, *, data):
+    async def inventory(self, *, data) -> List[SharedInventorySlot]:
         """
         Get shared inventory from API.
         :param data: Data from wrapper
         :return:
         """
-        inventory = []
-        ids = []
-        for item in data:
-            ids.append(item["id"])
-        items = await items_api.get(*ids)
-        for item in data:
-            corr_item = None
-            for itm_obj in items:
-                if item["id"] == itm_obj.id:
-                    corr_item = itm_obj
-                    break
-
-            # TODO change to more specific items
-            inventory.append(
-                {
-                    "item": corr_item,
-                    "count": item["count"],
-                    "charges": item.get("charges", None),
-                    "skin": item.get("skin", None),
-                    "upgrades": item.get("upgrades", None),
-                    "infusions": item.get("infusions", None),
-                    "binding": item.get("binding", None),
-                }
-            )
-        return inventory
+        for i, item in enumerate(data):
+            data[i] = parse_item(item)
+        return object_parse(data, SharedInventorySlot)
 
     @endpoint("/v2/account/luck")
     async def luck(self, *, data):
@@ -564,9 +513,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
 
-        # TODO resolve against /v2/mailcarriers
-        return data
+        items_api = ItemsApi()
+
+        return await items_api.mailcarriers(*data)
 
     @endpoint("/v2/account/mapchests")
     async def mapchests(self, *, data):
@@ -575,9 +526,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .daily import DailyApi
 
-        # TODO resolve against /v2/mapchests
-        return data
+        daily_api = DailyApi()
+
+        return await daily_api.mapchests(*data)
 
     @endpoint("/v2/account/masteries")
     async def masteries(self, *, data):
@@ -586,9 +539,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .mechanics import MechanicsApi
 
-        # TODO resolve against /v2/masteries
-        return data
+        mecha_api = MechanicsApi()
+
+        return await mecha_api.masteries(*data)
 
     @endpoint("/v2/account/mastery/points")
     async def mastery_points(self, *, data):
@@ -608,42 +563,14 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
 
-        # Optimizing api calls to batches of 200 ids
-        item_ids = []
-        i = 0
-        batch = 0
-        for item in data:
-            if i % 200 == 0 or i == 0:
-                item_ids.append([])
-                batch = batch + 1
+        items_api = ItemsApi()
 
-            item_ids[batch - 1].append(item["id"])
-            i = i + 1
+        for m in data:
+            m["_item"] = LazyLoader(items_api.get, m["id"])
 
-        items_ready = {}
-
-        # Get dict of item and its id
-        for items in item_ids:
-            items_fetched = await items_api.get(*items)
-            if isinstance(items_fetched, list):
-                for item in items_fetched:
-                    items_ready[item.id] = item
-            else:
-                items_ready[items_fetched.id] = items_fetched
-
-        items = []
-        for item in data:
-            items.append(
-                {
-                    "item": items_ready[item["id"]],
-                    "category": item["category"],
-                    "binding": item.get("binding", None),
-                    "count": item["count"],
-                }
-            )
-
-        return items
+        return object_parse(data, Material)
 
     @endpoint("/v2/account/minis")
     async def minis(self, *, data):
@@ -652,9 +579,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .misc import MiscellaneousApi
 
-        # TODO resolve against /v2/minis
-        return data
+        misc_api = MiscellaneousApi()
+
+        return await misc_api.minis(*data)
 
     @endpoint("/v2/account/novelties")
     async def novelties(self, *, data):
@@ -663,9 +592,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .misc import MiscellaneousApi
 
-        # TODO resolve against /v2/novelties
-        return data
+        misc_api = MiscellaneousApi()
+
+        return await misc_api.novelties(*data)
 
     @endpoint("/v2/account/outfits")
     async def outfits(self, *, data):
@@ -674,9 +605,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .mechanics import MechanicsApi
 
-        # TODO resolve against /v2/outfits
-        return data
+        mecha_api = MechanicsApi()
+
+        return await mecha_api.outfits(*data)
 
     @endpoint("/v2/account/pvp/heroes")
     async def pvp_heroes(self, *, data):
@@ -685,9 +618,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .pvp import PvpApi
 
-        # TODO resolve against /v2/pvp/heroes
-        return data
+        pvp_api = PvpApi()
+
+        return await pvp_api.heroes(*data)
 
     @endpoint("/v2/account/raids")
     async def raids(self, *, data):
@@ -697,7 +632,7 @@ class AccountApi:
         :return:
         """
 
-        # TODO resolve against /v2/raids
+        # TODO resolve against /v2/raids with encounter ID
         return data
 
     @endpoint("/v2/account/recipes")
@@ -707,9 +642,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
 
-        # TODO resolve against /v2/recipes
-        return data
+        items_api = ItemsApi()
+
+        return await items_api.recipes(*data)
 
     @endpoint("/v2/account/skins")
     async def skins(self, *, data):
@@ -718,9 +655,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .items import ItemsApi
 
-        # TODO resolve against /v2/skins
-        return data
+        items_api = ItemsApi()
+
+        return await items_api.skins(*data)
 
     @endpoint("/v2/account/titles")
     async def titles(self, *, data):
@@ -729,9 +668,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .misc import MiscellaneousApi
 
-        # TODO resolve against /v2/titles
-        return data
+        misc_api = MiscellaneousApi()
+
+        return await misc_api.titles(*data)
 
     @endpoint("/v2/account/wallet")
     async def wallet(self, *, data):
@@ -740,9 +681,14 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .misc import MiscellaneousApi
 
-        # TODO resolve against /v2/currencies and 'better' format
-        return data
+        misc_api = MiscellaneousApi()
+
+        for c in data:
+            c["_currency"] = LazyLoader(misc_api.currencies, data["id"])
+
+        return object_parse(data, WalletCurrency)
 
     @endpoint("/v2/account/worldbosses")
     async def worldbosses(self, *, data):
@@ -751,6 +697,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return:
         """
+        from .daily import DailyApi
 
-        # TODO resolve against /v2/worldbosses
-        return data
+        daily_api = DailyApi()
+
+        if not data:
+            return data
+
+        return await daily_api.worldbosses(*data)

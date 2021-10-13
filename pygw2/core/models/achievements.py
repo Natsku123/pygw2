@@ -1,6 +1,8 @@
 from typing import Optional, List, TYPE_CHECKING
 from pydantic import BaseModel
 
+from pygw2.utils import LazyLoader
+
 from pygw2.core.enums import (
     Region,
     AchievementBitsType,
@@ -67,7 +69,13 @@ class Achievement(BaseModel):
 
 
 class AchievementProgress(BaseModel):
-    id: int  # TODO resolve against achievement
+    id: int
+    _achievement: LazyLoader
+
+    @property
+    def achievement(self) -> "Achievement":
+        return self._achievement()
+
     bits: Optional[List[int]]
     current: Optional[int]
     max: Optional[int]

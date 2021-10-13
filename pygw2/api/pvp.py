@@ -1,7 +1,10 @@
 from typing import List, Union
 
-from ..utils import endpoint, object_parse
-from ..core.models.pvp import PvpRank, PvpSeason, PvpLeaderboard
+from ..utils import endpoint, object_parse, LazyLoader
+from ..api.items import ItemsApi
+from ..core.models.pvp import PvpRank, PvpSeason, PvpLeaderboard, PvpHero
+
+items_api = ItemsApi()
 
 
 class PvpLeaderboardsApi:
@@ -110,6 +113,27 @@ class PvpApi:
             return data
 
         return object_parse(data, PvpSeason)
+
+    @endpoint("/v2/pvp/heroes", has_ids=True)
+    async def heroes(self, *, data, ids: list = None) -> List[Union[PvpHero, int, str]]:
+        """
+        Get Pvp heroes from API
+        :param data: data from wrapper
+        :param ids: lsit of IDs
+        :return: list
+        """
+
+        if ids is None:
+            return data
+
+        for h in data:
+            for skin in h["skins"]:
+                if skin["unlock_items"]:
+                    skin["_unlock_items"] = LazyLoader(
+                        items_api.get, *skin["unlock_items"]
+                    )
+
+        return object_parse(data, PvpHero)
 
     def leaderboards(self, season_id: str):
         return self._leaderboards(season_id)

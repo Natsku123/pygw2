@@ -14,10 +14,6 @@ from ..core.models.misc import (
     World,
 )
 
-from .items import ItemsApi
-
-items_api = ItemsApi()
-
 
 class MiscellaneousApi:
     def __init__(self):
@@ -124,6 +120,10 @@ class MiscellaneousApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi()
+
         if ids is None:
             return data
 
@@ -142,6 +142,9 @@ class MiscellaneousApi:
         :param ids: List of IDs
         :return: list
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi()
 
         if ids is None:
             return data

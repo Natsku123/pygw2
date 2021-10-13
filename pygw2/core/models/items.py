@@ -1,7 +1,12 @@
 from pygw2.core.enums import *
 
-from typing import Optional, List, Union
+from typing import Optional, List, Union, TYPE_CHECKING
 from pydantic import BaseModel
+
+from pygw2.utils import LazyLoader
+
+if TYPE_CHECKING:
+    from pygw2.core.models.misc import Color
 
 
 class Upgrade(BaseModel):
@@ -19,26 +24,28 @@ class Item(BaseModel):
     rarity: ItemRarity
     level: int
     vendor_value: int
-    default_skin: Optional[int]     # TODO resolve against /v2/skins
+    default_skin: Optional[int]  # TODO resolve against /v2/skins
     flags: List[ItemFlags] = []
     game_types: List[GameTypes] = []
     restrictions: List[Union[Races, Professions]] = []
     upgrades_into: Optional[List[Upgrade]] = []
     upgrades_from: Optional[List[Upgrade]] = []
-    details: Optional[Union[
-        'ArmorDetails',
-        'BackDetails',
-        'BagDetails',
-        'ConsumableDetails',
-        'ContainerDetails',
-        'GatheringToolDetails',
-        'GizmoDetails',
-        'MiniatureDetails',
-        'SalvageKitDetails',
-        'TrinketDetails',
-        'UpgradeComponentDetails',
-        'WeaponDetails'
-    ]]
+    details: Optional[
+        Union[
+            "ArmorDetails",
+            "BackDetails",
+            "BagDetails",
+            "ConsumableDetails",
+            "ContainerDetails",
+            "GatheringToolDetails",
+            "GizmoDetails",
+            "MiniatureDetails",
+            "SalvageKitDetails",
+            "TrinketDetails",
+            "UpgradeComponentDetails",
+            "WeaponDetails",
+        ]
+    ]
 
 
 class InfixAttribute(BaseModel):
@@ -71,7 +78,7 @@ class ArmorDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str = ""
-    stat_choices: Optional[List[int]] = []      # TODO resolve against /v2/itemstats
+    stat_choices: Optional[List[int]] = []  # TODO resolve against /v2/itemstats
 
 
 class BackDetails(BaseModel):
@@ -80,7 +87,7 @@ class BackDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str = ""
-    stat_choices: Optional[List[int]] = []      # TODO resolve against /v2/itemstats
+    stat_choices: Optional[List[int]] = []  # TODO resolve against /v2/itemstats
 
 
 class BagDetails(BaseModel):
@@ -93,14 +100,14 @@ class ConsumableDetails(BaseModel):
     description: Optional[str]
     duration_ms: Optional[int]
     unlock_type: Optional[UnlockType]
-    color_id: Optional[int]     # TODO resolve against dyes
-    recipe_id: Optional[int]    # TODO resolve against recipes
-    extra_recipe_ids: Optional[List[int]] = []      # TODO resolve against recipes
-    guild_upgrade_id: Optional[int]     # TODO resolve against guild upgrades
+    color_id: Optional[int]  # TODO resolve against dyes
+    recipe_id: Optional[int]  # TODO resolve against recipes
+    extra_recipe_ids: Optional[List[int]] = []  # TODO resolve against recipes
+    guild_upgrade_id: Optional[int]  # TODO resolve against guild upgrades
     apply_count: Optional[int]
     name: Optional[str]
     icon: Optional[str]
-    skins: Optional[List[int]] = []     # TODO resolve against skins
+    skins: Optional[List[int]] = []  # TODO resolve against skins
 
 
 class ContainerDetails(BaseModel):
@@ -113,12 +120,12 @@ class GatheringToolDetails(BaseModel):
 
 class GizmoDetails(BaseModel):
     type: GizmoType
-    guild_upgrade_id: Optional[List[int]] = []      # TODO resolve guild upgrades
+    guild_upgrade_id: Optional[List[int]] = []  # TODO resolve guild upgrades
     vendor_ids: List[int] = []
 
 
 class MiniatureDetails(BaseModel):
-    minipet_id: int     # TODO resolve against minis
+    minipet_id: int  # TODO resolve against minis
 
 
 class SalvageKitDetails(BaseModel):
@@ -132,7 +139,7 @@ class TrinketDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str = ""
-    stat_choices: Optional[List[int]]   # TODO resolve against itemstats
+    stat_choices: Optional[List[int]]  # TODO resolve against itemstats
 
 
 class UpgradeComponentDetails(BaseModel):
@@ -155,14 +162,47 @@ class WeaponDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str
-    stat_choices: List[int]     # TODO resolve itemstats
+    stat_choices: List[int]  # TODO resolve itemstats
 
 
 class Outfit(BaseModel):
     id: int = 0
     name: str = ""
     icon: str = ""
-    unlock_items: List[int] = []    # TODO resolve against items
+    unlock_items: List[int] = []  # TODO resolve against items
+
+
+class Glider(BaseModel):
+    id: int
+    _unlock_items: LazyLoader
+
+    @property
+    def unlock_items(self) -> Union[List["Item"], "Item"]:
+        return self._unlock_items()
+
+    order: int
+    icon: str
+    name: str
+    description: str
+    _default_dyes: Optional[LazyLoader]
+
+    @property
+    def default_dyes(self) -> List["Color"]:
+        return self._default_dyes() if self._default_dyes is not None else None
+
+
+class Mailcarrier(BaseModel):
+    id: int
+    _unlock_items: LazyLoader
+
+    @property
+    def unlock_items(self) -> Union[List["Item"], "Item"]:
+        return self._unlock_items()
+
+    order: int
+    icon: str
+    name: str
+    flags: List["MailcarrierFlags"]
 
 
 Item.update_forward_refs()

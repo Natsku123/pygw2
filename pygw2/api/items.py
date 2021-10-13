@@ -1,8 +1,13 @@
 from ..core.models.crafting import Material, Recipe
 from ..core.models.general import Finisher, ItemStat, Skin
-from ..core.models.items import Item
+from ..core.models.items import Item, Glider, Mailcarrier
 from ..core.models.pvp import PvpAmulet
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
+
+from ..api.misc import MiscellaneousApi
+
+
+misc_api = MiscellaneousApi()
 
 
 class ItemsApi:
@@ -130,3 +135,37 @@ class ItemsApi:
             return data
         else:
             return object_parse(data, Skin)
+
+    @endpoint("/v2/gliders", has_ids=True)
+    async def gliders(self, *, data, ids: list = None):
+        """
+        Get gliders from API
+        :param data: data from wrapper
+        :param ids: list of IDs
+        :return: list of gliders
+        """
+        if ids is None:
+            return data
+
+        for g in data:
+            g["_unlock_items"] = LazyLoader(self.get, *g["unlock_items"])
+            g["_default_dyes"] = LazyLoader(misc_api.colors, *g["default_dyes"])
+
+        return object_parse(data, Glider)
+
+    @endpoint("/v2/mailcarriers", has_ids=True)
+    async def mailcarriers(self, *, data, ids: list = None):
+        """
+        Get mailcarriers from API
+        :param data: data from wrapper
+        :param ids: list of IDs
+        :return: list of mailcarriers
+        """
+
+        if ids is None:
+            return data
+
+        for m in data:
+            m["_unlock_items"] = LazyLoader(self.get, *m["unlock_items"])
+
+        return object_parse(data, Mailcarrier)

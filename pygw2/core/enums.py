@@ -758,3 +758,7 @@ class WvWTeams(str, Enum):
 
 class WvWMapBonusTypes(str, Enum):
     Bloodlust = "Bloodlust"
+
+
+class MailcarrierFlags(str, Enum):
+    Default = "Default"
