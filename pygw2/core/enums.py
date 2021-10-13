@@ -313,6 +313,13 @@ class AchievementType(str, Enum):
     ItemSet = "ItemSet"
 
 
+class AchievementRewardType(str, Enum):
+    Coins = "Coins"
+    Item = "Item"
+    Mastery = "Mastery"
+    Title = "Title"
+
+
 class AchievementFlag(str, Enum):
     Pvp = "Pvp"
     CategoryDisplay = "CategoryDisplay"

@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
 from ..core.models.misc import (
     Color,
     Currency,
@@ -183,9 +183,15 @@ class MiscellaneousApi:
         :param ids: List of IDs
         :return: list
         """
+        from .achievements import AchievementsApi
+
+        achi_api = AchievementsApi()
 
         if ids is None:
             return data
+
+        for t in data:
+            t["achievements_"] = LazyLoader(achi_api.get, *t["achievements"])
 
         return object_parse(data, Title)
 

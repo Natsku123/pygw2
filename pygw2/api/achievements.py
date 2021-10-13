@@ -5,7 +5,9 @@ from ..core.models.achievements import (
     AchievementGroup,
     AchievementCategory,
 )
-from ..utils import endpoint, object_parse
+
+from ..core.enums import AchievementRewardType
+from ..utils import endpoint, object_parse, LazyLoader
 
 
 class AchievementsApi:
@@ -28,14 +30,33 @@ class AchievementsApi:
         :param ids: list=[]
         :return: list
         """
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi()
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi()
+
+        from .mechanics import MechanicsApi
+
+        mecha_api = MechanicsApi()
 
         # Return list of ids.
         if ids is None:
             return data
 
         # Return list of Achievements.
-        else:
-            return object_parse(data, Achievement)
+        for a in data:
+            if "rewards" in a and a["rewards"]:
+                for r in a["rewards"]:
+                    if r["type"] == AchievementRewardType.Title:
+                        r["title_"] = LazyLoader(misc_api.titles, r["id"])
+                    elif r["type"] == AchievementRewardType.Item:
+                        r["item_"] = LazyLoader(items_api.get, r["id"])
+                    elif r["type"] == AchievementRewardType.Mastery:
+                        r["mastery_"] = LazyLoader(mecha_api.masteries, r["id"])
+        return object_parse(data, Achievement)
 
     @endpoint("/v2/achievements/daily")
     async def daily(self, *, data):

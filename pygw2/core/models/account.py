@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from pygw2.core.models.items import Item
     from pygw2.core.models.general import Skin, Finisher
     from pygw2.core.models.misc import Currency
+    from pygw2.core.models.wvw import World
 
 
 class VaultSlot(BaseModel):
@@ -67,7 +68,13 @@ class Mastery(BaseModel):
 
 
 class MasteryProgress(BaseModel):
-    id: int  # TODO resolve against mastery
+    id: int
+    mastery_: LazyLoader
+
+    @property
+    def mastery(self) -> "Mastery":
+        return self.mastery_()
+
     level: int
 
 
@@ -76,6 +83,12 @@ class Account(BaseModel):
     age: int
     name: str
     world: int  # TODO resolve against /v2/worlds
+    world_: LazyLoader
+
+    @property
+    def world(self) -> "World":
+        return self.world_()
+
     guilds: List[str] = []
     guild_leader: List[str] = []
     created: datetime.datetime

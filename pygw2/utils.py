@@ -1,4 +1,5 @@
 import asyncio, concurrent.futures
+from functools import wraps
 from aiohttp import ClientSession
 from pydantic import parse_obj_as, BaseModel as PydanticBase
 from typing import List, Dict, Union, Any, Type, Callable
@@ -123,6 +124,7 @@ def endpoint(
     """
 
     def decorate(func):
+        @wraps(func)
         async def get_data(self, *args, **kwargs):
             ids = []
             path_id = ""

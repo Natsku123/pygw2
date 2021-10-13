@@ -7,10 +7,13 @@ from pygw2.core.enums import (
     AchievementBitsType,
     AchievementType,
     AchievementFlag,
+    AchievementRewardType,
 )
 
 if TYPE_CHECKING:
-    from pygw2.core.models.account import ProductAccess
+    from pygw2.core.models.account import ProductAccess, Mastery
+    from pygw2.core.models.items import Item
+    from pygw2.core.models.misc import Title
 
 
 class AchievementCategory(BaseModel):
@@ -35,14 +38,29 @@ class AchievementTier(BaseModel):
     points: int
 
 
-class AchievementRewardType(BaseModel):
-    id: Optional[int]
-    count: Optional[int]
-    region: Optional[Region]
-
-
 class AchievementReward(BaseModel):
     type: AchievementRewardType
+    id: Optional[int]
+    item_: Optional[LazyLoader]
+
+    @property
+    def item(self) -> Optional["Item"]:
+        return self.item_() if self.item_ is not None else None
+
+    title_: Optional[LazyLoader]
+
+    @property
+    def title(self) -> Optional["Title"]:
+        return self.title_() if self.title_ is not None else None
+
+    mastery_: Optional[LazyLoader]
+
+    @property
+    def mastery(self) -> Optional["Mastery"]:
+        return self.mastery_() if self.mastery_ is not None else None
+
+    count: Optional[int]
+    region: Optional[Region]
 
 
 class AchievementBits(BaseModel):

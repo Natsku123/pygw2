@@ -104,8 +104,13 @@ class Raid(BaseModel):
 class Title(BaseModel):
     id: int
     name: str
-    achievements: List["Achievement"]
-    ap_required: int
+    achievements_: LazyLoader
+
+    @property
+    def achievements(self) -> List["Achievement"]:
+        return self.achievements_()
+
+    ap_required: Optional[int]
 
 
 class World(BaseModel):

@@ -10,6 +10,7 @@ from ..core.models.account import (
     SharedInventorySlot,
     Material,
     WalletCurrency,
+    MasteryProgress,
 )
 from ..core.models.achievements import AchievementProgress
 from ..core.models.character import (
@@ -22,10 +23,19 @@ from ..core.models.character import (
     Specializations,
     SkillTree,
 )
-from ..core.models.general import MountSkin, DailyCrafting
+from ..core.models.general import (
+    MountSkin,
+    DailyCrafting,
+    DailyMapChest,
+    Skin,
+    DailyWorldBoss,
+)
+from ..core.models.items import Glider, Mailcarrier, Outfit
 from ..core.models.backstory import BiographyAnswer
-from ..core.models.misc import Color
+from ..core.models.crafting import Recipe
+from ..core.models.misc import Color, Mini, Novelty, Title
 from ..core.models.sab import SAB
+from ..core.models.pvp import PvpHero
 from ..utils import endpoint, LazyLoader, object_parse
 from ..core import parse_item
 
@@ -412,7 +422,11 @@ class AccountApi:
         :param data: Data from wrapper
         :return: Account
         """
+        from .misc import MiscellaneousApi
 
+        misc_api = MiscellaneousApi()
+
+        data["world_"] = LazyLoader(misc_api.worlds, data["world"])
         return object_parse(data, Account)
 
     @endpoint("/v2/account/achievements")
@@ -500,7 +514,7 @@ class AccountApi:
         return object_parse(data, UnlockedFinisher)
 
     @endpoint("/v2/account/gliders")
-    async def gliders(self, *, data):
+    async def gliders(self, *, data) -> List["Glider"]:
         """
         Get unlocked gliders from API.
         :param data: Data from wrapper
@@ -535,7 +549,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/mailcarriers")
-    async def mailcarriers(self, *, data):
+    async def mailcarriers(self, *, data) -> List["Mailcarrier"]:
         """
         Get unlocked mailcarriers from API.
         :param data: Data from wrapper
@@ -548,7 +562,7 @@ class AccountApi:
         return await items_api.mailcarriers(*data)
 
     @endpoint("/v2/account/mapchests")
-    async def mapchests(self, *, data):
+    async def mapchests(self, *, data) -> List["DailyMapChest"]:
         """
         Get mapchest unlocked since daily reset from API.
         :param data: Data from wrapper
@@ -561,7 +575,7 @@ class AccountApi:
         return await daily_api.mapchests(*data)
 
     @endpoint("/v2/account/masteries")
-    async def masteries(self, *, data):
+    async def masteries(self, *, data) -> List["MasteryProgress"]:
         """
         Get unlocked masteries from API.
         :param data: Data from wrapper
@@ -570,8 +584,10 @@ class AccountApi:
         from .mechanics import MechanicsApi
 
         mecha_api = MechanicsApi()
+        for m in data:
+            m["mastery_"] = LazyLoader(mecha_api.masteries, m["id"])
 
-        return await mecha_api.masteries(*data)
+        return object_parse(data, MasteryProgress)
 
     @endpoint("/v2/account/mastery/points")
     async def mastery_points(self, *, data):
@@ -585,7 +601,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/materials")
-    async def materials(self, *, data):
+    async def materials(self, *, data) -> List["Material"]:
         """
         Get contents of material storage from API.
         :param data: Data from wrapper
@@ -601,7 +617,7 @@ class AccountApi:
         return object_parse(data, Material)
 
     @endpoint("/v2/account/minis")
-    async def minis(self, *, data):
+    async def minis(self, *, data) -> List["Mini"]:
         """
         Get unlocked miniatures from API.
         :param data: Data from wrapper
@@ -614,7 +630,7 @@ class AccountApi:
         return await misc_api.minis(*data)
 
     @endpoint("/v2/account/novelties")
-    async def novelties(self, *, data):
+    async def novelties(self, *, data) -> List["Novelty"]:
         """
         Get unlocked novelties from API.
         :param data: Data from wrapper
@@ -627,7 +643,7 @@ class AccountApi:
         return await misc_api.novelties(*data)
 
     @endpoint("/v2/account/outfits")
-    async def outfits(self, *, data):
+    async def outfits(self, *, data) -> List["Outfit"]:
         """
         Get unlocked outfits from API.
         :param data: Data from wrapper
@@ -640,7 +656,7 @@ class AccountApi:
         return await mecha_api.outfits(*data)
 
     @endpoint("/v2/account/pvp/heroes")
-    async def pvp_heroes(self, *, data):
+    async def pvp_heroes(self, *, data) -> List["PvpHero"]:
         """
         Get unlocked PvP heroes from API.
         :param data: Data from wrapper
@@ -664,7 +680,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/recipes")
-    async def recipes(self, *, data):
+    async def recipes(self, *, data) -> List["Recipe"]:
         """
         Get unlocked recipes from API.
         :param data: Data from wrapper
@@ -677,7 +693,7 @@ class AccountApi:
         return await items_api.recipes(*data)
 
     @endpoint("/v2/account/skins")
-    async def skins(self, *, data):
+    async def skins(self, *, data) -> List["Skin"]:
         """
         Get unlocked skins from API.
         :param data: Data from wrapper
@@ -690,7 +706,7 @@ class AccountApi:
         return await items_api.skins(*data)
 
     @endpoint("/v2/account/titles")
-    async def titles(self, *, data):
+    async def titles(self, *, data) -> List["Title"]:
         """
         Get unlocked titles from API.
         :param data: Data from wrapper
@@ -703,7 +719,7 @@ class AccountApi:
         return await misc_api.titles(*data)
 
     @endpoint("/v2/account/wallet")
-    async def wallet(self, *, data):
+    async def wallet(self, *, data) -> List[WalletCurrency]:
         """
         Get wallet from API.
         :param data: Data from wrapper
@@ -719,7 +735,7 @@ class AccountApi:
         return object_parse(data, WalletCurrency)
 
     @endpoint("/v2/account/worldbosses")
-    async def worldbosses(self, *, data):
+    async def worldbosses(self, *, data) -> List["DailyWorldBoss"]:
         """
         Get world bosses defeated since daily reset from API.
         :param data: Data from wrapper
