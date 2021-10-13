@@ -39,7 +39,7 @@ class BackstoryApi:
             return data
 
         for answer in data:
-            answer["_question"] = LazyLoader(self.questions, answer["question"])
+            answer["question_"] = LazyLoader(self.questions, answer["question"])
 
         return object_parse(data, BiographyAnswer)
 
@@ -58,7 +58,7 @@ class BackstoryApi:
             return data
 
         for question in data:
-            question["_answers"] = LazyLoader(self.answers, *question["answers"])
+            question["answers_"] = LazyLoader(self.answers, *question["answers"])
 
         return object_parse(data, BiographyQuestion)
 
@@ -75,7 +75,7 @@ class BackstoryApi:
             return data
 
         for story in data:
-            story["_season"] = LazyLoader(self.seasons, story["season"])
+            story["season_"] = LazyLoader(self.seasons, story["season"])
 
         return object_parse(data, Story)
 
@@ -92,7 +92,7 @@ class BackstoryApi:
             return data
 
         for season in data:
-            season["_stories"] = LazyLoader(self.stories, *season["stories"])
+            season["stories_"] = LazyLoader(self.stories, *season["stories"])
 
         return object_parse(data, Season)
 
@@ -109,6 +109,6 @@ class BackstoryApi:
             return data
 
         for quest in data:
-            quest["_story"] = LazyLoader(self.stories, quest["story"])
+            quest["story_"] = LazyLoader(self.stories, quest["story"])
 
         return object_parse(data, Quest)

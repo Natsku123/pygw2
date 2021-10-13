@@ -116,25 +116,25 @@ class MechanicsApi:
         if ids is None:
             return data
         for p in data:
-            p["_specializations"] = LazyLoader(
+            p["specializations_"] = LazyLoader(
                 self.specializations, *p["specializations"]
             )
             for w in p["weapons"]:
                 if w["specialization"]:
-                    w["_specialization"] = LazyLoader(
+                    w["specialization_"] = LazyLoader(
                         self.specializations, w["specialization"]
                     )
                 for s in w["skills"]:
-                    s["_skill"] = LazyLoader(self.skills, s["id"])
+                    s["skill_"] = LazyLoader(self.skills, s["id"])
             for t in p["training"]:
-                t["_skill"] = LazyLoader(self.skills, t["id"])
-                t["_specialization"] = LazyLoader(self.specializations, t["id"])
+                t["skill_"] = LazyLoader(self.skills, t["id"])
+                t["specialization_"] = LazyLoader(self.specializations, t["id"])
 
                 for track in t["tracks"]:
                     if track["skill_id"]:
-                        track["_skill"] = LazyLoader(self.skills, track["skill_id"])
+                        track["skill_"] = LazyLoader(self.skills, track["skill_id"])
                     if track["trait_id"]:
-                        track["_trait"] = LazyLoader(self.traits, track["trait_id"])
+                        track["trait_"] = LazyLoader(self.traits, track["trait_id"])
         return object_parse(data, Profession)
 
     @endpoint("/v2/races", has_ids=True)
@@ -149,7 +149,7 @@ class MechanicsApi:
         if ids is None:
             return data
         for r in data:
-            r["_skills"] = LazyLoader(self.skills, r["skills"])
+            r["skills_"] = LazyLoader(self.skills, r["skills"])
         return object_parse(data, Race)
 
     @endpoint("/v2/specializations", has_ids=True)
@@ -164,8 +164,8 @@ class MechanicsApi:
             return data
 
         for s in data:
-            s["_minor_traits"] = LazyLoader(self.traits, *s["minor_traits"])
-            s["_major_traits"] = LazyLoader(self.traits, *s["major_traits"])
+            s["minor_traits_"] = LazyLoader(self.traits, *s["minor_traits"])
+            s["major_traits_"] = LazyLoader(self.traits, *s["major_traits"])
 
         return object_parse(data, Specialization)
 
@@ -183,21 +183,21 @@ class MechanicsApi:
 
         for s in data:
             if s["flip_skill"]:
-                s["_flip_skill"] = LazyLoader(self.skills, s["flip_skill"])
+                s["flip_skill_"] = LazyLoader(self.skills, s["flip_skill"])
             if s["next_chain"]:
-                s["_next_chain"] = LazyLoader(self.skills, s["next_chain"])
+                s["next_chain_"] = LazyLoader(self.skills, s["next_chain"])
             if s["prev_chain"]:
-                s["_prev_chain"] = LazyLoader(self.skills, s["prev_chain"])
+                s["prev_chain_"] = LazyLoader(self.skills, s["prev_chain"])
             if s["transform_skills"]:
-                s["_transform_skills"] = LazyLoader(self.skills, *s["transform_skills"])
+                s["transform_skills_"] = LazyLoader(self.skills, *s["transform_skills"])
             if s["bundle_skills"]:
-                s["_bundle_skills"] = LazyLoader(self.skills, *s["bundle_skills"])
+                s["bundle_skills_"] = LazyLoader(self.skills, *s["bundle_skills"])
             if s["toolbelt_skill"]:
-                s["_toolbelt_skill"] = LazyLoader(self.skills, *s["toolbelt_skill"])
+                s["toolbelt_skill_"] = LazyLoader(self.skills, *s["toolbelt_skill"])
 
             if s["traited_facts"]:
                 for tf in s["traited_facts"]:
-                    tf["_requires_trait"] = LazyLoader(
+                    tf["requires_trait_"] = LazyLoader(
                         self.traits, tf["requires_trait"]
                     )
         return object_parse(data, Skill)
@@ -214,7 +214,7 @@ class MechanicsApi:
         if ids is None:
             return data
         for trait in data:
-            trait["_specialization"] = LazyLoader(
+            trait["specialization_"] = LazyLoader(
                 self.specializations, trait["specialization"]
             )
         return object_parse(data, Trait)
@@ -231,9 +231,9 @@ class MechanicsApi:
         if ids is None:
             return data
         for legend in data:
-            legend["_swap"] = LazyLoader(self.skills, legend["swap"])
-            legend["_heal"] = LazyLoader(self.skills, legend["heal"])
-            legend["_elite"] = LazyLoader(self.skills, legend["elite"])
-            legend["_utilities"] = LazyLoader(self.skills, *legend["_utilities"])
+            legend["swap_"] = LazyLoader(self.skills, legend["swap"])
+            legend["heal_"] = LazyLoader(self.skills, legend["heal"])
+            legend["elite_"] = LazyLoader(self.skills, legend["elite"])
+            legend["utilities_"] = LazyLoader(self.skills, *legend["utilities_"])
 
         return object_parse(data, Legend)

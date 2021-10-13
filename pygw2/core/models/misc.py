@@ -1,5 +1,4 @@
 from typing import Optional, List, Union, TYPE_CHECKING
-from pydantic import BaseModel
 from pygw2.core.enums import (
     ColorCategoryHue,
     ColorCategoryRarity,
@@ -10,6 +9,8 @@ from pygw2.core.enums import (
     WorldPopulation,
     WorldRegion,
 )
+
+from pygw2.utils import BaseModel, LazyLoader
 
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item

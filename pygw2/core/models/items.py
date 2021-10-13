@@ -1,9 +1,8 @@
 from pygw2.core.enums import *
 
 from typing import Optional, List, Union, TYPE_CHECKING
-from pydantic import BaseModel
 
-from pygw2.utils import LazyLoader
+from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
     from pygw2.core.models.misc import Color
@@ -174,30 +173,30 @@ class Outfit(BaseModel):
 
 class Glider(BaseModel):
     id: int
-    _unlock_items: LazyLoader
+    unlock_items_: LazyLoader
 
     @property
     def unlock_items(self) -> Union[List["Item"], "Item"]:
-        return self._unlock_items()
+        return self.unlock_items_()
 
     order: int
     icon: str
     name: str
     description: str
-    _default_dyes: Optional[LazyLoader]
+    default_dyes_: Optional[LazyLoader]
 
     @property
     def default_dyes(self) -> List["Color"]:
-        return self._default_dyes() if self._default_dyes is not None else None
+        return self.default_dyes_() if self.default_dyes_ is not None else None
 
 
 class Mailcarrier(BaseModel):
     id: int
-    _unlock_items: LazyLoader
+    unlock_items_: LazyLoader
 
     @property
     def unlock_items(self) -> Union[List["Item"], "Item"]:
-        return self._unlock_items()
+        return self.unlock_items_()
 
     order: int
     icon: str

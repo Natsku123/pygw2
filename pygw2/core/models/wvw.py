@@ -1,8 +1,8 @@
 import datetime
 from typing import Optional, List, Union, TYPE_CHECKING
-from pydantic import BaseModel
 
 from pygw2.core.enums import WvWMapTypes, WvWObjectiveTypes, WvWTeams, WvWMapBonusTypes
+from pygw2.utils import BaseModel, LazyLoader
 
 if TYPE_CHECKING:
     from pygw2.core.models.misc import World

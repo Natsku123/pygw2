@@ -1,6 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel
-from pygw2.utils import LazyLoader
+from pygw2.utils import LazyLoader, BaseModel
 from pygw2.core.enums import Professions, Races, StoryFlags
 
 
@@ -9,11 +8,11 @@ class BiographyAnswer(BaseModel):
     title: str
     description: str
     journal: str
-    _question: LazyLoader
+    question_: LazyLoader
 
     @property
     def question(self) -> "BiographyQuestion":
-        return self._question()
+        return self.question_()
 
     professions: Optional[List[Professions]]
     races: Optional[List[Races]]
@@ -23,11 +22,11 @@ class BiographyQuestion(BaseModel):
     id: int
     title: str
     description: str
-    _answers: LazyLoader
+    answers_: LazyLoader
 
     @property
     def answers(self) -> List["BiographyAnswer"]:
-        return self._answers()
+        return self.answers_()
 
     order: int
     races: Optional[List[Races]]
@@ -40,11 +39,11 @@ class StoryChapter(BaseModel):
 
 class Story(BaseModel):
     id: int
-    _season: LazyLoader
+    season_: LazyLoader
 
     @property
     def season(self) -> "Season":
-        return self._season()
+        return self.season_()
 
     name: str
     description: str
@@ -60,11 +59,11 @@ class Season(BaseModel):
     id: str
     name: str
     order: int
-    _stories: LazyLoader
+    stories_: LazyLoader
 
     @property
     def stories(self) -> List["Story"]:
-        return self._stories()
+        return self.stories_()
 
 
 class QuestGoal(BaseModel):
@@ -76,10 +75,10 @@ class Quest(BaseModel):
     id: int
     name: str
     level: int
-    _story: LazyLoader
+    story_: LazyLoader
 
     @property
     def story(self) -> "Story":
-        return self._story()
+        return self.story_()
 
     goals: List[QuestGoal]

@@ -1,8 +1,7 @@
 import datetime
 from typing import Optional, List, TYPE_CHECKING
-from pydantic import BaseModel
 
-from pygw2.utils import LazyLoader
+from pygw2.utils import LazyLoader, BaseModel
 
 from pygw2.core.enums import Binding, AccountAccess, Region
 
@@ -14,31 +13,31 @@ if TYPE_CHECKING:
 
 class VaultSlot(BaseModel):
     id: int  # TODO resolve against items
-    _item: LazyLoader
+    item_: LazyLoader
 
     @property
     def item(self) -> "Item":
-        return self._item()
+        return self.item_()
 
     count: int
     charges: Optional[int]
-    _skin: Optional[LazyLoader]
+    skin_: Optional[LazyLoader]
 
     @property
     def skin(self) -> Optional["Skin"]:
-        return self._skin() if self._skin is not None else None
+        return self.skin_() if self.skin_ is not None else None
 
-    _upgrades: Optional[LazyLoader]
+    upgrades_: Optional[LazyLoader]
 
     @property
     def upgrades(self) -> Optional[List["Item"]]:
-        return self._upgrades() if self._upgrades is not None else None
+        return self.upgrades_() if self.upgrades_ is not None else None
 
-    _infusions: Optional[LazyLoader]
+    infusions_: Optional[LazyLoader]
 
     @property
     def infusions(self) -> Optional[List["Item"]]:
-        return self._infusions() if self._infusions is not None else None
+        return self.infusions_() if self.infusions_ is not None else None
 
     binding: Optional[Binding]
     bound_to: Optional[str]
@@ -130,11 +129,11 @@ class MountType(BaseModel):
 
 class UnlockedFinisher(BaseModel):
     id: int
-    _finisher: LazyLoader
+    finisher_: LazyLoader
 
     @property
     def finisher(self) -> "Finisher":
-        return self._finisher()
+        return self.finisher_()
 
     permanent: bool
     quantity: Optional[int]
@@ -142,42 +141,42 @@ class UnlockedFinisher(BaseModel):
 
 class SharedInventorySlot(BaseModel):
     id: int
-    _item: LazyLoader
+    item_: LazyLoader
 
     @property
     def item(self) -> "Item":
-        return self._item()
+        return self.item_()
 
     count: int
     charges: Optional[int]
-    _skin: Optional[LazyLoader]
+    skin_: Optional[LazyLoader]
 
     @property
     def skin(self) -> Optional["Skin"]:
-        return self._skin() if self._skin is not None else None
+        return self.skin_() if self.skin_ is not None else None
 
-    _upgrades: Optional[LazyLoader]
+    upgrades_: Optional[LazyLoader]
 
     @property
     def upgrades(self) -> Optional[List["Item"]]:
-        return self._upgrades() if self._upgrades is not None else None
+        return self.upgrades_() if self.upgrades_ is not None else None
 
-    _infusions: Optional[LazyLoader]
+    infusions_: Optional[LazyLoader]
 
     @property
     def infusions(self) -> Optional[List["Item"]]:
-        return self._infusions() if self._infusions is not None else None
+        return self.infusions_() if self.infusions_ is not None else None
 
     binding: Optional[Binding]
 
 
 class Material(BaseModel):
     id: int
-    _item: LazyLoader
+    item_: LazyLoader
 
     @property
     def item(self) -> "Item":
-        return self._item()
+        return self.item_()
 
     category: int
     count: int
@@ -185,10 +184,10 @@ class Material(BaseModel):
 
 class WalletCurrency(BaseModel):
     id: int
-    _currency: LazyLoader
+    currency_: LazyLoader
 
     @property
     def currency(self) -> "Currency":
-        return self._currency()
+        return self.currency_()
 
     value: int

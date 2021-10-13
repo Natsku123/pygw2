@@ -11,16 +11,16 @@ def parse_item(data: Optional[dict]) -> Optional[dict]:
     if data is None:
         return data
 
-    data["_item"] = LazyLoader(items_api.get, data["id"])
+    data["item_"] = LazyLoader(items_api.get, data["id"])
     if "infusions" in data and data["infusions"]:
-        data["_infusions"] = LazyLoader(items_api.get, *data["infusions"])
+        data["infusions_"] = LazyLoader(items_api.get, *data["infusions"])
     if "upgrades" in data and data["upgrades"]:
-        data["_upgrades"] = LazyLoader(items_api.get, *data["upgrades"])
+        data["upgrades_"] = LazyLoader(items_api.get, *data["upgrades"])
     if "skin" in data and data["skin"]:
-        data["_skin"] = LazyLoader(items_api.skins, data["skin"])
+        data["skin_"] = LazyLoader(items_api.skins, data["skin"])
     if "stats" in data and data["stats"]:
-        data["stats"]["_values"] = LazyLoader(items_api.itemstats, data["stats"]["id"])
+        data["stats"]["values_"] = LazyLoader(items_api.itemstats, data["stats"]["id"])
     if "dyes" in data and data["dyes"]:
-        data["_dyes"] = LazyLoader(misc_api.colors, *data["dyes"])
+        data["dyes_"] = LazyLoader(misc_api.colors, *data["dyes"])
 
     return data

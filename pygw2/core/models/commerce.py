@@ -1,8 +1,7 @@
 import datetime
 from typing import Optional, List, Union, TYPE_CHECKING
-from pydantic import BaseModel
 
-from pygw2.utils import LazyLoader
+from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item
@@ -11,11 +10,11 @@ if TYPE_CHECKING:
 class DeliveryBoxItem(BaseModel):
     id: int
     count: int
-    _item: LazyLoader
+    item_: LazyLoader
 
     @property
     def item(self) -> "Item":
-        return self._item()
+        return self.item_()
 
 
 class DeliveryBox(BaseModel):
@@ -36,11 +35,11 @@ class Listing(BaseModel):
 
 class ItemListing(BaseModel):
     id: int
-    _item: LazyLoader
+    item_: LazyLoader
 
     @property
     def item(self) -> "Item":
-        return self._item()
+        return self.item_()
 
     buys: List[Listing]
     sells: List[Listing]
@@ -53,11 +52,11 @@ class PriceInfo(BaseModel):
 
 class Price(BaseModel):
     id: int
-    _item: LazyLoader
+    item_: LazyLoader
 
     @property
     def item(self) -> "Item":
-        return self._item()
+        return self.item_()
 
     whitelisted: bool
     buys: PriceInfo
@@ -67,11 +66,11 @@ class Price(BaseModel):
 class Transaction(BaseModel):
     id: int
     item_id: int
-    _item: LazyLoader
+    item_: LazyLoader
 
     @property
     def item(self) -> "Item":
-        return self._item()
+        return self.item_()
 
     price: int
     quantity: int

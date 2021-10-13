@@ -1,13 +1,13 @@
 from typing import Optional, List, Union
-from pydantic import BaseModel
 
 from pygw2.core.enums import *
+from pygw2.utils import LazyLoader, BaseModel
 
 
 class Finisher(BaseModel):
     id: int = 0
     unlock_details: str = ""
-    unlock_items: Optional[List[int]]   # TODO resolve against items
+    unlock_items: Optional[List[int]]  # TODO resolve against items
     order: int = 0
     icon: str = ""
     name: str = ""
@@ -44,17 +44,15 @@ class Skin(BaseModel):
     flags: List[SkinFlag]
     restrictions: List[Races]
     icon: str
-    rarity: str     # TODO same as ItemRarity?
+    rarity: str  # TODO same as ItemRarity?
     description: str
-    details: Optional[Union[
-        'ArmorSkinDetails',
-        'WeaponSkinDetails',
-        'GatheringSkinDetails'
-    ]]
+    details: Optional[
+        Union["ArmorSkinDetails", "WeaponSkinDetails", "GatheringSkinDetails"]
+    ]
 
 
 class DyeSlot(BaseModel):
-    color_id: int   # TODO resolve against colors
+    color_id: int  # TODO resolve against colors
     material: DyeSlotMaterial
 
 
@@ -82,7 +80,7 @@ class MountSkin(BaseModel):
     id: int = 0
     name: str = ""
     icon: str = ""
-    mount: str = ""     # TODO resolve against mount types
+    mount: str = ""  # TODO resolve against mount types
     dye_slots: List[DyeSlot]
 
 

@@ -156,20 +156,20 @@ class CharactersApi:
 
         if isinstance(data, dict):
             if data["guild"]:
-                data["_guild"] = LazyLoader(guild_api.get, data["guild"])
+                data["guild_"] = LazyLoader(guild_api.get, data["guild"])
             if data["title"]:
-                data["_title"] = LazyLoader(misc_api.titles, data["title"])
-            data["_backstory"] = LazyLoader(backstory_api.answers, *data["backstory"])
+                data["title_"] = LazyLoader(misc_api.titles, data["title"])
+            data["backstory_"] = LazyLoader(backstory_api.answers, *data["backstory"])
 
             # Parse all items in equipment
             for i, e in enumerate(data["equipment"]):
                 data["equipment"][i] = parse_item(e)
 
-            data["_heropoints"] = LazyLoader(self.heropoints)
+            data["heropoints_"] = LazyLoader(self.heropoints)
 
             # Parse all items in bags / inventory
             for b in data["bags"]:
-                b["_item"] = LazyLoader(items_api.get, b["id"])
+                b["item_"] = LazyLoader(items_api.get, b["id"])
 
                 for i, v in enumerate(b["inventory"]):
                     if v:
@@ -177,37 +177,37 @@ class CharactersApi:
 
             # Parse all skills
             for v in data["skills"]:
-                v["_heal"] = LazyLoader(mecha_api.skills, v["heal"])
-                v["_utilities"] = LazyLoader(mecha_api.skills, v["utilities"])
-                v["_elite"] = LazyLoader(mecha_api.skills, v["elite"])
+                v["heal_"] = LazyLoader(mecha_api.skills, v["heal"])
+                v["utilities_"] = LazyLoader(mecha_api.skills, v["utilities"])
+                v["elite_"] = LazyLoader(mecha_api.skills, v["elite"])
                 if v["legends"]:
-                    v["_legends"] = LazyLoader(mecha_api.skills, v["legends"])
+                    v["legends_"] = LazyLoader(mecha_api.skills, v["legends"])
 
             # Parse all specializations
             for v in data["specializations"]:
                 for s in v:
-                    s["_specialization"] = LazyLoader(
+                    s["specialization_"] = LazyLoader(
                         mecha_api.specializations, s["id"]
                     )
-                    s["_traits"] = LazyLoader(mecha_api.traits, *s["traits"])
+                    s["traits_"] = LazyLoader(mecha_api.traits, *s["traits"])
 
-            data["_sab"] = LazyLoader(self.sab)
+            data["sab_"] = LazyLoader(self.sab)
 
             # Parse all WvW abilities
             for a in data["wvw_abilities"]:
-                a["_ability"] = LazyLoader(wvw_api.abilities, a["id"])
+                a["ability_"] = LazyLoader(wvw_api.abilities, a["id"])
 
             # Parse PvP equipment
             if data["equipment_pvp"]["amulet"]:
-                data["equipment_pvp"]["_amulet"] = LazyLoader(
+                data["equipment_pvp"]["amulet_"] = LazyLoader(
                     items_api.pvp_amulets, data["equipment_pvp"]["amulet"]
                 )
             if data["equipment_pvp"]["rune"]:
-                data["equipment_pvp"]["_rune"] = LazyLoader(
+                data["equipment_pvp"]["rune_"] = LazyLoader(
                     items_api.get, data["equipment_pvp"]["rune"]
                 )
             if data["equipment_pvp"]["sigils"]:
-                data["equipment_pvp"]["_sigils"] = LazyLoader(
+                data["equipment_pvp"]["sigils_"] = LazyLoader(
                     items_api.get, data["equipment_pvp"]["sigils"]
                 )
 
@@ -243,9 +243,9 @@ class CharactersApi:
         guild_api = GuildApi()
 
         if data["guild"]:
-            data["_guild"] = LazyLoader(guild_api.get, data["guild"])
+            data["guild_"] = LazyLoader(guild_api.get, data["guild"])
         if data["title"]:
-            data["_title"] = LazyLoader(misc_api.titles, data["title"])
+            data["title_"] = LazyLoader(misc_api.titles, data["title"])
         return object_parse(data, CharacterCore)
 
     @endpoint("/v2/characters", subendpoint="/crafting")
@@ -299,7 +299,7 @@ class CharactersApi:
             data = data["bags"]
 
         for b in data:
-            b["_item"] = LazyLoader(items_api.get, b["id"])
+            b["item_"] = LazyLoader(items_api.get, b["id"])
 
             for i, v in enumerate(b["inventory"]):
                 if v:
@@ -322,11 +322,11 @@ class CharactersApi:
             data = data["skills"]
 
         for v in data:
-            v["_heal"] = LazyLoader(mecha_api.skills, v["heal"])
-            v["_utilities"] = LazyLoader(mecha_api.skills, v["utilities"])
-            v["_elite"] = LazyLoader(mecha_api.skills, v["elite"])
+            v["heal_"] = LazyLoader(mecha_api.skills, v["heal"])
+            v["utilities_"] = LazyLoader(mecha_api.skills, v["utilities"])
+            v["elite_"] = LazyLoader(mecha_api.skills, v["elite"])
             if v["legends"]:
-                v["_legends"] = LazyLoader(mecha_api.skills, v["legends"])
+                v["legends_"] = LazyLoader(mecha_api.skills, v["legends"])
 
         return object_parse(data, Skills)
 
@@ -346,8 +346,8 @@ class CharactersApi:
 
         for v in data:
             for s in v:
-                s["_specialization"] = LazyLoader(mecha_api.specializations, s["id"])
-                s["_traits"] = LazyLoader(mecha_api.traits, *s["traits"])
+                s["specialization_"] = LazyLoader(mecha_api.specializations, s["id"])
+                s["traits_"] = LazyLoader(mecha_api.traits, *s["traits"])
 
         return object_parse(data, Specializations)
 
@@ -427,7 +427,7 @@ class AccountApi:
         achievements_api = AchievementsApi()
 
         for a in data:
-            a["_achievement"] = LazyLoader(achievements_api.get, a["id"])
+            a["achievement_"] = LazyLoader(achievements_api.get, a["id"])
 
         return object_parse(data, AchievementProgress)
 
@@ -495,7 +495,7 @@ class AccountApi:
         items_api = ItemsApi()
 
         for f in data:
-            f["_finisher"] = LazyLoader(items_api.finishers, f["id"])
+            f["finisher_"] = LazyLoader(items_api.finishers, f["id"])
 
         return object_parse(data, UnlockedFinisher)
 
@@ -596,7 +596,7 @@ class AccountApi:
         items_api = ItemsApi()
 
         for m in data:
-            m["_item"] = LazyLoader(items_api.get, m["id"])
+            m["item_"] = LazyLoader(items_api.get, m["id"])
 
         return object_parse(data, Material)
 
@@ -714,7 +714,7 @@ class AccountApi:
         misc_api = MiscellaneousApi()
 
         for c in data:
-            c["_currency"] = LazyLoader(misc_api.currencies, data["id"])
+            c["currency_"] = LazyLoader(misc_api.currencies, data["id"])
 
         return object_parse(data, WalletCurrency)
 

@@ -36,7 +36,7 @@ class TradingPostApi:
         :return: object
         """
         for item in data["items"]:
-            item["_item"] = LazyLoader(items_api.get, item["id"])
+            item["item_"] = LazyLoader(items_api.get, item["id"])
         return object_parse(data, DeliveryBox)
 
     @endpoint(
@@ -88,7 +88,7 @@ class TradingPostApi:
             return data
 
         for listing in data:
-            listing["_item"] = LazyLoader(items_api.get, listing["id"])
+            listing["item_"] = LazyLoader(items_api.get, listing["id"])
 
         return object_parse(data, ItemListing)
 
@@ -105,7 +105,7 @@ class TradingPostApi:
             return data
 
         for price in data:
-            price["_item"] = LazyLoader(items_api.get, price["id"])
+            price["item_"] = LazyLoader(items_api.get, price["id"])
 
         return object_parse(data, Price)
 
@@ -118,7 +118,7 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -131,7 +131,7 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -144,7 +144,7 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -157,6 +157,6 @@ class TradingPostApi:
         """
 
         for transaction in data:
-            transaction["_item"] = LazyLoader(items_api.get, transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)

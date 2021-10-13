@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import List, Optional
+
+from pygw2.utils import BaseModel
 
 
 class Continent(BaseModel):
@@ -8,7 +9,7 @@ class Continent(BaseModel):
     continent_dims: List[int]
     min_zoom: int
     max_zoom: int
-    floors: List[int]   # TODO parse subendpoints?
+    floors: List[int]  # TODO parse subendpoints?
 
 
 class MapSector(BaseModel):
@@ -26,11 +27,10 @@ class Map(BaseModel):
     min_level: int
     max_level: int
     default_floor: int
-    floors: List[int]   # TODO resolve?
-    region_id: int      # TODO resolve region?
+    floors: List[int]  # TODO resolve?
+    region_id: int  # TODO resolve region?
     region_name: Optional[str]
-    continent_id: int   # TODO resolve continent?
+    continent_id: int  # TODO resolve continent?
     continent_name: str
     map_rect: List[List[int]]
     continent_rect: List[List[int]]
-

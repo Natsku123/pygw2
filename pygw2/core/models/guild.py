@@ -1,6 +1,5 @@
 import datetime
 
-from pydantic import BaseModel
 from typing import List, Optional, Union, TYPE_CHECKING
 
 from pygw2.core.enums import (
@@ -10,6 +9,8 @@ from pygw2.core.enums import (
     GuildLogEntryType,
     GuildTeamMemberRole,
 )
+
+from pygw2.utils import BaseModel, LazyLoader
 
 if TYPE_CHECKING:
     from pygw2.core.models.pvp import PvpWinLoss, PvpLadderStats, PvpGame

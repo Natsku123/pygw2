@@ -155,8 +155,8 @@ class ItemsApi:
             return data
 
         for g in data:
-            g["_unlock_items"] = LazyLoader(self.get, *g["unlock_items"])
-            g["_default_dyes"] = LazyLoader(misc_api.colors, *g["default_dyes"])
+            g["unlock_items_"] = LazyLoader(self.get, *g["unlock_items"])
+            g["default_dyes_"] = LazyLoader(misc_api.colors, *g["default_dyes"])
 
         return object_parse(data, Glider)
 
@@ -173,6 +173,6 @@ class ItemsApi:
             return data
 
         for m in data:
-            m["_unlock_items"] = LazyLoader(self.get, *m["unlock_items"])
+            m["unlock_items_"] = LazyLoader(self.get, *m["unlock_items"])
 
         return object_parse(data, Mailcarrier)

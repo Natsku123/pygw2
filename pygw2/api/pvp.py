@@ -143,7 +143,7 @@ class PvpApi:
         for h in data:
             for skin in h["skins"]:
                 if skin["unlock_items"]:
-                    skin["_unlock_items"] = LazyLoader(
+                    skin["unlock_items_"] = LazyLoader(
                         items_api.get, *skin["unlock_items"]
                     )
 

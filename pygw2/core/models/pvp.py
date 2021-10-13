@@ -1,8 +1,7 @@
 import datetime
-from pydantic import BaseModel
 from typing import Optional, Union, List, TYPE_CHECKING
 
-from pygw2.utils import LazyLoader
+from pygw2.utils import LazyLoader, BaseModel
 from pygw2.core.enums import PvpRatingType, PvpDivisionFlags
 
 if TYPE_CHECKING:
@@ -10,23 +9,23 @@ if TYPE_CHECKING:
 
 
 class PvPEquipment(BaseModel):
-    _amulet: Optional[LazyLoader]
+    amulet_: Optional[LazyLoader]
 
     @property
     def amulet(self) -> Optional["PvpAmulet"]:
-        return self._amulet() if self._amulet is not None else None
+        return self.amulet_() if self.amulet_ is not None else None
 
-    _rune: Optional[LazyLoader]
+    rune_: Optional[LazyLoader]
 
     @property
     def rune(self) -> Optional["Item"]:
-        return self._rune() if self._rune is not None else None
+        return self.rune_() if self.rune_ is not None else None
 
-    _sigils: Optional[LazyLoader]
+    sigils_: Optional[LazyLoader]
 
     @property
     def sigils(self) -> List["Item"]:
-        return self._sigils() if self._sigils is not None else None
+        return self.sigils_() if self.sigils_ is not None else None
 
 
 class PvpAttributes(BaseModel):
@@ -195,11 +194,11 @@ class PvpHeroSkin(BaseModel):
     name: str
     icon: str
     default: bool
-    _unlock_items: Optional[LazyLoader]
+    unlock_items_: Optional[LazyLoader]
 
     @property
     def unlock_items(self) -> Union[List["Item"], "Item"]:
-        return self._unlock_items() if self._unlock_items is not None else None
+        return self.unlock_items_() if self.unlock_items_ is not None else None
 
 
 class PvpHero(BaseModel):

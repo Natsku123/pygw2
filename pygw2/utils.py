@@ -1,12 +1,17 @@
 import asyncio, concurrent.futures
 from aiohttp import ClientSession
-from pydantic import parse_obj_as, BaseModel
+from pydantic import parse_obj_as, BaseModel as PydanticBase
 from typing import List, Dict, Union, Any, Type, Callable
 
 from .core.exceptions import ApiError
 from .settings import *
 
 pool = concurrent.futures.ThreadPoolExecutor()
+
+
+class BaseModel(PydanticBase):
+    class Config:
+        arbitrary_types_allowed = True
 
 
 def function_call_key(func: Callable, args, kwargs) -> str:

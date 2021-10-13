@@ -1,5 +1,5 @@
 from typing import List
-from pydantic import BaseModel
+from pygw2.utils import LazyLoader, BaseModel
 
 
 class SABZones(BaseModel):
