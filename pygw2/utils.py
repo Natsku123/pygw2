@@ -16,6 +16,13 @@ class BaseModel(PydanticBase):
 
 
 def function_call_key(func: Callable, args, kwargs) -> str:
+    """
+    Generate a key based on function called and arguments
+    :param func:
+    :param args:
+    :param kwargs:
+    :return:
+    """
     return f"{func.__qualname__}{args}{kwargs}"
 
 
@@ -23,11 +30,17 @@ class LazyLoader:
     _loaded = {}
 
     def __new__(cls, func: Callable, *args, **kwargs):
+
+        # Check if the function has already been loaded
         loader = cls._loaded.get(function_call_key(func, args, kwargs))
+
+        # If found, return it instead of a new instance
         if loader is not None:
             return loader
 
         loader = super().__new__(cls)
+
+        # Save new loader to be used in the future
         cls._loaded[function_call_key(func, args, kwargs)] = loader
         return loader
 
