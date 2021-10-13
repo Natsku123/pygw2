@@ -3,6 +3,13 @@ from ..utils import endpoint, object_parse
 
 
 class ContinentApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, continent_id: int = None):
         self.continent_id = continent_id
         self._floor_api = ContinentFloorApi
@@ -22,6 +29,13 @@ class ContinentApi:
 
 
 class ContinentFloorApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, continent_id: int, floor_id: int = None):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -42,6 +56,13 @@ class ContinentFloorApi:
 
 
 class ContinentFloorRegionApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, continent_id: int, floor_id: int, region_id: int = None):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -63,6 +84,13 @@ class ContinentFloorRegionApi:
 
 
 class ContinentFloorRegionMapApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(
         self, continent_id: int, floor_id: int, region_id: int, map_id: int = None
     ):
@@ -103,6 +131,13 @@ class ContinentFloorRegionMapApi:
 
 
 class MapInfoApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self._continent = ContinentApi
 

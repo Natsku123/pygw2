@@ -13,6 +13,13 @@ map_api = MapInfoApi()
 
 
 class WvWMatchesApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, match_id):
         self.match_id: str = match_id
 
@@ -167,6 +174,13 @@ class WvWMatchesApi:
 
 
 class WvWApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.api_key: str = ""
         self._matches = WvWMatchesApi

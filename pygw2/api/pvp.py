@@ -8,6 +8,13 @@ items_api = ItemsApi()
 
 
 class PvpLeaderboardsApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, season_id: str):
         self.api_key: str = ""
         self.season_id = season_id
@@ -77,6 +84,13 @@ class PvpLeaderboardsApi:
 
 
 class PvpApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.api_key: str = ""
         self._leaderboards = PvpLeaderboardsApi

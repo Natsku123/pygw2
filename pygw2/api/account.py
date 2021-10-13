@@ -31,6 +31,13 @@ from ..core import parse_item
 
 
 class AccountHomeApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.api_key: str = ""
 
@@ -65,6 +72,13 @@ class AccountHomeApi:
 
 
 class AccountMountsApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.api_key: str = ""
 
@@ -99,6 +113,13 @@ class AccountMountsApi:
 
 
 class CharactersApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self, character_id: str, *, api_key: str = ""):
         self.api_key: str = api_key
         self.character_id: str = character_id
@@ -354,6 +375,13 @@ class CharactersApi:
 
 
 class AccountApi:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls, *args, **kwargs)
+        return cls._instance
+
     def __init__(self):
         self.api_key: str = ""
         self._home = AccountHomeApi()
