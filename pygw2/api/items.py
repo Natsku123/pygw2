@@ -190,7 +190,6 @@ class ItemsApi:
         for s in data:
             kappa += 1
             if "details" in s:
-                print(kappa, s["details"]["type"])
                 if "dye_slots" in s["details"] and s["details"]["dye_slots"]:
                     for i, d in enumerate(s["details"]["dye_slots"]["default"]):
                         if d:
