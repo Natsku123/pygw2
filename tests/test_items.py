@@ -1,6 +1,5 @@
 import pytest
-from pygw2.core.models.crafting import Recipe
-from pygw2.core.models.items import Item
+from pygw2.models import *
 
 import unittest
 import aiounittest

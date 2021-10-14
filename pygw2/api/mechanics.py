@@ -87,8 +87,16 @@ class MechanicsApi:
         :param ids:
         :return:
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi()
+
         if ids is None:
             return data
+
+        for o in data:
+            o["unlock_items_"] = LazyLoader(items_api.get, *o["unlock_items"])
+
         return object_parse(data, Outfit)
 
     @endpoint("/v2/pets", has_ids=True)

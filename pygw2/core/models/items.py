@@ -5,7 +5,10 @@ from typing import Optional, List, Union, TYPE_CHECKING
 from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
-    from pygw2.core.models.misc import Color
+    from pygw2.core.models.misc import Color, Mini
+    from pygw2.core.models.general import Skin, ItemStat
+    from pygw2.core.models.crafting import Recipe
+    from pygw2.core.models.guild import GuildUpgrade
 
 
 class Upgrade(BaseModel):
@@ -23,7 +26,12 @@ class Item(BaseModel):
     rarity: ItemRarity
     level: int
     vendor_value: int
-    default_skin: Optional[int]  # TODO resolve against /v2/skins
+    default_skin_: Optional[LazyLoader]
+
+    @property
+    def default_skin(self) -> Optional["Skin"]:
+        return self.default_skin_() if self.default_skin_ is not None else None
+
     flags: List[ItemFlags] = []
     game_types: List[GameTypes] = []
     restrictions: List[Union[Races, Professions]] = []
@@ -77,7 +85,11 @@ class ArmorDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str = ""
-    stat_choices: Optional[List[int]] = []  # TODO resolve against /v2/itemstats
+    stat_choices_: Optional[LazyLoader]
+
+    @property
+    def stat_choices(self) -> Optional[List["ItemStat"]]:
+        return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
 class BackDetails(BaseModel):
@@ -86,7 +98,11 @@ class BackDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str = ""
-    stat_choices: Optional[List[int]] = []  # TODO resolve against /v2/itemstats
+    stat_choices_: Optional[LazyLoader]
+
+    @property
+    def stat_choices(self) -> Optional[List["ItemStat"]]:
+        return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
 class BagDetails(BaseModel):
@@ -99,14 +115,42 @@ class ConsumableDetails(BaseModel):
     description: Optional[str]
     duration_ms: Optional[int]
     unlock_type: Optional[UnlockType]
-    color_id: Optional[int]  # TODO resolve against dyes
-    recipe_id: Optional[int]  # TODO resolve against recipes
-    extra_recipe_ids: Optional[List[int]] = []  # TODO resolve against recipes
-    guild_upgrade_id: Optional[int]  # TODO resolve against guild upgrades
+    color_id: Optional[int]
+    color_: Optional[LazyLoader]
+
+    @property
+    def color(self) -> Optional["Color"]:
+        return self.color_() if self.color_ is not None else None
+
+    recipe_id: Optional[int]
+    recipe_: Optional[LazyLoader]
+
+    @property
+    def recipe(self) -> Optional["Recipe"]:
+        return self.recipe_() if self.recipe_ is not None else None
+
+    extra_recipe_ids: Optional[List[int]] = []
+    extra_recipes_: Optional[LazyLoader]
+
+    @property
+    def extra_recipes(self) -> Optional[List["Recipe"]]:
+        return self.extra_recipes_() if self.extra_recipes_ is not None else None
+
+    guild_upgrade_id: Optional[int]
+    guild_upgrade_: Optional[LazyLoader]
+
+    @property
+    def guild_upgrade(self) -> Optional["GuildUpgrade"]:
+        return self.guild_upgrade_() if self.guild_upgrade_ is not None else None
+
     apply_count: Optional[int]
     name: Optional[str]
     icon: Optional[str]
-    skins: Optional[List[int]] = []  # TODO resolve against skins
+    skins_: Optional[LazyLoader]
+
+    @property
+    def skins(self) -> Optional[List["Skin"]]:
+        return self.skins_() if self.skins_ is not None else None
 
 
 class ContainerDetails(BaseModel):
@@ -119,12 +163,23 @@ class GatheringToolDetails(BaseModel):
 
 class GizmoDetails(BaseModel):
     type: GizmoType
-    guild_upgrade_id: Optional[List[int]] = []  # TODO resolve guild upgrades
-    vendor_ids: List[int] = []
+    guild_upgrade_id: Optional[int]
+    guild_upgrade_: Optional[LazyLoader]
+
+    @property
+    def guild_upgrade(self) -> Optional["GuildUpgrade"]:
+        return self.guild_upgrade_() if self.guild_upgrade_ is not None else None
+
+    vendor_ids: List[int] = []  # TODO resolve?
 
 
 class MiniatureDetails(BaseModel):
-    minipet_id: int  # TODO resolve against minis
+    minipet_id: int
+    minipet_: LazyLoader
+
+    @property
+    def minipet(self) -> "Mini":
+        return self.minipet_()
 
 
 class SalvageKitDetails(BaseModel):
@@ -138,7 +193,11 @@ class TrinketDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str = ""
-    stat_choices: Optional[List[int]]  # TODO resolve against itemstats
+    stat_choices_: Optional[LazyLoader]
+
+    @property
+    def stat_choices(self) -> Optional[List["ItemStat"]]:
+        return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
 class UpgradeComponentDetails(BaseModel):
@@ -161,14 +220,22 @@ class WeaponDetails(BaseModel):
     infix_upgrade: Optional[InfixUpgrade]
     suffix_item_id: Optional[int]
     secondary_suffix_item_id: str
-    stat_choices: List[int]  # TODO resolve itemstats
+    stat_choices_: Optional[LazyLoader]
+
+    @property
+    def stat_choices(self) -> Optional[List["ItemStat"]]:
+        return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
 class Outfit(BaseModel):
     id: int = 0
     name: str = ""
     icon: str = ""
-    unlock_items: List[int] = []  # TODO resolve against items
+    unlock_items_: LazyLoader
+
+    @property
+    def unlock_items(self) -> List["Item"]:
+        return self.unlock_items_()
 
 
 class Glider(BaseModel):

@@ -66,7 +66,7 @@ class AchievementsApi:
         :param data: Data from wrapper
         :return: dict
         """
-        return DailyAchievements(**data)
+        return object_parse(data, DailyAchievements)
 
     @endpoint("/v2/achievements/daily/tomorrow")
     async def daily_tomorrow(self, *, data):

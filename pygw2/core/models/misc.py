@@ -34,7 +34,12 @@ class Color(BaseModel):
     leather: ColorDetails
     metal: ColorDetails
     fur: Optional[ColorDetails] = None
-    item: Optional[int] = None  # TODO Resolve with dye
+    item_: Optional[LazyLoader]
+
+    @property
+    def item(self) -> Optional["Item"]:
+        return self.item_() if self.item_ is not None else None
+
     categories: List[
         Union[ColorCategoryHue, ColorCategoryRarity, ColorCategoryMaterial]
     ] = []
@@ -74,7 +79,11 @@ class Mini(BaseModel):
     icon: str
     order: int
     item_id: int
-    item: "Item"
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
 
 
 class Novelty(BaseModel):
@@ -83,7 +92,11 @@ class Novelty(BaseModel):
     description: str
     icon: str
     slot: NoveltySlot
-    unlock_item: Optional[List["Item"]]
+    unlock_item_: Optional[LazyLoader]
+
+    @property
+    def unlock_item(self) -> Optional[List["Item"]]:
+        return self.unlock_item_() if self.unlock_item_ is not None else None
 
 
 class RaidWingEvent(BaseModel):
@@ -104,11 +117,11 @@ class Raid(BaseModel):
 class Title(BaseModel):
     id: int
     name: str
-    achievements_: LazyLoader
+    achievements_: Optional[LazyLoader]
 
     @property
-    def achievements(self) -> List["Achievement"]:
-        return self.achievements_()
+    def achievements(self) -> Optional[List["Achievement"]]:
+        return self.achievements_() if self.achievements_ is not None else None
 
     ap_required: Optional[int]
 

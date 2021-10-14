@@ -1,10 +1,5 @@
 import pytest
-from pygw2.core.models.achievements import (
-    Achievement,
-    DailyAchievements,
-    AchievementCategory,
-    AchievementGroup,
-)
+from pygw2.models import *
 
 import unittest
 import aiounittest

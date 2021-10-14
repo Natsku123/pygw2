@@ -12,7 +12,7 @@ def subset(data: list, default_length: int):
 
     # Stop if nothing was found:
     if len(data) == 0:
-        return
+        return []
 
     # Select some IDs
     length = default_length if len(data) > default_length else len(data)

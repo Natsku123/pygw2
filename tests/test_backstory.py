@@ -1,11 +1,5 @@
 import pytest
-from pygw2.core.models.backstory import (
-    BiographyAnswer,
-    BiographyQuestion,
-    Story,
-    Season,
-    Quest,
-)
+from pygw2.models import *
 
 import unittest
 import aiounittest

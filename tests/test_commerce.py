@@ -1,11 +1,5 @@
 import pytest
-from pygw2.core.models.commerce import (
-    DeliveryBox,
-    ExchangeRate,
-    ItemListing,
-    Price,
-    Transaction,
-)
+from pygw2.models import *
 
 import unittest
 import aiounittest

@@ -46,10 +46,17 @@ class MiscellaneousApi:
         :param ids: List of IDs
         :return: list
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi()
 
         # Return ids
         if ids is None:
             return data
+
+        for c in data:
+            if "item" in c and c["item"]:
+                c["item_"] = LazyLoader(items_api.get, c["item"])
 
         # Return object(s)
         return object_parse(data, Color)
@@ -135,7 +142,7 @@ class MiscellaneousApi:
             return data
 
         for mini in data:
-            mini["item"] = await items_api.get(mini["item_id"])
+            mini["item_"] = LazyLoader(items_api.get, mini["item_id"])
 
         return object_parse(data, Mini)
 
@@ -157,7 +164,8 @@ class MiscellaneousApi:
             return data
 
         for nov in data:
-            nov["unlock_item"] = await items_api.get(*nov["unlock_item"])
+            if "unlock_item" in nov and nov["unlock_item"]:
+                nov["unlock_item_"] = LazyLoader(items_api.get, *nov["unlock_item"])
 
         return object_parse(data, Novelty)
 
@@ -191,7 +199,8 @@ class MiscellaneousApi:
             return data
 
         for t in data:
-            t["achievements_"] = LazyLoader(achi_api.get, *t["achievements"])
+            if "achievements" in t and t["achievements"]:
+                t["achievements_"] = LazyLoader(achi_api.get, *t["achievements"])
 
         return object_parse(data, Title)
 

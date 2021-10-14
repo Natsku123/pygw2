@@ -8,7 +8,7 @@ from ..core.models.account import (
     MountType,
     UnlockedFinisher,
     SharedInventorySlot,
-    Material,
+    StorageMaterial,
     WalletCurrency,
     MasteryProgress,
 )
@@ -472,6 +472,11 @@ class AccountApi:
 
         daily_api = DailyApi()
 
+        print("asd", data)
+
+        if not data:
+            return data
+
         return await daily_api.crafting(*data)
 
     @endpoint("/v2/account/dungeons")
@@ -572,6 +577,9 @@ class AccountApi:
 
         daily_api = DailyApi()
 
+        if not data:
+            return data
+
         return await daily_api.mapchests(*data)
 
     @endpoint("/v2/account/masteries")
@@ -601,7 +609,7 @@ class AccountApi:
         return data
 
     @endpoint("/v2/account/materials")
-    async def materials(self, *, data) -> List["Material"]:
+    async def materials(self, *, data) -> List["StorageMaterial"]:
         """
         Get contents of material storage from API.
         :param data: Data from wrapper
@@ -614,7 +622,7 @@ class AccountApi:
         for m in data:
             m["item_"] = LazyLoader(items_api.get, m["id"])
 
-        return object_parse(data, Material)
+        return object_parse(data, StorageMaterial)
 
     @endpoint("/v2/account/minis")
     async def minis(self, *, data) -> List["Mini"]:
@@ -626,6 +634,9 @@ class AccountApi:
         from .misc import MiscellaneousApi
 
         misc_api = MiscellaneousApi()
+
+        if not data:
+            return data
 
         return await misc_api.minis(*data)
 
@@ -653,6 +664,9 @@ class AccountApi:
 
         mecha_api = MechanicsApi()
 
+        if not data:
+            return data
+
         return await mecha_api.outfits(*data)
 
     @endpoint("/v2/account/pvp/heroes")
@@ -665,6 +679,9 @@ class AccountApi:
         from .pvp import PvpApi
 
         pvp_api = PvpApi()
+
+        if not data:
+            return data
 
         return await pvp_api.heroes(*data)
 
@@ -690,6 +707,9 @@ class AccountApi:
 
         items_api = ItemsApi()
 
+        if not data:
+            return data
+
         return await items_api.recipes(*data)
 
     @endpoint("/v2/account/skins")
@@ -703,6 +723,9 @@ class AccountApi:
 
         items_api = ItemsApi()
 
+        if not data:
+            return data
+
         return await items_api.skins(*data)
 
     @endpoint("/v2/account/titles")
@@ -715,6 +738,9 @@ class AccountApi:
         from .misc import MiscellaneousApi
 
         misc_api = MiscellaneousApi()
+
+        if not data:
+            return data
 
         return await misc_api.titles(*data)
 
@@ -730,7 +756,7 @@ class AccountApi:
         misc_api = MiscellaneousApi()
 
         for c in data:
-            c["currency_"] = LazyLoader(misc_api.currencies, data["id"])
+            c["currency_"] = LazyLoader(misc_api.currencies, c["id"])
 
         return object_parse(data, WalletCurrency)
 

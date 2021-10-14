@@ -4,11 +4,6 @@ from ..core.models.items import Item, Glider, Mailcarrier
 from ..core.models.pvp import PvpAmulet
 from ..utils import endpoint, object_parse, LazyLoader
 
-from ..api.misc import MiscellaneousApi
-
-
-misc_api = MiscellaneousApi()
-
 
 class ItemsApi:
     _instance = None
@@ -31,14 +26,60 @@ class ItemsApi:
         :param ids: list
         :return: list
         """
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi()
+
+        from .guild import GuildApi
+
+        guild_api = GuildApi()
 
         # Return list of ids.
         if ids is None:
             return data
 
-        # Return list of Achievements.
-        else:
-            return object_parse(data, Item)
+        for i in data:
+            if "default_skin" in i and i["default_skin"]:
+                i["default_skin_"] = LazyLoader(self.skins, i["default_skin"])
+
+            if "details" in i and i["details"]:
+                if "stat_choices" in i["details"] and i["details"]["stat_choices"]:
+                    i["details"]["stat_choices_"] = LazyLoader(
+                        self.itemstats, *i["details"]["stat_choices"]
+                    )
+                if "color_id" in i["details"] and i["details"]["color_id"]:
+                    i["details"]["color_"] = LazyLoader(
+                        misc_api.colors, i["details"]["color_id"]
+                    )
+                if "recipe_id" in i["details"] and i["details"]["recipe_id"]:
+                    i["details"]["recipe_"] = LazyLoader(
+                        self.recipes, i["details"]["recipe_id"]
+                    )
+                if (
+                    "extra_recipe_ids" in i["details"]
+                    and i["details"]["extra_recipe_ids"]
+                ):
+                    i["details"]["extra_recipes_"] = LazyLoader(
+                        self.recipes, *i["details"]["extra_recipe_ids"]
+                    )
+                if (
+                    "guild_upgrade_id" in i["details"]
+                    and i["details"]["guild_upgrade_id"]
+                ):
+                    i["details"]["guild_upgrade_"] = LazyLoader(
+                        guild_api.upgrades, i["details"]["guild_upgrade_id"]
+                    )
+                if "skins" in i["details"] and i["details"]["skins"]:
+                    i["details"]["skins_"] = LazyLoader(
+                        self.skins, *i["details"]["skins"]
+                    )
+                if "minipet_id" in i["details"] and i["details"]["minipet_id"]:
+                    i["details"]["minipet_"] = LazyLoader(
+                        misc_api.minis, i["details"]["minipet_id"]
+                    )
+
+        # Return list of Items.
+        return object_parse(data, Item)
 
     @endpoint("/v2/finishers", has_ids=True)
     async def finishers(self, *, data, ids: list = None):
@@ -138,10 +179,36 @@ class ItemsApi:
         :param ids:
         :return:
         """
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi()
+
         if ids is None:
             return data
-        else:
-            return object_parse(data, Skin)
+
+        kappa = -1
+        for s in data:
+            kappa += 1
+            if "details" in s:
+                print(kappa, s["details"]["type"])
+                if "dye_slots" in s["details"] and s["details"]["dye_slots"]:
+                    for i, d in enumerate(s["details"]["dye_slots"]["default"]):
+                        if d:
+                            s["details"]["dye_slots"]["default"][i][
+                                "color_"
+                            ] = LazyLoader(misc_api.colors, d["color_id"])
+                    if (
+                        "overrides" in s["details"]["dye_slots"]
+                        and s["details"]["dye_slots"]["overrides"]
+                        and "color_id" in s["details"]["dye_slots"]["overrides"]
+                        and s["details"]["dye_slots"]["overrides"]["color_id"]
+                    ):
+                        s["details"]["dye_slots"]["overrides"]["color_"] = LazyLoader(
+                            misc_api.colors,
+                            s["details"]["dye_slots"]["overrides"]["color_id"],
+                        )
+
+        return object_parse(data, Skin)
 
     @endpoint("/v2/gliders", has_ids=True)
     async def gliders(self, *, data, ids: list = None):
@@ -151,6 +218,10 @@ class ItemsApi:
         :param ids: list of IDs
         :return: list of gliders
         """
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi()
+
         if ids is None:
             return data
 

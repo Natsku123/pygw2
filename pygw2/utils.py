@@ -139,7 +139,8 @@ def endpoint(
     def decorate(func):
         @wraps(func)
         async def get_data(self, *args, **kwargs):
-            ids = []
+            ids = [[]]
+            result = []
             path_id = ""
             parameters = default_parameters.copy()
 
@@ -209,19 +210,16 @@ def endpoint(
 
             # Construct fetch with ID(s)
             if has_ids:
-                if len(args) > max_ids and path_id == "":
-                    raise ApiError("Too many IDs for this endpoint.")
+                # if len(args) > max_ids and path_id == "":
+                #     raise ApiError("Too many IDs for this endpoint.")
                 if len(args) < min_ids and path_id == "":
                     raise ApiError("Not enough IDs for this endpoint.")
 
-                for item_id in args:
-                    ids.append(item_id)
-
-                if len(ids) > 0:
-                    if not override_ids:
-                        parameters["ids"] = list_to_str(ids)
-                    else:
-                        parameters[override_ids] = list_to_str(ids)
+                # Slice given IDs into batches
+                for i, item_id in enumerate(args):
+                    if len(ids) < (i // max_ids) + 1:
+                        ids.append([])
+                    ids[i // max_ids].append(item_id)
 
             if is_search:
                 for key, value in kwargs.items():
@@ -242,34 +240,65 @@ def endpoint(
 
             # Get data from API
             async with ClientSession() as session:
-                async with session.get(
-                    base_url + path + path_id + subendpoint, params=parameters
-                ) as r:
 
-                    # Check known status codes
-                    if r.status == 414:
-                        raise ApiError("Too many IDs.")
-                    elif r.status == 404:
-                        # Not found
-                        return None
+                # Iterate over all batches
+                for i in ids:
 
-                    # Parse json
-                    data = await r.json()
-
-                    # Check for errors.
-                    if "text" in data:
-                        raise ApiError(data["text"])
-
-                    # Check if IDs used
-                    if has_ids:
-
-                        # Check if fetched all
-                        if len(args) == 0:
-                            ids = None
-
-                        return await func(self, **kwargs, data=data, ids=ids)
+                    # Update parameters with IDs and
+                    # make sure that there are no duplicate requests
+                    if len(i) > 0:
+                        if not override_ids:
+                            parameters["ids"] = list_to_str(i)
+                        else:
+                            parameters[override_ids] = list_to_str(i)
                     else:
-                        return await func(self, **kwargs, data=data)
+                        if not override_ids and "ids" in parameters:
+                            del parameters["ids"]
+                        elif override_ids in parameters:
+                            del parameters[override_ids]
+
+                    async with session.get(
+                        base_url + path + path_id + subendpoint, params=parameters
+                    ) as r:
+
+                        # Check known status codes
+                        if r.status == 414:
+                            raise ApiError("Too many IDs.")
+                        elif r.status == 404:
+                            # Not found
+                            result.append(None)
+                            continue
+
+                        # Parse json
+                        data = await r.json()
+
+                        # Check for errors.
+                        if "text" in data:
+                            raise ApiError(data["text"])
+
+                        # Check if IDs used
+                        if has_ids:
+
+                            # Check if fetched all
+                            if len(args) == 0:
+                                i = None
+
+                            result.append(await func(self, **kwargs, data=data, ids=i))
+                        else:
+                            result.append(await func(self, **kwargs, data=data))
+
+            # If only one batch was fetched, return it
+            # Else compile a single list
+            if len(result) == 1:
+                return result[0]
+            else:
+                final = []
+                for r in result:
+                    if isinstance(r, list):
+                        final += r
+                    else:
+                        final.append(r)
+                return final
 
         return get_data
 

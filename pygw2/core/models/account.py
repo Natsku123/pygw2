@@ -183,7 +183,7 @@ class SharedInventorySlot(BaseModel):
     binding: Optional[Binding]
 
 
-class Material(BaseModel):
+class StorageMaterial(BaseModel):
     id: int
     item_: LazyLoader
 
