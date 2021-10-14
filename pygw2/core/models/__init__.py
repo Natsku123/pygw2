@@ -20,6 +20,7 @@ BiographyAnswer.update_forward_refs(BiographyQuestion=BiographyQuestion)
 Story.update_forward_refs(Season=Season)
 
 Character.update_forward_refs(SAB=SAB, PvPEquipment=PvPEquipment)
+EquipmentTab.update_forward_refs(PvPEquipment=PvPEquipment)
 
 GuildTeam.update_forward_refs(
     PvpWinLoss=PvpWinLoss, PvpLadderStats=PvpLadderStats, PvpGame=PvpGame

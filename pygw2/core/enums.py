@@ -38,6 +38,13 @@ class Discipline(str, Enum):
     Weaponsmith = "Weaponsmith"
 
 
+class EquipmentLocation(str, Enum):
+    Equipped = "Equipped"
+    Armory = "Armory"
+    EquippedFromLegendaryArmory = "EquippedFromLegendaryArmory"
+    LegendaryArmory = "LegendaryArmory"
+
+
 class EquipmentSlot(str, Enum):
     HelmAquatic = "HelmAquatic"
     Backpack = "Backpack"
@@ -46,7 +53,7 @@ class EquipmentSlot(str, Enum):
     Gloves = "Gloves"
     Helm = "Helm"
     Leggings = "Leggings"
-    Shoulders = "Shoulder"
+    Shoulders = "Shoulders"
     Accessory1 = "Accessory1"
     Accessory2 = "Accessory2"
     Ring1 = "Ring1"

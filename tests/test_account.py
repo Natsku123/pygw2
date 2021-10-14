@@ -173,5 +173,14 @@ class AccountTests(aiounittest.AsyncTestCase):
             self.assertIsInstance(b, DailyWorldBoss)
 
 
+@pytest.mark.usefixtures("get_api")
+class CharacterTests(aiounittest.AsyncTestCase):
+    async def test_characters(self):
+        chars = await self.api.account.characters()
+        char = chars[0]
+        char = await self.api.account.character(char).get()
+        self.assertIsInstance(char, Character)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -125,7 +125,7 @@ class AccountMountsApi:
 class CharactersApi:
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, character_id: str, *args, api_key: str = "", **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls, *args, **kwargs)
         return cls._instance
@@ -185,21 +185,62 @@ class CharactersApi:
                     if v:
                         b["inventory"][i] = parse_item(v)
 
-            # Parse all skills
-            for v in data["skills"]:
-                v["heal_"] = LazyLoader(mecha_api.skills, v["heal"])
-                v["utilities_"] = LazyLoader(mecha_api.skills, v["utilities"])
-                v["elite_"] = LazyLoader(mecha_api.skills, v["elite"])
-                if v["legends"]:
-                    v["legends_"] = LazyLoader(mecha_api.skills, v["legends"])
-
-            # Parse all specializations
-            for v in data["specializations"]:
-                for s in v:
-                    s["specialization_"] = LazyLoader(
-                        mecha_api.specializations, s["id"]
+            # Parse all builds
+            for tab in data["build_tabs"]:
+                tab["build"]["skills"]["heal_"] = LazyLoader(
+                    mecha_api.skills, tab["build"]["skills"]["heal"]
+                )
+                tab["build"]["skills"]["utilities_"] = LazyLoader(
+                    mecha_api.skills, tab["build"]["skills"]["utilities"]
+                )
+                tab["build"]["skills"]["elite_"] = LazyLoader(
+                    mecha_api.skills, tab["build"]["skills"]["elite"]
+                )
+                if (
+                    "legends" in tab["build"]["skills"]
+                    and tab["build"]["skills"]["legends"]
+                ):
+                    tab["build"]["skills"]["legends_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["skills"]["legends"]
                     )
-                    s["traits_"] = LazyLoader(mecha_api.traits, *s["traits"])
+                tab["build"]["aquatic_skills"]["heal_"] = LazyLoader(
+                    mecha_api.skills, tab["build"]["aquatic_skills"]["heal"]
+                )
+                tab["build"]["aquatic_skills"]["utilities_"] = LazyLoader(
+                    mecha_api.skills, tab["build"]["aquatic_skills"]["utilities"]
+                )
+                tab["build"]["aquatic_skills"]["elite_"] = LazyLoader(
+                    mecha_api.skills, tab["build"]["aquatic_skills"]["elite"]
+                )
+                if (
+                    "legends" in tab["build"]["aquatic_skills"]
+                    and tab["build"]["aquatic_skills"]["legends"]
+                ):
+                    tab["build"]["aquatic_skills"]["legends_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["aquatic_skills"]["legends"]
+                    )
+
+                for v in tab["build"]["specializations"]:
+                    v["specialization_"] = LazyLoader(
+                        mecha_api.specializations, v["id"]
+                    )
+                    v["traits_"] = LazyLoader(mecha_api.traits, *v["traits"])
+
+            for tab in data["equipment_tabs"]:
+                for i, e in enumerate(tab["equipment"]):
+                    tab["equipment"][i] = parse_item(e)
+                if tab["equipment_pvp"]["amulet"]:
+                    tab["equipment_pvp"]["amulet_"] = LazyLoader(
+                        items_api.pvp_amulets, tab["equipment_pvp"]["amulet"]
+                    )
+                if tab["equipment_pvp"]["rune"]:
+                    tab["equipment_pvp"]["rune_"] = LazyLoader(
+                        items_api.get, tab["equipment_pvp"]["rune"]
+                    )
+                if tab["equipment_pvp"]["sigils"]:
+                    tab["equipment_pvp"]["sigils_"] = LazyLoader(
+                        items_api.get, tab["equipment_pvp"]["sigils"]
+                    )
 
             data["sab_"] = LazyLoader(self.sab)
 
@@ -208,18 +249,19 @@ class CharactersApi:
                 a["ability_"] = LazyLoader(wvw_api.abilities, a["id"])
 
             # Parse PvP equipment
-            if data["equipment_pvp"]["amulet"]:
-                data["equipment_pvp"]["amulet_"] = LazyLoader(
-                    items_api.pvp_amulets, data["equipment_pvp"]["amulet"]
-                )
-            if data["equipment_pvp"]["rune"]:
-                data["equipment_pvp"]["rune_"] = LazyLoader(
-                    items_api.get, data["equipment_pvp"]["rune"]
-                )
-            if data["equipment_pvp"]["sigils"]:
-                data["equipment_pvp"]["sigils_"] = LazyLoader(
-                    items_api.get, data["equipment_pvp"]["sigils"]
-                )
+            if "equipment_pvp" in data:
+                if data["equipment_pvp"]["amulet"]:
+                    data["equipment_pvp"]["amulet_"] = LazyLoader(
+                        items_api.pvp_amulets, data["equipment_pvp"]["amulet"]
+                    )
+                if data["equipment_pvp"]["rune"]:
+                    data["equipment_pvp"]["rune_"] = LazyLoader(
+                        items_api.get, data["equipment_pvp"]["rune"]
+                    )
+                if data["equipment_pvp"]["sigils"]:
+                    data["equipment_pvp"]["sigils_"] = LazyLoader(
+                        items_api.get, data["equipment_pvp"]["sigils"]
+                    )
 
             return object_parse(data, Character)
         else:
@@ -414,6 +456,15 @@ class AccountApi:
 
     def character(self, character_id):
         return self._character(character_id, api_key=self.api_key)
+
+    @endpoint("/v2/characters")
+    async def characters(self, *, data) -> List[str]:
+        """
+        Get names of the characters from API
+        :param data: data from wrapper
+        :return: list of names
+        """
+        return data
 
     @endpoint("/v2/account")
     async def get(self, *, data) -> Account:

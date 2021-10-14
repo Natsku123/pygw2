@@ -46,12 +46,14 @@ class Stats(BaseModel):
 class Equipment(BaseModel):
     id: int
     item_: LazyLoader
+    tabs: Optional[List[int]]
 
     @property
     def item(self) -> "Item":
         return self.item_()
 
-    slot: EquipmentSlot
+    slot: Optional[EquipmentSlot]
+    location: EquipmentLocation
     infusions_: Optional[LazyLoader]
 
     @property
@@ -206,12 +208,38 @@ class CharacterCore(BaseModel):
         return self.title_() if self.title_ is not None else None
 
 
+class Build(BaseModel):
+    name: str
+    profession: Professions
+    specializations: List[SpecializationBase]
+    skills: SkillsBase
+    aquatic_skills: SkillsBase
+
+
+class BuildTab(BaseModel):
+    tab: int
+    is_active: bool
+    build: Build
+
+
+class EquipmentTab(BaseModel):
+    tab: int
+    name: str
+    is_active: bool
+    equipment: List["Equipment"]
+    equipment_pvp: "PvPEquipment"
+
+
 class Character(BaseModel):
     name: str
     race: Races
     gender: Gender
     profession: Professions
-    lvl: int
+    level: int
+    build_tabs_unlocked: int
+    active_build_tab: int
+    equipment_tabs_unlocked: int
+    active_equipment_tab: int
     guild_: Optional[LazyLoader] = None
 
     @property
@@ -235,6 +263,8 @@ class Character(BaseModel):
 
     crafting: List["Crafting"]
     equipment: List["Equipment"]
+    build_tabs: List["BuildTab"]
+    equipment_tabs: List["EquipmentTab"]
     heropoints_: LazyLoader
 
     @property
@@ -247,8 +277,6 @@ class Character(BaseModel):
     def inventory(self) -> List[Bag]:
         return self.bags
 
-    skills: List[Skills] = []
-    specializations: Optional[Specializations]
     training: List[SkillTree]
     sab_: LazyLoader
 
@@ -257,7 +285,6 @@ class Character(BaseModel):
         return self.sab_()
 
     wvw_abilities: List["CharacterWvWAbility"]
-    equipment_pvp: "PvPEquipment"
     flags: List[CharacterFlag] = []
 
 
