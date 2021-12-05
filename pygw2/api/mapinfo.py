@@ -24,7 +24,7 @@ class ContinentApi:
         # TODO check format
         return data
 
-    def floor(self, floor_id):
+    def floor(self, floor_id) -> "ContinentFloorApi":
         return self._floor_api(self.continent_id, floor_id)
 
 
@@ -53,7 +53,7 @@ class ContinentFloorApi:
         # TODO check format
         return data
 
-    def region(self, region_id: int):
+    def region(self, region_id: int) -> "ContinentFloorRegionApi":
         return self._region_api(self.continent_id, self.floor_id, region_id)
 
 
@@ -85,7 +85,7 @@ class ContinentFloorRegionApi:
         # TODO check format
         return data
 
-    def map(self, map_id: int):
+    def map(self, map_id: int) -> "ContinentFloorRegionMapApi":
         return self._map_api(self.continent_id, self.floor_id, self.region_id, map_id)
 
 
@@ -171,7 +171,7 @@ class MapInfoApi:
             return data
         return object_parse(data, Continent)
 
-    def continent(self, continent_id: int = None):
+    def continent(self, continent_id: int = None) -> ContinentApi:
         return self._continent(continent_id)
 
     @endpoint("/v2/maps", has_ids=True)

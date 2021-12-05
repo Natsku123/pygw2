@@ -225,7 +225,7 @@ class WvWApi:
 
         return object_parse(data, WvWAbility)
 
-    def match(self, match_id):
+    def match(self, match_id) -> WvWMatchesApi:
         return self._matches(match_id, api_key=self.api_key)
 
     @endpoint("/v2/wvw/upgrades", has_ids=True)

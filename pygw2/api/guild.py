@@ -65,7 +65,7 @@ class GuildApi:
         self._emblem = GuildEmblemApi()
 
     @property
-    def emblem(self):
+    def emblem(self) -> GuildEmblemApi:
         return self._emblem
 
     @endpoint("/v2/guild", has_ids=True, max_ids=1, min_ids=1)

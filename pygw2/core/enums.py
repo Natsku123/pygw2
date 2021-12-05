@@ -436,6 +436,7 @@ class DyeSlotMaterial(str, Enum):
     cloth = "cloth"
     leather = "leather"
     metal = "metal"
+    fur = "fur"
 
 
 class ProfessionTrainingCategory(str, Enum):

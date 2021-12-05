@@ -128,23 +128,23 @@ class Bag(BaseModel):
 
 
 class SkillsBase(BaseModel):
-    heal_: LazyLoader
+    heal_: Optional[LazyLoader]
 
     @property
     def heal(self) -> "Skill":
-        return self.heal_()
+        return self.heal_() if self.heal_ else None
 
-    utilities_: LazyLoader
+    utilities_: Optional[LazyLoader]
 
     @property
     def utilities(self) -> List["Skill"]:
-        return self.utilities_()
+        return self.utilities_() if self.utilities_ else None
 
-    elite_: LazyLoader
+    elite_: Optional[LazyLoader]
 
     @property
     def elite(self):
-        return self.elite_()
+        return self.elite_() if self.elite_ else None
 
     legends_: Optional[LazyLoader]
 
@@ -166,18 +166,18 @@ class Skills(BaseModel):
 
 
 class SpecializationBase(BaseModel):
-    id: int
-    specialization_: LazyLoader
+    id: Optional[int]
+    specialization_: Optional[LazyLoader]
 
     @property
     def specialization(self) -> "Specialization":
-        return self.specialization_()
+        return self.specialization_() if self.specialization_ else None
 
-    traits_: LazyLoader
+    traits_: Optional[LazyLoader]
 
     @property
     def traits(self) -> List["Trait"]:
-        return self.traits_()
+        return self.traits_() if self.traits_ else None
 
 
 class Specializations(BaseModel):
@@ -191,7 +191,7 @@ class CharacterCore(BaseModel):
     race: Races
     gender: Gender
     profession: Professions
-    lvl: int
+    level: int
     guild_: Optional[LazyLoader] = None
 
     @property
@@ -271,10 +271,10 @@ class Character(BaseModel):
     def heropoints(self) -> List["str"]:  # TODO replace with proper lookup
         return self.heropoints_()
 
-    bags: List[Bag] = []
+    bags: List[Optional[Bag]] = []
 
     @property
-    def inventory(self) -> List[Bag]:
+    def inventory(self) -> List[Optional[Bag]]:
         return self.bags
 
     training: List[SkillTree]

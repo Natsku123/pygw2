@@ -63,7 +63,7 @@ class MechanicsApi:
         self._mounts = MechanicsMountsApi(api_key=api_key)
 
     @property
-    def mounts(self):
+    def mounts(self) -> MechanicsMountsApi:
         return self._mounts
 
     @endpoint("/v2/masteries", has_ids=True)

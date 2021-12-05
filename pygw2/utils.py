@@ -18,6 +18,35 @@ class BaseModel(PydanticBase):
         arbitrary_types_allowed = True
 
 
+class LimitedDict(dict):
+    mapping = {}
+    reverse_mapping = {}
+    i = 0
+    limit = 2000
+
+    def __setitem__(self, k, v):
+        key = self.i
+        if key in self.reverse_mapping:
+            if self.reverse_mapping[key] in self.mapping:
+                del self.mapping[self.reverse_mapping[key]]
+            del self.reverse_mapping[key]
+        self.mapping[k] = key
+        self.reverse_mapping[key] = k
+        self.i = (self.i + 1) % self.limit
+        super().__setitem__(key, v)
+
+    def __getitem__(self, k):
+        return super().__getitem__(self.mapping[k])
+
+    def __delitem__(self, k):
+        super().__delitem__(self.mapping[k])
+        del self.reverse_mapping[self.mapping[k]]
+        del self.mapping[k]
+
+    def __contains__(self, item):
+        return item in self.mapping and super().__contains__(self.mapping[item])
+
+
 def function_call_key(func: Callable, args, kwargs) -> str:
     """
     Generate a key based on function called and arguments
@@ -30,7 +59,7 @@ def function_call_key(func: Callable, args, kwargs) -> str:
 
 
 class LazyLoader:
-    _loaded = {}
+    _loaded = LimitedDict({})
 
     def __new__(cls, func: Callable, *args, **kwargs):
 

@@ -58,6 +58,9 @@ class AccountHomeApi:
         :param data: Data from wrapper
         :return:
         """
+        if not data:
+            return data
+
         from .home import HomeApi
 
         home_api = HomeApi(api_key=self.api_key)
@@ -160,7 +163,7 @@ class CharactersApi:
         if isinstance(data, dict):
             if data["guild"]:
                 data["guild_"] = LazyLoader(guild_api.get, data["guild"])
-            if data["title"]:
+            if "title" in data and data["title"]:
                 data["title_"] = LazyLoader(misc_api.titles, data["title"])
             data["backstory_"] = LazyLoader(backstory_api.answers, *data["backstory"])
 
@@ -172,23 +175,27 @@ class CharactersApi:
 
             # Parse all items in bags / inventory
             for b in data["bags"]:
-                b["item_"] = LazyLoader(items_api.get, b["id"])
+                if b:
+                    b["item_"] = LazyLoader(items_api.get, b["id"])
 
-                for i, v in enumerate(b["inventory"]):
-                    if v:
-                        b["inventory"][i] = parse_item(v)
+                    for i, v in enumerate(b["inventory"]):
+                        if v:
+                            b["inventory"][i] = parse_item(v)
 
             # Parse all builds
             for tab in data["build_tabs"]:
-                tab["build"]["skills"]["heal_"] = LazyLoader(
-                    mecha_api.skills, tab["build"]["skills"]["heal"]
-                )
-                tab["build"]["skills"]["utilities_"] = LazyLoader(
-                    mecha_api.skills, tab["build"]["skills"]["utilities"]
-                )
-                tab["build"]["skills"]["elite_"] = LazyLoader(
-                    mecha_api.skills, tab["build"]["skills"]["elite"]
-                )
+                if "heal" in tab["build"]["skills"]:
+                    tab["build"]["skills"]["heal_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["skills"]["heal"]
+                    )
+                if "utilities" in tab["build"]["skills"]:
+                    tab["build"]["skills"]["utilities_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["skills"]["utilities"]
+                    )
+                if "elite" in tab["build"]["skills"]:
+                    tab["build"]["skills"]["elite_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["skills"]["elite"]
+                    )
                 if (
                     "legends" in tab["build"]["skills"]
                     and tab["build"]["skills"]["legends"]
@@ -196,15 +203,18 @@ class CharactersApi:
                     tab["build"]["skills"]["legends_"] = LazyLoader(
                         mecha_api.skills, tab["build"]["skills"]["legends"]
                     )
-                tab["build"]["aquatic_skills"]["heal_"] = LazyLoader(
-                    mecha_api.skills, tab["build"]["aquatic_skills"]["heal"]
-                )
-                tab["build"]["aquatic_skills"]["utilities_"] = LazyLoader(
-                    mecha_api.skills, tab["build"]["aquatic_skills"]["utilities"]
-                )
-                tab["build"]["aquatic_skills"]["elite_"] = LazyLoader(
-                    mecha_api.skills, tab["build"]["aquatic_skills"]["elite"]
-                )
+                if "heal" in tab["build"]["aquatic_skills"]:
+                    tab["build"]["aquatic_skills"]["heal_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["aquatic_skills"]["heal"]
+                    )
+                if "utilities" in tab["build"]["aquatic_skills"]:
+                    tab["build"]["aquatic_skills"]["utilities_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["aquatic_skills"]["utilities"]
+                    )
+                if "elite" in tab["build"]["aquatic_skills"]:
+                    tab["build"]["aquatic_skills"]["elite_"] = LazyLoader(
+                        mecha_api.skills, tab["build"]["aquatic_skills"]["elite"]
+                    )
                 if (
                     "legends" in tab["build"]["aquatic_skills"]
                     and tab["build"]["aquatic_skills"]["legends"]
@@ -214,10 +224,11 @@ class CharactersApi:
                     )
 
                 for v in tab["build"]["specializations"]:
-                    v["specialization_"] = LazyLoader(
-                        mecha_api.specializations, v["id"]
-                    )
-                    v["traits_"] = LazyLoader(mecha_api.traits, *v["traits"])
+                    if v["id"]:
+                        v["specialization_"] = LazyLoader(
+                            mecha_api.specializations, v["id"]
+                        )
+                        v["traits_"] = LazyLoader(mecha_api.traits, *v["traits"])
 
             for tab in data["equipment_tabs"]:
                 for i, e in enumerate(tab["equipment"]):
@@ -267,6 +278,13 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+
+        if not data:
+            return data
+
+        if isinstance(data, dict):
+            data = data["backstory"]
+
         from .backstory import BackstoryApi
 
         backstory_api = BackstoryApi(api_key=self.api_key)
@@ -300,6 +318,11 @@ class CharactersApi:
         :param data: Data from wrapper
         :return:
         """
+        if not data:
+            return data
+
+        if isinstance(data, dict):
+            data = data["crafting"]
 
         return object_parse(data, Crafting)
 
@@ -355,7 +378,7 @@ class CharactersApi:
     @endpoint("/v2/characters", subendpoint="/skills")
     async def skills(self, *, data) -> Skills:
         """
-        Get character's skills from API.
+        Get character's skills from API. DEPRECATED
         :param data: Data from wrapper
         :return:
         """
@@ -365,6 +388,9 @@ class CharactersApi:
 
         if "skills" in data:
             data = data["skills"]
+
+        if not data:
+            return data
 
         for v in data:
             v["heal_"] = LazyLoader(mecha_api.skills, v["heal"])
@@ -378,7 +404,7 @@ class CharactersApi:
     @endpoint("/v2/characters", subendpoint="/specializations")
     async def specializations(self, *, data) -> Specializations:
         """
-        Get character's specializations from API.
+        Get character's specializations from API. DEPRECATED
         :param data: Data from wrapper
         :return:
         """
@@ -434,14 +460,14 @@ class AccountApi:
         self._character = CharactersApi
 
     @property
-    def home(self):
+    def home(self) -> AccountHomeApi:
         return self._home
 
     @property
-    def mounts(self):
+    def mounts(self) -> AccountMountsApi:
         return self._mounts
 
-    def character(self, character_id):
+    def character(self, character_id) -> CharactersApi:
         return self._character(character_id, api_key=self.api_key)
 
     @endpoint("/v2/characters")

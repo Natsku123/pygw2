@@ -175,11 +175,113 @@ class AccountTests(aiounittest.AsyncTestCase):
 
 @pytest.mark.usefixtures("get_api")
 class CharacterTests(aiounittest.AsyncTestCase):
-    async def test_characters(self):
+    async def test_character(self):
+        chars = await self.api.account.characters()
+        for c in chars:
+            char = await self.api.account.character(c).get()
+            self.assertIsInstance(char, Character)
+
+    async def test_backstory(self):
         chars = await self.api.account.characters()
         char = chars[0]
-        char = await self.api.account.character(char).get()
-        self.assertIsInstance(char, Character)
+        answers = await self.api.account.character(char).backstory()
+        for a in answers:
+            self.assertIsInstance(a, BiographyAnswer)
+
+    async def test_core(self):
+        chars = await self.api.account.characters()
+        char = chars[0]
+        core = await self.api.account.character(char).core()
+        self.assertIsInstance(core, CharacterCore)
+
+    async def test_crafting(self):
+        chars = await self.api.account.characters()
+        char = chars[0]
+        crafts = await self.api.account.character(char).crafting()
+        if isinstance(crafts, list):
+            for c in crafts:
+                self.assertIsInstance(c, Crafting)
+        else:
+            self.assertIsInstance(crafts, Crafting)
+
+    async def test_equipment(self):
+        chars = await self.api.account.characters()
+        char = chars[0]
+        equipment = await self.api.account.character(char).equipment()
+        if isinstance(equipment, list):
+            for e in equipment:
+                self.assertIsInstance(e, Equipment)
+        else:
+            self.assertIsInstance(equipment, Equipment)
+
+    async def test_inventory(self):
+        chars = await self.api.account.characters()
+        char = chars[0]
+        inventory = await self.api.account.character(char).inventory()
+        if isinstance(inventory, list):
+            for b in inventory:
+                self.assertIsInstance(b, Bag)
+        else:
+            self.assertIsInstance(inventory, Bag)
+
+    # DEPRECATED
+    # async def test_skills(self):
+    #     chars = await self.api.account.characters()
+    #     char = chars[0]
+    #     skills = await self.api.account.character(char).skills()
+    #     self.assertIsInstance(skills, Skills)
+
+    # async def test_specializations(self):
+    #     chars = await self.api.account.characters()
+    #     char = chars[0]
+    #     specs = await self.api.account.character(char).specializations()
+    #     self.assertIsInstance(specs, Specializations)
+
+    async def test_training(self):
+        chars = await self.api.account.characters()
+        char = chars[0]
+        training = await self.api.account.character(char).training()
+        if isinstance(training, list):
+            for t in training:
+                self.assertIsInstance(t, SkillTree)
+        else:
+            self.assertIsInstance(training, SkillTree)
+
+    async def test_sab(self):
+        chars = await self.api.account.characters()
+        char = chars[0]
+        sab = await self.api.account.character(char).sab()
+        self.assertIsInstance(sab, SAB)
+
+
+@pytest.mark.usefixtures("get_api")
+class HomeTests(aiounittest.AsyncTestCase):
+    async def test_cats(self):
+        cats = await self.api.account.home.cats()
+        cats = subset(cats, 10)
+        for c in cats:
+            self.assertIsInstance(c, HomeCat)
+
+    async def test_nodes(self):
+        nodes = await self.api.account.home.nodes()
+        nodes = subset(nodes, 10)
+        for n in nodes:
+            self.assertIsInstance(n, HomeNode)
+
+
+@pytest.mark.usefixtures("get_api")
+class MountsTests(aiounittest.AsyncTestCase):
+    async def test_skins(self):
+        skins = await self.api.account.mounts.skins()
+        skins = subset(skins, 10)
+        for s in skins:
+            self.assertIsInstance(s, MountSkin)
+
+    async def test_types(self):
+        types = await self.api.account.mounts.types()
+        types = subset(types, 10)
+        for t in types:
+            self.assertIsInstance(t, MountType)
 
 
 if __name__ == "__main__":

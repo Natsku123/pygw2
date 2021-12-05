@@ -144,5 +144,5 @@ class PvpApi:
 
         return object_parse(data, PvpHero)
 
-    def leaderboards(self, season_id: str):
+    def leaderboards(self, season_id: str) -> PvpLeaderboardsApi:
         return self._leaderboards(season_id, api_key=self.api_key)

@@ -1,3 +1,5 @@
+from typing import Type
+
 from .account import AccountApi
 from .achievements import AchievementsApi
 from .items import ItemsApi
@@ -42,53 +44,53 @@ class Api:
         self._wvw = WvWApi(api_key=api_key)
 
     @property
-    def account(self):
+    def account(self) -> AccountApi:
         return self._account
 
     @property
-    def achievements(self):
+    def achievements(self) -> AchievementsApi:
         return self._achievements
 
     @property
-    def items(self):
+    def items(self) -> ItemsApi:
         return self._items
 
     @property
-    def daily(self):
+    def daily(self) -> DailyApi:
         return self._daily
 
     @property
-    def mechanics(self):
+    def mechanics(self) -> MechanicsApi:
         return self._mechanics
 
     @property
-    def guild(self):
+    def guild(self) -> Type[GuildApi]:
         return self._guild
 
     @property
-    def home(self):
+    def home(self) -> HomeApi:
         return self._home
 
     @property
-    def mapinfo(self):
+    def mapinfo(self) -> MapInfoApi:
         return self._mapinfo
 
     @property
-    def miscellaneous(self):
+    def miscellaneous(self) -> MiscellaneousApi:
         return self._misc
 
     @property
-    def backstory(self):
+    def backstory(self) -> BackstoryApi:
         return self._backstory
 
     @property
-    def commerce(self):
+    def commerce(self) -> TradingPostApi:
         return self._trading
 
     @property
-    def pvp(self):
+    def pvp(self) -> PvpApi:
         return self._pvp
 
     @property
-    def wvw(self):
+    def wvw(self) -> WvWApi:
         return self._wvw
