@@ -43,7 +43,9 @@ api.account.character(character_id).core()
 
 ### Example
 ```python
-from pygw2.api import api
+from pygw2.api import Api
+
+api = Api(api_key="YOUR API KEY HERE (if you want to use it)')
 
 # Get one achievement by ID
 achievement = api.achievements.get(1)
@@ -53,9 +55,6 @@ all_achievement_ids = api.achievements.get()
 
 # Get multiple items
 some_items = api.items.get(6542, 6, 24)
-
-# Setup API key
-api.setup(api_key="YOUR API KEY HERE")
 ```
 
 From the setup -function, the API key will be forwarded for 'deeper' API

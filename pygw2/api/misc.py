@@ -45,7 +45,7 @@ class MiscellaneousApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         # Return ids
         if ids is None:
@@ -133,7 +133,7 @@ class MiscellaneousApi:
 
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         if ids is None:
             return data
@@ -155,7 +155,7 @@ class MiscellaneousApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         if ids is None:
             return data
@@ -190,7 +190,7 @@ class MiscellaneousApi:
         """
         from .achievements import AchievementsApi
 
-        achi_api = AchievementsApi()
+        achi_api = AchievementsApi(api_key=self.api_key)
 
         if ids is None:
             return data

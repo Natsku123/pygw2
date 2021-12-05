@@ -60,7 +60,7 @@ class AccountHomeApi:
         """
         from .home import HomeApi
 
-        home_api = HomeApi()
+        home_api = HomeApi(api_key=self.api_key)
 
         return await home_api.cats(*data)
 
@@ -73,7 +73,7 @@ class AccountHomeApi:
         """
         from .home import HomeApi
 
-        home_api = HomeApi()
+        home_api = HomeApi(api_key=self.api_key)
 
         return await home_api.nodes(*data)
 
@@ -98,7 +98,7 @@ class AccountMountsApi:
         """
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
 
         return await mecha_api.mounts.skins(*data)
 
@@ -111,7 +111,7 @@ class AccountMountsApi:
         """
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
 
         return await mecha_api.mounts.types(*data)
 
@@ -140,22 +140,22 @@ class CharactersApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
         from .guild import GuildApi
 
-        guild_api = GuildApi()
+        guild_api = GuildApi(api_key=self.api_key)
         from .backstory import BackstoryApi
 
-        backstory_api = BackstoryApi()
+        backstory_api = BackstoryApi(api_key=self.api_key)
         from .wvw import WvWApi
 
-        wvw_api = WvWApi()
+        wvw_api = WvWApi(api_key=self.api_key)
 
         if isinstance(data, dict):
             if data["guild"]:
@@ -269,7 +269,7 @@ class CharactersApi:
         """
         from .backstory import BackstoryApi
 
-        backstory_api = BackstoryApi()
+        backstory_api = BackstoryApi(api_key=self.api_key)
 
         return await backstory_api.answers(*data)
 
@@ -282,10 +282,10 @@ class CharactersApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
         from .guild import GuildApi
 
-        guild_api = GuildApi()
+        guild_api = GuildApi(api_key=self.api_key)
 
         if data["guild"]:
             data["guild_"] = LazyLoader(guild_api.get, data["guild"])
@@ -338,7 +338,7 @@ class CharactersApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         if isinstance(data, dict):
             data = data["bags"]
@@ -361,7 +361,7 @@ class CharactersApi:
         """
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
 
         if "skills" in data:
             data = data["skills"]
@@ -384,7 +384,7 @@ class CharactersApi:
         """
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
 
         if "specializations" in data:
             data = data["specializations"]
@@ -462,7 +462,7 @@ class AccountApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         data["world_"] = LazyLoader(misc_api.worlds, data["world"])
         return object_parse(data, Account)
@@ -476,7 +476,7 @@ class AccountApi:
         """
         from .achievements import AchievementsApi
 
-        achievements_api = AchievementsApi()
+        achievements_api = AchievementsApi(api_key=self.api_key)
 
         for a in data:
             a["achievement_"] = LazyLoader(achievements_api.get, a["id"])
@@ -508,7 +508,7 @@ class AccountApi:
         """
         from .daily import DailyApi
 
-        daily_api = DailyApi()
+        daily_api = DailyApi(api_key=self.api_key)
 
         print("asd", data)
 
@@ -536,7 +536,7 @@ class AccountApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         return await misc_api.colors(*data)
 
@@ -549,7 +549,7 @@ class AccountApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         for f in data:
             f["finisher_"] = LazyLoader(items_api.finishers, f["id"])
@@ -565,7 +565,7 @@ class AccountApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         return await items_api.gliders(*data)
 
@@ -600,7 +600,7 @@ class AccountApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         return await items_api.mailcarriers(*data)
 
@@ -613,7 +613,7 @@ class AccountApi:
         """
         from .daily import DailyApi
 
-        daily_api = DailyApi()
+        daily_api = DailyApi(api_key=self.api_key)
 
         if not data:
             return data
@@ -629,7 +629,7 @@ class AccountApi:
         """
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
         for m in data:
             m["mastery_"] = LazyLoader(mecha_api.masteries, m["id"])
 
@@ -655,7 +655,7 @@ class AccountApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         for m in data:
             m["item_"] = LazyLoader(items_api.get, m["id"])
@@ -671,7 +671,7 @@ class AccountApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         if not data:
             return data
@@ -687,7 +687,7 @@ class AccountApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         return await misc_api.novelties(*data)
 
@@ -700,7 +700,7 @@ class AccountApi:
         """
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
 
         if not data:
             return data
@@ -716,7 +716,7 @@ class AccountApi:
         """
         from .pvp import PvpApi
 
-        pvp_api = PvpApi()
+        pvp_api = PvpApi(api_key=self.api_key)
 
         if not data:
             return data
@@ -743,7 +743,7 @@ class AccountApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         if not data:
             return data
@@ -759,7 +759,7 @@ class AccountApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         if not data:
             return data
@@ -775,7 +775,7 @@ class AccountApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         if not data:
             return data
@@ -791,7 +791,7 @@ class AccountApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         for c in data:
             c["currency_"] = LazyLoader(misc_api.currencies, c["id"])
@@ -807,7 +807,7 @@ class AccountApi:
         """
         from .daily import DailyApi
 
-        daily_api = DailyApi()
+        daily_api = DailyApi(api_key=self.api_key)
 
         if not data:
             return data

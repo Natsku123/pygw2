@@ -32,15 +32,15 @@ class AchievementsApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         from .mechanics import MechanicsApi
 
-        mecha_api = MechanicsApi()
+        mecha_api = MechanicsApi(api_key=self.api_key)
 
         # Return list of ids.
         if ids is None:

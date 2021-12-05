@@ -1,10 +1,7 @@
 from typing import List, Union
 
 from ..utils import endpoint, object_parse, LazyLoader
-from ..api.items import ItemsApi
 from ..core.models.pvp import PvpRank, PvpSeason, PvpLeaderboard, PvpHero
-
-items_api = ItemsApi()
 
 
 class PvpLeaderboardsApi:
@@ -133,6 +130,10 @@ class PvpApi:
 
         if ids is None:
             return data
+
+        from ..api.items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
 
         for h in data:
             for skin in h["skins"]:

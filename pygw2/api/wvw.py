@@ -3,14 +3,6 @@ from typing import List, Union
 from ..utils import endpoint, object_parse
 from ..core.models.wvw import WvWAbility, WvWMatch, WvWUpgrade, WvWObjective, WvWRank
 
-from .misc import MiscellaneousApi
-from .guild import GuildApi
-from .mapinfo import MapInfoApi
-
-misc_api = MiscellaneousApi()
-guild_api = GuildApi()
-map_api = MapInfoApi()
-
 
 class WvWMatchesApi:
     _instances = {}
@@ -32,6 +24,14 @@ class WvWMatchesApi:
         :return:
         """
 
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi(api_key=self.api_key)
+
+        from .guild import GuildApi
+
+        guild_api = GuildApi(api_key=self.api_key)
+
         if "worlds" in data:
             for world in data["worlds"].keys():
                 data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
@@ -47,7 +47,7 @@ class WvWMatchesApi:
                 for objective in m["objectives"]:
                     if objective["claimed_by"]:
                         objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"]
+                            objective["claimed_by"], api_key=self.api_key
                         ).get()
                     if objective["guild_upgrades"]:
                         objective["guild_upgrades"] = await guild_api.upgrades(
@@ -71,6 +71,14 @@ class WvWMatchesApi:
         :return:
         """
 
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi(api_key=self.api_key)
+
+        from .guild import GuildApi
+
+        guild_api = GuildApi(api_key=self.api_key)
+
         if "worlds" in data:
             for world in data["worlds"].keys():
                 data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
@@ -86,7 +94,7 @@ class WvWMatchesApi:
                 for objective in m["objectives"]:
                     if objective["claimed_by"]:
                         objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"]
+                            objective["claimed_by"], api_key=self.api_key
                         ).get()
                     if objective["guild_upgrades"]:
                         objective["guild_upgrades"] = await guild_api.upgrades(
@@ -110,6 +118,14 @@ class WvWMatchesApi:
         :return:
         """
 
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi(api_key=self.api_key)
+
+        from .guild import GuildApi
+
+        guild_api = GuildApi(api_key=self.api_key)
+
         if "worlds" in data:
             for world in data["worlds"].keys():
                 data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
@@ -125,7 +141,7 @@ class WvWMatchesApi:
                 for objective in m["objectives"]:
                     if objective["claimed_by"]:
                         objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"]
+                            objective["claimed_by"], api_key=self.api_key
                         ).get()
                     if objective["guild_upgrades"]:
                         objective["guild_upgrades"] = await guild_api.upgrades(
@@ -149,6 +165,14 @@ class WvWMatchesApi:
         :return:
         """
 
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi(api_key=self.api_key)
+
+        from .guild import GuildApi
+
+        guild_api = GuildApi(api_key=self.api_key)
+
         if "worlds" in data:
             for world in data["worlds"].keys():
                 data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
@@ -164,7 +188,7 @@ class WvWMatchesApi:
                 for objective in m["objectives"]:
                     if objective["claimed_by"]:
                         objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"]
+                            objective["claimed_by"], api_key=self.api_key
                         ).get()
                     if objective["guild_upgrades"]:
                         objective["guild_upgrades"] = await guild_api.upgrades(
@@ -229,6 +253,11 @@ class WvWApi:
         :param ids: list of IDs
         :return: list
         """
+
+        from .mapinfo import MapInfoApi
+
+        map_api = MapInfoApi(api_key=self.api_key)
+
         if ids is None:
             return data
 

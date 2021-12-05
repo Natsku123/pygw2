@@ -9,10 +9,6 @@ from ..core.models.commerce import (
     Transaction,
 )
 
-from .items import ItemsApi
-
-items_api = ItemsApi()
-
 
 class TradingPostApi:
     _instances = {}
@@ -32,6 +28,11 @@ class TradingPostApi:
         :param data: data from wrapper
         :return: object
         """
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for item in data["items"]:
             item["item_"] = LazyLoader(items_api.get, item["id"])
         return object_parse(data, DeliveryBox)
@@ -84,6 +85,10 @@ class TradingPostApi:
         if ids is None:
             return data
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for listing in data:
             listing["item_"] = LazyLoader(items_api.get, listing["id"])
 
@@ -101,6 +106,10 @@ class TradingPostApi:
         if ids is None:
             return data
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for price in data:
             price["item_"] = LazyLoader(items_api.get, price["id"])
 
@@ -113,6 +122,10 @@ class TradingPostApi:
         :param data: data from wrapper
         :return: list
         """
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
 
         for transaction in data:
             transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
@@ -127,6 +140,10 @@ class TradingPostApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for transaction in data:
             transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
@@ -140,6 +157,10 @@ class TradingPostApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for transaction in data:
             transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
@@ -152,6 +173,10 @@ class TradingPostApi:
         :param data: data from wrapper
         :return: list
         """
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
 
         for transaction in data:
             transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])

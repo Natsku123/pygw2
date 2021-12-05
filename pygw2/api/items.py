@@ -28,11 +28,11 @@ class ItemsApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         from .guild import GuildApi
 
-        guild_api = GuildApi()
+        guild_api = GuildApi(api_key=self.api_key)
 
         # Return list of ids.
         if ids is None:
@@ -181,7 +181,7 @@ class ItemsApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         if ids is None:
             return data
@@ -219,7 +219,7 @@ class ItemsApi:
         """
         from .misc import MiscellaneousApi
 
-        misc_api = MiscellaneousApi()
+        misc_api = MiscellaneousApi(api_key=self.api_key)
 
         if ids is None:
             return data

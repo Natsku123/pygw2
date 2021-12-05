@@ -90,7 +90,7 @@ class MechanicsApi:
         """
         from .items import ItemsApi
 
-        items_api = ItemsApi()
+        items_api = ItemsApi(api_key=self.api_key)
 
         if ids is None:
             return data
