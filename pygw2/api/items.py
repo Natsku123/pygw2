@@ -6,15 +6,15 @@ from ..utils import endpoint, object_parse, LazyLoader
 
 
 class ItemsApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        pass
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/items", has_ids=True)
     async def get(self, *, data, ids: list = None):
@@ -225,7 +225,7 @@ class ItemsApi:
             return data
 
         for g in data:
-            g["unlock_items_"] = LazyLoader(self.get, *g["unlock_items"])
+            g["unlock_items_"] = LazyLoader(self.get, *g.get("unlock_items", []))
             g["default_dyes_"] = LazyLoader(misc_api.colors, *g["default_dyes"])
 
         return object_parse(data, Glider)

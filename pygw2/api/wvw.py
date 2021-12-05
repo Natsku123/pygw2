@@ -13,14 +13,15 @@ map_api = MapInfoApi()
 
 
 class WvWMatchesApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, match_id, *args, api_key: str = "", **kwargs):
+        if (match_id, api_key) not in cls._instances:
+            cls._instances[(match_id, api_key)] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[(match_id, api_key)]
 
-    def __init__(self, match_id):
+    def __init__(self, match_id, *, api_key: str = ""):
+        self.api_key: str = api_key
         self.match_id: str = match_id
 
     @endpoint("/v2/wvw/matches")
@@ -174,19 +175,16 @@ class WvWMatchesApi:
 
 
 class WvWApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        self.api_key: str = ""
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
         self._matches = WvWMatchesApi
-
-    def setup(self, api_key: str):
-        self.api_key = api_key
 
     @endpoint("/v2/wvw/abilities", has_ids=True)
     async def abilities(
@@ -204,7 +202,7 @@ class WvWApi:
         return object_parse(data, WvWAbility)
 
     def match(self, match_id):
-        return self._matches(match_id)
+        return self._matches(match_id, api_key=self.api_key)
 
     @endpoint("/v2/wvw/upgrades", has_ids=True)
     async def upgrades(

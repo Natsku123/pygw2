@@ -13,15 +13,15 @@ from ..utils import endpoint, object_parse, LazyLoader
 
 
 class MechanicsMountsApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        pass
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/mounts/skins", has_ids=True)
     async def skins(self, *, data, ids: list = None):
@@ -51,15 +51,16 @@ class MechanicsMountsApi:
 
 
 class MechanicsApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        self._mounts = MechanicsMountsApi()
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
+        self._mounts = MechanicsMountsApi(api_key=api_key)
 
     @property
     def mounts(self):

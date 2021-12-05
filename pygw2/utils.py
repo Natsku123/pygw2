@@ -1,8 +1,11 @@
-import asyncio, concurrent.futures
+import asyncio
+import concurrent.futures
+import datetime
 from functools import wraps
+from typing import List, Dict, Union, Any, Type, Callable, Optional
+
 from aiohttp import ClientSession
 from pydantic import parse_obj_as, BaseModel as PydanticBase
-from typing import List, Dict, Union, Any, Type, Callable
 
 from .core.exceptions import ApiError
 from .settings import *
@@ -55,6 +58,7 @@ class LazyLoader:
         self.__args = args
         self.__kwargs = kwargs
         self.__result = None
+        self.__time: Optional[datetime.datetime] = None
 
     def __call__(self, force=False, *args, **kwargs) -> Union[List[Any], Any]:
         """
@@ -64,10 +68,18 @@ class LazyLoader:
         :param kwargs:
         :return:
         """
-        if not self.__result or not force:
+        now = datetime.datetime.now()
+
+        # Fetch new result, if not fetched already or is too old or is forced
+        if (
+            not self.__result
+            or not force
+            or (self.__time and (now - self.__time).seconds > cache_time)
+        ):
             self.__result = pool.submit(
                 asyncio.run, self.__func(*self.__args, **self.__kwargs)
             ).result()
+            self.__time = now
 
         return self.__result
 

@@ -3,12 +3,12 @@ from ..utils import endpoint, object_parse
 
 
 class ContinentApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, continent_id: int = None, **kwargs):
+        if continent_id not in cls._instances:
+            cls._instances[continent_id] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[continent_id]
 
     def __init__(self, continent_id: int = None):
         self.continent_id = continent_id
@@ -29,12 +29,14 @@ class ContinentApi:
 
 
 class ContinentFloorApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, continent_id: int, *args, floor_id: int = None, **kwargs):
+        if (continent_id, floor_id) not in cls._instances:
+            cls._instances[(continent_id, floor_id)] = super().__new__(
+                cls, *args, **kwargs
+            )
+        return cls._instances[(continent_id, floor_id)]
 
     def __init__(self, continent_id: int, floor_id: int = None):
         self.continent_id = continent_id
@@ -56,12 +58,16 @@ class ContinentFloorApi:
 
 
 class ContinentFloorRegionApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(
+        cls, continent_id: int, floor_id: int, *args, region_id: int = None, **kwargs
+    ):
+        if (continent_id, floor_id, region_id) not in cls._instances:
+            cls._instances[(continent_id, floor_id, region_id)] = super().__new__(
+                cls, *args, **kwargs
+            )
+        return cls._instances[(continent_id, floor_id, region_id)]
 
     def __init__(self, continent_id: int, floor_id: int, region_id: int = None):
         self.continent_id = continent_id
@@ -84,12 +90,22 @@ class ContinentFloorRegionApi:
 
 
 class ContinentFloorRegionMapApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(
+        cls,
+        continent_id: int,
+        floor_id: int,
+        region_id: int,
+        *args,
+        map_id: int = None,
+        **kwargs
+    ):
+        if (continent_id, floor_id, region_id, map_id) not in cls._instances:
+            cls._instances[
+                (continent_id, floor_id, region_id, map_id)
+            ] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[(continent_id, floor_id, region_id, map_id)]
 
     def __init__(
         self, continent_id: int, floor_id: int, region_id: int, map_id: int = None
@@ -131,14 +147,15 @@ class ContinentFloorRegionMapApi:
 
 
 class MapInfoApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
         self._continent = ContinentApi
 
     @endpoint("/v2/continents", has_ids=True)

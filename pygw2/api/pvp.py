@@ -8,19 +8,16 @@ items_api = ItemsApi()
 
 
 class PvpLeaderboardsApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, season_id: str, *args, api_key: str = "", **kwargs):
+        if (api_key, season_id) not in cls._instances:
+            cls._instances[(api_key, season_id)] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[(api_key, season_id)]
 
-    def __init__(self, season_id: str):
-        self.api_key: str = ""
+    def __init__(self, season_id: str, *, api_key: str = ""):
+        self.api_key: str = api_key
         self.season_id = season_id
-
-    def setup(self, api_key: str):
-        self.api_key = api_key
 
     @endpoint("/v2/pvp/seasons", subendpoint="/leaderboards/ladder/eu")
     async def ladder_eu(self, *, data) -> List[PvpLeaderboard]:
@@ -84,19 +81,16 @@ class PvpLeaderboardsApi:
 
 
 class PvpApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        self.api_key: str = ""
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
         self._leaderboards = PvpLeaderboardsApi
-
-    def setup(self, api_key: str):
-        self.api_key = api_key
 
     @endpoint("/v2/pvp/ranks", has_ids=True)
     async def ranks(self, *, data, ids: list = None) -> List[Union[PvpRank, int, str]]:
@@ -150,4 +144,4 @@ class PvpApi:
         return object_parse(data, PvpHero)
 
     def leaderboards(self, season_id: str):
-        return self._leaderboards(season_id)
+        return self._leaderboards(season_id, api_key=self.api_key)

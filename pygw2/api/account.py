@@ -41,18 +41,15 @@ from ..core import parse_item
 
 
 class AccountHomeApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        self.api_key: str = ""
-
-    def setup(self, api_key: str):
-        self.api_key = api_key
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/account/home/cats")
     async def cats(self, *, data) -> List[HomeCat]:
@@ -82,18 +79,15 @@ class AccountHomeApi:
 
 
 class AccountMountsApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        self.api_key: str = ""
-
-    def setup(self, api_key: str):
-        self.api_key = api_key
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/account/mounts/skins")
     async def skins(self, *, data) -> List[MountSkin]:
@@ -123,19 +117,18 @@ class AccountMountsApi:
 
 
 class CharactersApi:
-    _instance = None
+    _instances = {}
 
     def __new__(cls, character_id: str, *args, api_key: str = "", **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+        if (character_id, api_key) not in cls._instances:
+            cls._instances[(character_id, api_key)] = super().__new__(
+                cls, *args, **kwargs
+            )
+        return cls._instances[(character_id, api_key)]
 
     def __init__(self, character_id: str, *, api_key: str = ""):
         self.api_key: str = api_key
         self.character_id: str = character_id
-
-    def setup(self, api_key: str):
-        self.api_key = api_key
 
     @endpoint("/v2/characters")
     async def get(self, *, data) -> Union[Character, List[str]]:
@@ -427,24 +420,18 @@ class CharactersApi:
 
 
 class AccountApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        self.api_key: str = ""
-        self._home = AccountHomeApi()
-        self._mounts = AccountMountsApi()
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
+        self._home = AccountHomeApi(api_key=api_key)
+        self._mounts = AccountMountsApi(api_key=api_key)
         self._character = CharactersApi
-
-    def setup(self, api_key: str):
-        self.api_key = api_key
-
-        self._home.setup(api_key)
-        self._mounts.setup(api_key)
 
     @property
     def home(self):

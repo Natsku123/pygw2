@@ -3,15 +3,15 @@ from ..utils import endpoint, object_parse
 
 
 class DailyApi:
-    _instance = None
+    _instances = {}
 
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls, *args, **kwargs)
-        return cls._instance
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
 
-    def __init__(self):
-        pass
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/dailycrafting", has_ids=True)
     async def crafting(self, *, data, ids: list = None):
