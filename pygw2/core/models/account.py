@@ -204,3 +204,29 @@ class WalletCurrency(BaseModel):
         return self.currency_()
 
     value: int
+
+
+class Legendary(BaseModel):
+    id: int
+    max_count: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
+
+class OwnedLegendary(BaseModel):
+    id: int
+    count: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
+    armory_: LazyLoader
+
+    @property
+    def max_count(self) -> int:
+        return self.armory_().max_count

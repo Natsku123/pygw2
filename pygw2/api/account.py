@@ -11,6 +11,7 @@ from ..core.models.account import (
     StorageMaterial,
     WalletCurrency,
     MasteryProgress,
+    OwnedLegendary,
 )
 from ..core.models.achievements import AchievementProgress
 from ..core.models.character import (
@@ -839,3 +840,22 @@ class AccountApi:
             return data
 
         return await daily_api.worldbosses(*data)
+
+    @endpoint("/v2/account/legendaryarmory")
+    async def legendary_armory(self, *, data) -> List["OwnedLegendary"]:
+        """
+        Get Owned Legendary armory items.
+        :param data: Data from wrapper
+        :return:
+        """
+        from .items import ItemsApi
+        from .mechanics import MechanicsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+        mech_api = MechanicsApi(api_key=self.api_key)
+
+        for item in data:
+            item["item_"] = LazyLoader(items_api.get, item["id"])
+            item["armory_"] = LazyLoader(mech_api.legendary_armory, item["id"])
+
+        return object_parse(data, OwnedLegendary)

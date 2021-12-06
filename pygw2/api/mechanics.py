@@ -1,4 +1,4 @@
-from ..core.models.account import MountType, Mastery, Pet
+from ..core.models.account import MountType, Mastery, Pet, Legendary
 from ..core.models.character import (
     Profession,
     Race,
@@ -10,6 +10,8 @@ from ..core.models.character import (
 from ..core.models.general import MountSkin
 from ..core.models.items import Outfit
 from ..utils import endpoint, object_parse, LazyLoader
+
+from typing import Union, List
 
 
 class MechanicsMountsApi:
@@ -24,7 +26,9 @@ class MechanicsMountsApi:
         self.api_key: str = api_key
 
     @endpoint("/v2/mounts/skins", has_ids=True)
-    async def skins(self, *, data, ids: list = None):
+    async def skins(
+        self, *, data, ids: list = None
+    ) -> Union[MountSkin, List[MountSkin], List[str], List[int]]:
         """
         Get mount skins by ID(s).
         None returns all IDs.
@@ -37,7 +41,9 @@ class MechanicsMountsApi:
         return object_parse(data, MountSkin)
 
     @endpoint("/v2/mounts/types", has_ids=True)
-    async def types(self, *, data, ids: list = None):
+    async def types(
+        self, *, data, ids: list = None
+    ) -> Union[MountType, List[MountType], List[str], List[int]]:
         """
         Get mount types by ID(s).
         None returns all IDs.
@@ -67,7 +73,9 @@ class MechanicsApi:
         return self._mounts
 
     @endpoint("/v2/masteries", has_ids=True)
-    async def masteries(self, *, data, ids: list = None):
+    async def masteries(
+        self, *, data, ids: list = None
+    ) -> Union[Mastery, List[Mastery], List[str], List[int]]:
         """
         Get masteries by ID(s).
         None returns all IDs.
@@ -80,7 +88,9 @@ class MechanicsApi:
         return object_parse(data, Mastery)
 
     @endpoint("/v2/outfits", has_ids=True)
-    async def outfits(self, *, data, ids: list = None):
+    async def outfits(
+        self, *, data, ids: list = None
+    ) -> Union[Outfit, List[Outfit], List[str], List[int]]:
         """
         Get outfits by ID(s).
         None returns all IDs.
@@ -101,7 +111,9 @@ class MechanicsApi:
         return object_parse(data, Outfit)
 
     @endpoint("/v2/pets", has_ids=True)
-    async def pets(self, *, data, ids: list = None):
+    async def pets(
+        self, *, data, ids: list = None
+    ) -> Union[Pet, List[Pet], List[str], List[int]]:
         """
         Get Ranger pets by ID(s).
         None returns all IDs.
@@ -114,7 +126,9 @@ class MechanicsApi:
         return object_parse(data, Pet)
 
     @endpoint("/v2/professions", has_ids=True)
-    async def professions(self, *, data, ids: list = None):
+    async def professions(
+        self, *, data, ids: list = None
+    ) -> Union[Profession, List[Profession], List[str], List[int]]:
         """
         Get professions by ID(s).
         None returns all IDs.
@@ -148,7 +162,9 @@ class MechanicsApi:
         return object_parse(data, Profession)
 
     @endpoint("/v2/races", has_ids=True)
-    async def races(self, *, data, ids: list = None):
+    async def races(
+        self, *, data, ids: list = None
+    ) -> Union[Race, List[Race], List[str], List[int]]:
         """
         Get races by ID(s).
         None returns all IDs.
@@ -163,7 +179,9 @@ class MechanicsApi:
         return object_parse(data, Race)
 
     @endpoint("/v2/specializations", has_ids=True)
-    async def specializations(self, *, data, ids: list = None):
+    async def specializations(
+        self, *, data, ids: list = None
+    ) -> Union[Specialization, List[Specialization], List[str], List[int]]:
         """
 
         :param data:
@@ -180,7 +198,9 @@ class MechanicsApi:
         return object_parse(data, Specialization)
 
     @endpoint("/v2/skills", has_ids=True)
-    async def skills(self, *, data, ids: list = None):
+    async def skills(
+        self, *, data, ids: list = None
+    ) -> Union[Skill, List[Skill], List[str], List[int]]:
         """
         Get skills by ID(s).
         None returns all IDs.
@@ -213,7 +233,9 @@ class MechanicsApi:
         return object_parse(data, Skill)
 
     @endpoint("/v2/traits", has_ids=True)
-    async def traits(self, *, data, ids: list = None):
+    async def traits(
+        self, *, data, ids: list = None
+    ) -> Union[Trait, List[Trait], List[str], List[int]]:
         """
         Get traits by ID(s).
         None returns all IDs.
@@ -230,7 +252,9 @@ class MechanicsApi:
         return object_parse(data, Trait)
 
     @endpoint("/v2/legends", has_ids=True)
-    async def legends(self, *, data, ids: list = None):
+    async def legends(
+        self, *, data, ids: list = None
+    ) -> Union[Legend, List[Legend], List[str], List[int]]:
         """
         Get legends by ID(s).
         None returns all IDs.
@@ -247,3 +271,26 @@ class MechanicsApi:
             legend["utilities_"] = LazyLoader(self.skills, *legend["utilities"])
 
         return object_parse(data, Legend)
+
+    @endpoint("/v2/legendaryarmory", has_ids=True)
+    async def legendary_armory(
+        self, *, data, ids: list = None
+    ) -> Union[Legendary, List[Legendary], List[str], List[int]]:
+        """
+        Get Legendary Armory items by ID(s).
+        None returns all IDs.
+        :param data:
+        :param ids:
+        :return:
+        """
+        if ids is None:
+            return data
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
+        for item in data:
+            item["item_"] = LazyLoader(items_api.get, item["id"])
+
+        return object_parse(data, Legendary)

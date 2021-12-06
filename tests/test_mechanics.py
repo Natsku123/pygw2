@@ -36,6 +36,9 @@ class MechanicsTests(aiounittest.AsyncTestCase):
     async def test_legends(self):
         await ids_helper(self, self.api.mechanics.legends, Legend)
 
+    async def test_legendary_armory(self):
+        await ids_helper(self, self.api.mechanics.legendary_armory, Legendary)
+
 
 @pytest.mark.usefixtures("get_api")
 class MechanicsMountsTests(aiounittest.AsyncTestCase):

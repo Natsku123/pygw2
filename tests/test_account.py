@@ -254,6 +254,11 @@ class CharacterTests(aiounittest.AsyncTestCase):
         sab = await self.api.account.character(char).sab()
         self.assertIsInstance(sab, SAB)
 
+    async def test_legendary_armory(self):
+        legs = await self.api.account.legendary_armory()
+        for l in legs:
+            self.assertIsInstance(l, OwnedLegendary)
+
 
 @pytest.mark.usefixtures("get_api")
 class HomeTests(aiounittest.AsyncTestCase):
