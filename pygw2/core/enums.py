@@ -277,6 +277,7 @@ class WeaponType(str, Enum):
     Torch = "Torch"
     Trident = "Trident"
     Warhorn = "Warhorn"
+    Null = "None"
 
 
 class UpgradeComponentFlag(str, Enum):
@@ -462,13 +463,6 @@ class ProfessionWeaponFlags(str, Enum):
     NoWeaponSwap = "NoWeaponSwap"
 
 
-class ProfessionWeaponSkillSlot(str, Enum):
-    Profession_1 = "Profession_1"
-    Utility = "Utility"
-    Heal = "Heal"
-    Elite = "Elite"
-
-
 class SkillType(str, Enum):
     Bundle = "Bundle"
     Elite = "Elite"
@@ -500,6 +494,7 @@ class SkillSlot(str, Enum):
 class SkillFactType(str, Enum):
     AttributeAdjust = "AttributeAdjust"
     Buff = "Buff"
+    BuffConversion = "BuffConversion"
     ComboField = "ComboField"
     ComboFinisher = "ComboFinisher"
     Damage = "Damage"

@@ -4,38 +4,22 @@ import pytest
 
 from pygw2.models import *
 
-from .helpers import subset
+from .helpers import ids_helper
 
 
 @pytest.mark.usefixtures("get_api")
 class WvWTests(aiounittest.AsyncTestCase):
     async def test_abilities(self):
-        abils = await self.api.wvw.abilities()
-        abils = subset(abils, 10)
-        abils = await self.api.wvw.abilities(*abils)
-        for a in abils:
-            self.assertIsInstance(a, WvWAbility)
+        await ids_helper(self, self.api.wvw.abilities, WvWAbility)
 
     async def test_upgrades(self):
-        ups = await self.api.wvw.upgrades()
-        ups = subset(ups, 10)
-        ups = await self.api.wvw.upgrades(*ups)
-        for u in ups:
-            self.assertIsInstance(u, WvWUpgrade)
+        await ids_helper(self, self.api.wvw.upgrades, WvWUpgrade)
 
     async def test_objectives(self):
-        objs = await self.api.wvw.objectives()
-        objs = subset(objs, 10)
-        objs = await self.api.wvw.objectives(*objs)
-        for o in objs:
-            self.assertIsInstance(o, WvWObjective)
+        await ids_helper(self, self.api.wvw.objectives, WvWObjective)
 
     async def test_ranks(self):
-        ranks = await self.api.wvw.ranks()
-        ranks = subset(ranks, 10)
-        ranks = await self.api.wvw.ranks(*ranks)
-        for r in ranks:
-            self.assertIsInstance(r, WvWRank)
+        await ids_helper(self, self.api.wvw.ranks, WvWRank)
 
 
 @pytest.mark.usefixtures("get_api")

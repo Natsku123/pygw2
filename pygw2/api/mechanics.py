@@ -128,8 +128,8 @@ class MechanicsApi:
             p["specializations_"] = LazyLoader(
                 self.specializations, *p["specializations"]
             )
-            for w in p["weapons"]:
-                if w["specialization"]:
+            for w in p["weapons"].values():
+                if "specialization" in w and w["specialization"]:
                     w["specialization_"] = LazyLoader(
                         self.specializations, w["specialization"]
                     )
@@ -139,11 +139,12 @@ class MechanicsApi:
                 t["skill_"] = LazyLoader(self.skills, t["id"])
                 t["specialization_"] = LazyLoader(self.specializations, t["id"])
 
-                for track in t["tracks"]:
-                    if track["skill_id"]:
-                        track["skill_"] = LazyLoader(self.skills, track["skill_id"])
-                    if track["trait_id"]:
-                        track["trait_"] = LazyLoader(self.traits, track["trait_id"])
+                if "tracks" in t:
+                    for track in t["tracks"]:
+                        if "skill_id" in track and track["skill_id"]:
+                            track["skill_"] = LazyLoader(self.skills, track["skill_id"])
+                        if "trait_id" in track and track["trait_id"]:
+                            track["trait_"] = LazyLoader(self.traits, track["trait_id"])
         return object_parse(data, Profession)
 
     @endpoint("/v2/races", has_ids=True)
@@ -191,20 +192,20 @@ class MechanicsApi:
             return data
 
         for s in data:
-            if s["flip_skill"]:
+            if "flip_skill" in s and s["flip_skill"]:
                 s["flip_skill_"] = LazyLoader(self.skills, s["flip_skill"])
-            if s["next_chain"]:
+            if "next_chain" in s and s["next_chain"]:
                 s["next_chain_"] = LazyLoader(self.skills, s["next_chain"])
-            if s["prev_chain"]:
+            if "prev_chain" in s and s["prev_chain"]:
                 s["prev_chain_"] = LazyLoader(self.skills, s["prev_chain"])
-            if s["transform_skills"]:
+            if "transform_skills" in s and s["transform_skills"]:
                 s["transform_skills_"] = LazyLoader(self.skills, *s["transform_skills"])
-            if s["bundle_skills"]:
+            if "bundle_skills" in s and s["bundle_skills"]:
                 s["bundle_skills_"] = LazyLoader(self.skills, *s["bundle_skills"])
-            if s["toolbelt_skill"]:
+            if "toolbelt_skill" in s and s["toolbelt_skill"]:
                 s["toolbelt_skill_"] = LazyLoader(self.skills, *s["toolbelt_skill"])
 
-            if s["traited_facts"]:
+            if "traited_facts" in s and s["traited_facts"]:
                 for tf in s["traited_facts"]:
                     tf["requires_trait_"] = LazyLoader(
                         self.traits, tf["requires_trait"]
@@ -243,6 +244,6 @@ class MechanicsApi:
             legend["swap_"] = LazyLoader(self.skills, legend["swap"])
             legend["heal_"] = LazyLoader(self.skills, legend["heal"])
             legend["elite_"] = LazyLoader(self.skills, legend["elite"])
-            legend["utilities_"] = LazyLoader(self.skills, *legend["utilities_"])
+            legend["utilities_"] = LazyLoader(self.skills, *legend["utilities"])
 
         return object_parse(data, Legend)

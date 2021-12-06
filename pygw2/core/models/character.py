@@ -344,14 +344,14 @@ class WeaponSkill(BaseModel):
     def skill(self) -> "Skill":
         return self.skill_()
 
-    slot: ProfessionWeaponSkillSlot
+    slot: SkillSlot
     offhand: Optional[str]
     attunement: Optional[str]
     source: Optional[str]
 
 
 class ProfessionWeapon(BaseModel):
-    flag: List[ProfessionWeaponFlag]
+    flag: Optional[List[ProfessionWeaponFlag]]
     specialization_: Optional[LazyLoader]
 
     @property
@@ -435,7 +435,7 @@ class SkillFactPrefix(BaseModel):
 
 
 class SkillFact(BaseModel):
-    text: str
+    text: Optional[str]
     icon: Optional[str]
     type: SkillFactType
     value: Optional[Union[int, bool]]
