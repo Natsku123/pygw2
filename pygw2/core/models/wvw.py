@@ -30,21 +30,43 @@ class WvWStats(BaseModel):
 
 
 class WvWMatchWorlds(BaseModel):
-    red: Union["World", List["World"]]
-    blue: Union["World", List["World"]]
-    green: Union["World", List["World"]]
+    red_: LazyLoader
+    blue_: LazyLoader
+    green_: LazyLoader
+
+    @property
+    def red(self) -> Union["World", List["World"]]:
+        return self.red_()
+
+    @property
+    def blue(self) -> Union["World", List["World"]]:
+        return self.blue_()
+
+    @property
+    def green(self) -> Union["World", List["World"]]:
+        return self.green_()
 
 
 class WvWMapObjectives(BaseModel):
-    id: int
+    id: str
     type: WvWObjectiveTypes
     owner: WvWTeams
     last_flipped: datetime.datetime
-    claimed_by: Optional["Guild"]
+    claimed_by_: Optional[LazyLoader]
+
+    @property
+    def claimed_by(self) -> Optional["Guild"]:
+        return self.claimed_by_() if self.claimed_by_ else None
+
     claimed_at: Optional[datetime.datetime]
     points_tick: int
     points_capture: int
-    guild_upgrades: Optional[List["GuildUpgrade"]]
+    guild_upgrades_: Optional[LazyLoader]
+
+    @property
+    def guild_upgrades(self) -> Optional[List["GuildUpgrade"]]:
+        return self.guild_upgrades_() if self.guild_upgrades_ else None
+
     yaks_delivered: Optional[int]
 
 
@@ -110,13 +132,13 @@ class WvWObjective(BaseModel):
     name: str
     type: WvWObjectiveTypes
     sector_id: int
-    sector: "MapSector"
+    sector: Optional["MapSector"]
     map_id: int
-    map: "Map"
+    map: Optional["Map"]
     map_type: WvWMapTypes
-    coord: List[int]
-    label_coord: List[int]
-    marker: str
+    coord: Optional[List[int]]
+    label_coord: Optional[List[int]]
+    marker: Optional[str]
     chat_link: str
     upgrade_id: Optional[int]
     upgrade: Optional[WvWUpgrade]

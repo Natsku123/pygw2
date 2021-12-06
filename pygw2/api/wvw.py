@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
 from ..core.models.wvw import WvWAbility, WvWMatch, WvWUpgrade, WvWObjective, WvWRank
 
 
@@ -33,26 +33,36 @@ class WvWMatchesApi:
         guild_api = GuildApi(api_key=self.api_key)
 
         if "worlds" in data:
+            data["worlds"] = {f"{k}_": v for k, v in data["worlds"].items()}
             for world in data["worlds"].keys():
-                data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
+                data["worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["worlds"][world]
+                )
 
         if "all_worlds" in data:
+            data["all_worlds"] = {f"{k}_": v for k, v in data["all_worlds"].items()}
             for world in data["all_worlds"].keys():
-                data["all_worlds"][world] = await misc_api.worlds(
-                    *data["all_worlds"][world]
+                data["all_worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["all_worlds"][world]
                 )
 
         if "maps" in data:
             for m in data["maps"]:
-                for objective in m["objectives"]:
-                    if objective["claimed_by"]:
-                        objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"], api_key=self.api_key
-                        ).get()
-                    if objective["guild_upgrades"]:
-                        objective["guild_upgrades"] = await guild_api.upgrades(
-                            *objective["guild_upgrades"]
-                        )
+                if "objectives" in m:
+                    for objective in m["objectives"]:
+                        if "claimed_by" in objective and objective["claimed_by"]:
+                            objective["claimed_by_"] = LazyLoader(
+                                GuildApi(
+                                    objective["claimed_by"], api_key=self.api_key
+                                ).get
+                            )
+                        if (
+                            "guild_upgrades" in objective
+                            and objective["guild_upgrades"]
+                        ):
+                            objective["guild_upgrades_"] = LazyLoader(
+                                guild_api.upgrades, *objective["guild_upgrades"]
+                            )
 
         return object_parse(data, WvWMatch)
 
@@ -80,26 +90,36 @@ class WvWMatchesApi:
         guild_api = GuildApi(api_key=self.api_key)
 
         if "worlds" in data:
+            data["worlds"] = {f"{k}_": v for k, v in data["worlds"].items()}
             for world in data["worlds"].keys():
-                data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
+                data["worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["worlds"][world]
+                )
 
         if "all_worlds" in data:
+            data["all_worlds"] = {f"{k}_": v for k, v in data["all_worlds"].items()}
             for world in data["all_worlds"].keys():
-                data["all_worlds"][world] = await misc_api.worlds(
-                    *data["all_worlds"][world]
+                data["all_worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["all_worlds"][world]
                 )
 
         if "maps" in data:
             for m in data["maps"]:
-                for objective in m["objectives"]:
-                    if objective["claimed_by"]:
-                        objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"], api_key=self.api_key
-                        ).get()
-                    if objective["guild_upgrades"]:
-                        objective["guild_upgrades"] = await guild_api.upgrades(
-                            *objective["guild_upgrades"]
-                        )
+                if "objectives" in m:
+                    for objective in m["objectives"]:
+                        if "claimed_by" in objective and objective["claimed_by"]:
+                            objective["claimed_by_"] = LazyLoader(
+                                GuildApi(
+                                    objective["claimed_by"], api_key=self.api_key
+                                ).get
+                            )
+                        if (
+                            "guild_upgrades" in objective
+                            and objective["guild_upgrades"]
+                        ):
+                            objective["guild_upgrades_"] = LazyLoader(
+                                guild_api.upgrades, *objective["guild_upgrades"]
+                            )
 
         return object_parse(data, WvWMatch)
 
@@ -127,26 +147,36 @@ class WvWMatchesApi:
         guild_api = GuildApi(api_key=self.api_key)
 
         if "worlds" in data:
+            data["worlds"] = {f"{k}_": v for k, v in data["worlds"].items()}
             for world in data["worlds"].keys():
-                data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
+                data["worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["worlds"][world]
+                )
 
         if "all_worlds" in data:
+            data["all_worlds"] = {f"{k}_": v for k, v in data["all_worlds"].items()}
             for world in data["all_worlds"].keys():
-                data["all_worlds"][world] = await misc_api.worlds(
-                    *data["all_worlds"][world]
+                data["all_worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["all_worlds"][world]
                 )
 
         if "maps" in data:
             for m in data["maps"]:
-                for objective in m["objectives"]:
-                    if objective["claimed_by"]:
-                        objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"], api_key=self.api_key
-                        ).get()
-                    if objective["guild_upgrades"]:
-                        objective["guild_upgrades"] = await guild_api.upgrades(
-                            *objective["guild_upgrades"]
-                        )
+                if "objectives" in m:
+                    for objective in m["objectives"]:
+                        if "claimed_by" in objective and objective["claimed_by"]:
+                            objective["claimed_by_"] = LazyLoader(
+                                GuildApi(
+                                    objective["claimed_by"], api_key=self.api_key
+                                ).get
+                            )
+                        if (
+                            "guild_upgrades" in objective
+                            and objective["guild_upgrades"]
+                        ):
+                            objective["guild_upgrades_"] = LazyLoader(
+                                guild_api.upgrades, *objective["guild_upgrades"]
+                            )
 
         return object_parse(data, WvWMatch)
 
@@ -174,26 +204,36 @@ class WvWMatchesApi:
         guild_api = GuildApi(api_key=self.api_key)
 
         if "worlds" in data:
+            data["worlds"] = {f"{k}_": v for k, v in data["worlds"].items()}
             for world in data["worlds"].keys():
-                data["worlds"][world] = await misc_api.worlds(*data["worlds"][world])
+                data["worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["worlds"][world]
+                )
 
         if "all_worlds" in data:
+            data["all_worlds"] = {f"{k}_": v for k, v in data["all_worlds"].items()}
             for world in data["all_worlds"].keys():
-                data["all_worlds"][world] = await misc_api.worlds(
-                    *data["all_worlds"][world]
+                data["all_worlds"][world] = LazyLoader(
+                    misc_api.worlds, data["all_worlds"][world]
                 )
 
         if "maps" in data:
             for m in data["maps"]:
-                for objective in m["objectives"]:
-                    if objective["claimed_by"]:
-                        objective["claimed_by"] = await GuildApi(
-                            objective["claimed_by"], api_key=self.api_key
-                        ).get()
-                    if objective["guild_upgrades"]:
-                        objective["guild_upgrades"] = await guild_api.upgrades(
-                            *objective["guild_upgrades"]
-                        )
+                if "objectives" in m:
+                    for objective in m["objectives"]:
+                        if "claimed_by" in objective and objective["claimed_by"]:
+                            objective["claimed_by_"] = LazyLoader(
+                                GuildApi(
+                                    objective["claimed_by"], api_key=self.api_key
+                                ).get
+                            )
+                        if (
+                            "guild_upgrades" in objective
+                            and objective["guild_upgrades"]
+                        ):
+                            objective["guild_upgrades_"] = LazyLoader(
+                                guild_api.upgrades, *objective["guild_upgrades"]
+                            )
 
         return object_parse(data, WvWMatch)
 
@@ -227,6 +267,16 @@ class WvWApi:
 
     def match(self, match_id) -> WvWMatchesApi:
         return self._matches(match_id, api_key=self.api_key)
+
+    @endpoint("/v2/wvw/matches")
+    async def matches(self, *, data) -> List[str]:
+        """
+        Get match IDs from API
+        :param data: Data from wrapper
+        :return: list of IDs
+        """
+
+        return data
 
     @endpoint("/v2/wvw/upgrades", has_ids=True)
     async def upgrades(
@@ -263,13 +313,14 @@ class WvWApi:
 
         for obj in data:
             obj["map"] = await map_api.maps(obj["map_id"])
-            obj["sector"] = (
-                await map_api.continent(obj["map"]["continent_id"])
-                .floor(1)
-                .region(obj["map"]["region_id"])
-                .map(obj["map_id"])
-                .sectors(obj["sector_id"])
-            )
+            if obj["map"]:
+                obj["sector"] = (
+                    await map_api.continent(obj["map"].continent_id)
+                    .floor(1)
+                    .region(obj["map"].region_id)
+                    .map(obj["map_id"])
+                    .sectors(obj["sector_id"])
+                )
 
         return object_parse(data, WvWObjective)
 

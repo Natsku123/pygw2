@@ -177,6 +177,7 @@ class AccountTests(aiounittest.AsyncTestCase):
 class CharacterTests(aiounittest.AsyncTestCase):
     async def test_character(self):
         chars = await self.api.account.characters()
+        chars = subset(chars, 5)
         for c in chars:
             char = await self.api.account.character(c).get()
             self.assertIsInstance(char, Character)

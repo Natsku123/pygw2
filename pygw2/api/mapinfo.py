@@ -7,7 +7,7 @@ class ContinentApi:
 
     def __new__(cls, *args, continent_id: int = None, **kwargs):
         if continent_id not in cls._instances:
-            cls._instances[continent_id] = super().__new__(cls, *args, **kwargs)
+            cls._instances[continent_id] = super().__new__(cls)
         return cls._instances[continent_id]
 
     def __init__(self, continent_id: int = None):
@@ -33,9 +33,7 @@ class ContinentFloorApi:
 
     def __new__(cls, continent_id: int, *args, floor_id: int = None, **kwargs):
         if (continent_id, floor_id) not in cls._instances:
-            cls._instances[(continent_id, floor_id)] = super().__new__(
-                cls, *args, **kwargs
-            )
+            cls._instances[(continent_id, floor_id)] = super().__new__(cls)
         return cls._instances[(continent_id, floor_id)]
 
     def __init__(self, continent_id: int, floor_id: int = None):
@@ -64,9 +62,7 @@ class ContinentFloorRegionApi:
         cls, continent_id: int, floor_id: int, *args, region_id: int = None, **kwargs
     ):
         if (continent_id, floor_id, region_id) not in cls._instances:
-            cls._instances[(continent_id, floor_id, region_id)] = super().__new__(
-                cls, *args, **kwargs
-            )
+            cls._instances[(continent_id, floor_id, region_id)] = super().__new__(cls)
         return cls._instances[(continent_id, floor_id, region_id)]
 
     def __init__(self, continent_id: int, floor_id: int, region_id: int = None):
@@ -104,7 +100,7 @@ class ContinentFloorRegionMapApi:
         if (continent_id, floor_id, region_id, map_id) not in cls._instances:
             cls._instances[
                 (continent_id, floor_id, region_id, map_id)
-            ] = super().__new__(cls, *args, **kwargs)
+            ] = super().__new__(cls)
         return cls._instances[(continent_id, floor_id, region_id, map_id)]
 
     def __init__(
@@ -151,7 +147,7 @@ class MapInfoApi:
 
     def __new__(cls, *args, api_key: str = "", **kwargs):
         if api_key not in cls._instances:
-            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+            cls._instances[api_key] = super().__new__(cls)
         return cls._instances[api_key]
 
     def __init__(self, *, api_key: str = ""):
