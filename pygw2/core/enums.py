@@ -774,3 +774,8 @@ class WvWMapBonusTypes(str, Enum):
 
 class MailcarrierFlags(str, Enum):
     Default = "Default"
+
+
+class TokenTypes(str, Enum):
+    APIKey = "APIKey"
+    Subtoken = "Subtoken"

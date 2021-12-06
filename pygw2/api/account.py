@@ -12,6 +12,8 @@ from ..core.models.account import (
     WalletCurrency,
     MasteryProgress,
     OwnedLegendary,
+    SubToken,
+    TokenInfo,
 )
 from ..core.models.achievements import AchievementProgress
 from ..core.models.character import (
@@ -36,9 +38,85 @@ from ..core.models.backstory import BiographyAnswer
 from ..core.models.crafting import Recipe
 from ..core.models.misc import Color, Mini, Novelty, Title
 from ..core.models.sab import SAB
-from ..core.models.pvp import PvpHero
+from ..core.models.pvp import PvpHero, PvpStandings, PvpGame, PvpStats
 from ..utils import endpoint, LazyLoader, object_parse
 from ..core import parse_item
+
+
+class AccountPvpApi:
+    _instances = {}
+
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
+
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
+
+    @endpoint("/v2/account/pvp/heroes")
+    async def heroes(self, *, data) -> List["PvpHero"]:
+        """
+        Get unlocked PvP heroes from API.
+        :param data: Data from wrapper
+        :return:
+        """
+        from .pvp import PvpApi
+
+        pvp_api = PvpApi(api_key=self.api_key)
+
+        if not data:
+            return data
+
+        return await pvp_api.heroes(*data)
+
+    @endpoint("/v2/pvp/standings")
+    async def standings(self, *, data) -> PvpStandings:
+        """
+        Get account PvP standings
+        :param data: Data from wrapper
+        :return: PvpStandings
+        """
+        if not data:
+            return data
+
+        from .pvp import PvpApi
+
+        pvp_api = PvpApi(api_key=self.api_key)
+
+        data["season_"] = LazyLoader(pvp_api.seasons, data["season_id"])
+
+        return object_parse(data, PvpStandings)
+
+    @endpoint("/v2/pvp/games", has_ids=True)
+    async def games(self, *, data, ids: Optional[list] = None) -> List[PvpGame]:
+        """
+        Get account PvP games
+        :param data: Data from wrapper
+        :param ids: list of ids
+        :return: list of PvpGames
+        """
+        if not ids:
+            return data
+
+        from .pvp import PvpApi
+
+        pvp_api = PvpApi(api_key=self.api_key)
+
+        for game in data:
+            if "season" in game and game["season"]:
+                game["season_"] = LazyLoader(pvp_api.seasons, game["season"])
+
+        return object_parse(data, PvpGame)
+
+    @endpoint("/v2/pvp/stats")
+    async def stats(self, *, data) -> PvpStats:
+        """
+        Get account PvP stats
+        :param data: Data from wrapper
+        :return: PvpStats
+        """
+        return object_parse(data, PvpStats)
 
 
 class AccountHomeApi:
@@ -458,6 +536,7 @@ class AccountApi:
         self.api_key: str = api_key
         self._home = AccountHomeApi(api_key=api_key)
         self._mounts = AccountMountsApi(api_key=api_key)
+        self._pvp = AccountPvpApi(api_key=api_key)
         self._character = CharactersApi
 
     @property
@@ -467,6 +546,10 @@ class AccountApi:
     @property
     def mounts(self) -> AccountMountsApi:
         return self._mounts
+
+    @property
+    def pvp(self) -> AccountPvpApi:
+        return self._pvp
 
     def character(self, character_id) -> CharactersApi:
         return self._character(character_id, api_key=self.api_key)
@@ -734,22 +817,6 @@ class AccountApi:
 
         return await mecha_api.outfits(*data)
 
-    @endpoint("/v2/account/pvp/heroes")
-    async def pvp_heroes(self, *, data) -> List["PvpHero"]:
-        """
-        Get unlocked PvP heroes from API.
-        :param data: Data from wrapper
-        :return:
-        """
-        from .pvp import PvpApi
-
-        pvp_api = PvpApi(api_key=self.api_key)
-
-        if not data:
-            return data
-
-        return await pvp_api.heroes(*data)
-
     @endpoint("/v2/account/raids")
     async def raids(self, *, data):
         """
@@ -859,3 +926,27 @@ class AccountApi:
             item["armory_"] = LazyLoader(mech_api.legendary_armory, item["id"])
 
         return object_parse(data, OwnedLegendary)
+
+    @endpoint("/v2/subtoken")
+    async def subtoken(self, *, data, params: dict = None) -> SubToken:
+        """
+        Check https://wiki.guildwars2.com/wiki/API:2/createsubtoken for more info
+        :param data: Data from wrapper
+        :param params: {
+            'expire': '2021-12-06T11:19:51+00:00'
+            'permissions': ['account'],
+            'urls': []
+        }
+        :return: subtoken
+        """
+
+        return object_parse(data, SubToken)
+
+    @endpoint("/v2/tokeninfo")
+    async def tokeninfo(self, *, data) -> TokenInfo:
+        """
+        Get info of used token.
+        :param data: Data from wrapper
+        :return: TokenInfo
+        """
+        return object_parse(data, TokenInfo)

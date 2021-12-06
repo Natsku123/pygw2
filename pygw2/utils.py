@@ -277,6 +277,8 @@ def endpoint(
 
             if "params" in kwargs:
                 for key, value in kwargs["params"].items():
+                    if isinstance(value, list):
+                        value = list_to_str(value)
                     parameters[key] = value
 
             # Get data from API

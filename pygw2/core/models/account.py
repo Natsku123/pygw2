@@ -3,7 +3,7 @@ from typing import Optional, List, TYPE_CHECKING
 
 from pygw2.utils import LazyLoader, BaseModel
 
-from pygw2.core.enums import Binding, AccountAccess, Region
+from pygw2.core.enums import Binding, AccountAccess, Region, TokenTypes
 
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item
@@ -230,3 +230,17 @@ class OwnedLegendary(BaseModel):
     @property
     def max_count(self) -> int:
         return self.armory_().max_count
+
+
+class SubToken(BaseModel):
+    subtoken: str
+
+
+class TokenInfo(BaseModel):
+    id: str
+    name: str
+    permissions: List[str]
+    type: TokenTypes
+    expires_at: Optional[str]
+    issued_at: Optional[str]
+    urls: Optional[List[str]]

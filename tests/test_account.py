@@ -4,7 +4,7 @@ import pytest
 
 from pygw2.models import *
 
-from .helpers import subset
+from .helpers import subset, ids_helper
 
 
 @pytest.mark.usefixtures("get_api")
@@ -129,14 +129,6 @@ class AccountTests(aiounittest.AsyncTestCase):
             elif o.unlock_items:
                 self.assertIsInstance(o.unlock_items, Item)
 
-    # TODO sort this out
-    # async def test_pvp_heroes(self):
-    #     ph = await self.api.account.pvp_heroes()
-    #     self.assertIsInstance(ph, list)
-    #     ph = subset(ph, 10)
-    #     for h in ph:
-    #         self.assertIsInstance(h, PvpHero)
-
     async def test_recipes(self):
         recipes = await self.api.account.recipes()
         self.assertIsInstance(recipes, list)
@@ -259,6 +251,10 @@ class CharacterTests(aiounittest.AsyncTestCase):
         for l in legs:
             self.assertIsInstance(l, OwnedLegendary)
 
+    async def test_tokeninfo(self):
+        info = await self.api.account.tokeninfo()
+        self.assertIsInstance(info, TokenInfo)
+
 
 @pytest.mark.usefixtures("get_api")
 class HomeTests(aiounittest.AsyncTestCase):
@@ -288,6 +284,29 @@ class MountsTests(aiounittest.AsyncTestCase):
         types = subset(types, 10)
         for t in types:
             self.assertIsInstance(t, MountType)
+
+
+@pytest.mark.usefixtures("get_api")
+class PvpTests(aiounittest.AsyncTestCase):
+    # TODO sort this out
+    # async def test_pvp_heroes(self):
+    #     ph = await self.api.account.pvp.heroes()
+    #     self.assertIsInstance(ph, list)
+    #     ph = subset(ph, 10)
+    #     for h in ph:
+    #         self.assertIsInstance(h, PvpHero)
+
+    async def test_standings(self):
+        standings = await self.api.account.pvp.standings()
+        if not isinstance(standings, list):
+            self.assertIsInstance(standings, PvpStandings)
+
+    async def test_games(self):
+        await ids_helper(self, self.api.account.pvp.games, PvpGame)
+
+    async def test_stats(self):
+        stats = await self.api.account.pvp.stats()
+        self.assertIsInstance(stats, PvpStats)
 
 
 if __name__ == "__main__":

@@ -98,7 +98,11 @@ class PvpGame(BaseModel):
     scores: PvpScores
     rating_type: Union[PvpRatingType, None]
     rating_change: int
-    season: Optional[str]  # TODO resolve against pvp seasons
+    season_: Optional[LazyLoader]
+
+    @property
+    def season(self) -> Optional["PvpSeason"]:
+        return self.season_() if self.season_ else None
 
 
 class PvpRankLevel(BaseModel):
@@ -209,3 +213,31 @@ class PvpHero(BaseModel):
     overlay: str
     underlay: str
     skins: List[PvpHeroSkin]
+
+
+class PvpStandingsCurrent(BaseModel):
+    total_points: int
+    division: int
+    tier: int
+    points: int
+    repeats: int
+    rating: int
+    decay: int
+
+
+class PvpStandingsBest(BaseModel):
+    total_points: int
+    division: int
+    tier: int
+    points: int
+    repeats: int
+
+
+class PvpStandings(BaseModel):
+    current: PvpStandingsCurrent
+    season_id: int
+    season_: LazyLoader
+
+    @property
+    def season(self) -> PvpSeason:
+        return self.season_()
