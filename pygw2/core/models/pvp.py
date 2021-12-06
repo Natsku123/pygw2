@@ -155,7 +155,7 @@ class PvpLeaderboardsLadder(BaseModel):
 
 
 class PvpLeaderboards(BaseModel):
-    ladder: PvpLeaderboardsLadder
+    ladder: Optional[PvpLeaderboardsLadder]
 
 
 class PvpSeason(BaseModel):
@@ -176,7 +176,7 @@ class PvpLeaderboardScore(BaseModel):
 class PvpLeaderboard(BaseModel):
     name: str
     rank: int
-    id: str
+    id: Optional[str]
     team: Optional[str]
     team_id: Optional[str]
     date: datetime.datetime

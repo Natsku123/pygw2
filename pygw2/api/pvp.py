@@ -57,7 +57,7 @@ class PvpLeaderboardsApi:
         return object_parse(data, PvpLeaderboard)
 
     @endpoint("/v2/pvp/seasons", subendpoint="/leaderboards/guild/eu")
-    async def legendary_eu(self, *, data) -> List[PvpLeaderboard]:
+    async def guild_eu(self, *, data) -> List[PvpLeaderboard]:
         """
         Get leaderboards for EU guild from API
         :param data: data from wrapper
@@ -67,7 +67,7 @@ class PvpLeaderboardsApi:
         return object_parse(data, PvpLeaderboard)
 
     @endpoint("/v2/pvp/seasons", subendpoint="/leaderboards/guild/na")
-    async def legendary_na(self, *, data) -> List[PvpLeaderboard]:
+    async def guild_eu(self, *, data) -> List[PvpLeaderboard]:
         """
         Get leaderboards for NA guild from API
         :param data: data from wrapper
