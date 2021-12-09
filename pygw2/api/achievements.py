@@ -5,12 +5,21 @@ from ..core.models.achievements import (
     AchievementGroup,
     AchievementCategory,
 )
-from ..utils import endpoint, object_parse
+
+from ..core.enums import AchievementRewardType
+from ..utils import endpoint, object_parse, LazyLoader
 
 
 class AchievementsApi:
-    def __init__(self):
-        pass
+    _instances = {}
+
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
+
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/achievements", has_ids=True)
     async def get(self, *, data, ids: list = None):
@@ -21,14 +30,33 @@ class AchievementsApi:
         :param ids: list=[]
         :return: list
         """
+        from .misc import MiscellaneousApi
+
+        misc_api = MiscellaneousApi(api_key=self.api_key)
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
+        from .mechanics import MechanicsApi
+
+        mecha_api = MechanicsApi(api_key=self.api_key)
 
         # Return list of ids.
         if ids is None:
             return data
 
         # Return list of Achievements.
-        else:
-            return object_parse(data, Achievement)
+        for a in data:
+            if "rewards" in a and a["rewards"]:
+                for r in a["rewards"]:
+                    if r["type"] == AchievementRewardType.Title:
+                        r["title_"] = LazyLoader(misc_api.titles, r["id"])
+                    elif r["type"] == AchievementRewardType.Item:
+                        r["item_"] = LazyLoader(items_api.get, r["id"])
+                    elif r["type"] == AchievementRewardType.Mastery:
+                        r["mastery_"] = LazyLoader(mecha_api.masteries, r["id"])
+        return object_parse(data, Achievement)
 
     @endpoint("/v2/achievements/daily")
     async def daily(self, *, data):
@@ -38,7 +66,7 @@ class AchievementsApi:
         :param data: Data from wrapper
         :return: dict
         """
-        return DailyAchievements(**data)
+        return object_parse(data, DailyAchievements)
 
     @endpoint("/v2/achievements/daily/tomorrow")
     async def daily_tomorrow(self, *, data):

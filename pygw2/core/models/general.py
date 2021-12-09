@@ -1,13 +1,16 @@
-from typing import Optional, List, Union
-from pydantic import BaseModel
+from typing import Optional, List, Union, TYPE_CHECKING
 
 from pygw2.core.enums import *
+from pygw2.utils import LazyLoader, BaseModel
+
+if TYPE_CHECKING:
+    from pygw2.core.models.misc import Color
 
 
 class Finisher(BaseModel):
     id: int = 0
     unlock_details: str = ""
-    unlock_items: Optional[List[int]]   # TODO resolve against items
+    unlock_items: Optional[List[int]]  # TODO resolve against items
     order: int = 0
     icon: str = ""
     name: str = ""
@@ -44,34 +47,38 @@ class Skin(BaseModel):
     flags: List[SkinFlag]
     restrictions: List[Races]
     icon: str
-    rarity: str     # TODO same as ItemRarity?
-    description: str
-    details: Optional[Union[
-        'ArmorSkinDetails',
-        'WeaponSkinDetails',
-        'GatheringSkinDetails'
-    ]]
+    rarity: str  # TODO same as ItemRarity?
+    description: Optional[str]
+    details: Optional[
+        Union["ArmorSkinDetails", "WeaponSkinDetails", "GatheringSkinDetails"]
+    ]
 
 
 class DyeSlot(BaseModel):
-    color_id: int   # TODO resolve against colors
-    material: DyeSlotMaterial
+    color_id: Optional[int]
+    color_: Optional[LazyLoader]
+
+    @property
+    def color(self) -> Optional["Color"]:
+        return self.color_() if self.color_ is not None else None
+
+    material: Optional[DyeSlotMaterial]
 
 
 class SkinDyeSlots(BaseModel):
-    default: List[DyeSlot]
+    default: List[Optional[DyeSlot]]
     overrides: DyeSlot
 
 
 class ArmorSkinDetails(BaseModel):
     type: ArmorSlot
     weight_class: WeightClass
-    dye_slots: SkinDyeSlots
+    dye_slots: Optional[SkinDyeSlots]
 
 
 class WeaponSkinDetails(BaseModel):
     type: WeaponType
-    damage_type: DamageType
+    damage_type: Optional[DamageType]
 
 
 class GatheringSkinDetails(BaseModel):
@@ -82,7 +89,7 @@ class MountSkin(BaseModel):
     id: int = 0
     name: str = ""
     icon: str = ""
-    mount: str = ""     # TODO resolve against mount types
+    mount: str = ""  # TODO resolve against mount types
     dye_slots: List[DyeSlot]
 
 

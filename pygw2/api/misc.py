@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
 from ..core.models.misc import (
     Color,
     Currency,
@@ -14,17 +14,17 @@ from ..core.models.misc import (
     World,
 )
 
-from .items import ItemsApi
-
-items_api = ItemsApi()
-
 
 class MiscellaneousApi:
-    def __init__(self):
-        self.api_key: str = ""
+    _instances = {}
 
-    def setup(self, api_key: str):
-        self.api_key = api_key
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
+
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/build")
     async def build(self, *, data):
@@ -43,10 +43,17 @@ class MiscellaneousApi:
         :param ids: List of IDs
         :return: list
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
 
         # Return ids
         if ids is None:
             return data
+
+        for c in data:
+            if "item" in c and c["item"]:
+                c["item_"] = LazyLoader(items_api.get, c["item"])
 
         # Return object(s)
         return object_parse(data, Color)
@@ -124,11 +131,15 @@ class MiscellaneousApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         if ids is None:
             return data
 
         for mini in data:
-            mini["item"] = await items_api.get(mini["item_id"])
+            mini["item_"] = LazyLoader(items_api.get, mini["item_id"])
 
         return object_parse(data, Mini)
 
@@ -142,12 +153,16 @@ class MiscellaneousApi:
         :param ids: List of IDs
         :return: list
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
 
         if ids is None:
             return data
 
         for nov in data:
-            nov["unlock_item"] = await items_api.get(*nov["unlock_item"])
+            if "unlock_item" in nov and nov["unlock_item"]:
+                nov["unlock_item_"] = LazyLoader(items_api.get, *nov["unlock_item"])
 
         return object_parse(data, Novelty)
 
@@ -173,9 +188,16 @@ class MiscellaneousApi:
         :param ids: List of IDs
         :return: list
         """
+        from .achievements import AchievementsApi
+
+        achi_api = AchievementsApi(api_key=self.api_key)
 
         if ids is None:
             return data
+
+        for t in data:
+            if "achievements" in t and t["achievements"]:
+                t["achievements_"] = LazyLoader(achi_api.get, *t["achievements"])
 
         return object_parse(data, Title)
 

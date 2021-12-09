@@ -1,6 +1,5 @@
 import datetime
 
-from pydantic import BaseModel
 from typing import List, Optional, Union, TYPE_CHECKING
 
 from pygw2.core.enums import (
@@ -9,10 +8,16 @@ from pygw2.core.enums import (
     GuildUpgradeType,
     GuildLogEntryType,
     GuildTeamMemberRole,
+    GuildStashOperation,
+    GuildUpgradeAction,
+    PvpRatingType,
 )
 
+from pygw2.utils import BaseModel, LazyLoader
+
 if TYPE_CHECKING:
-    from pygw2.core.models.pvp import PvpWinLoss, PvpLadderStats, PvpGame
+    from pygw2.core.models.pvp import PvpScores
+    from pygw2.core.models.items import Item, Recipe
 
 
 class GuildEmblemBackground(BaseModel):
@@ -39,7 +44,7 @@ class Guild(BaseModel):
     favor: int
     member_count: int
     member_capacity: int
-    id: int
+    id: str
     name: str
     tag: str
     emblem: GuildEmblem
@@ -58,9 +63,14 @@ class GuildPermission(BaseModel):
 
 class GuildUpgradeCost(BaseModel):
     type: GuildUpgradeCostType
-    name: str
+    name: Optional[str]
     count: int
-    item_id: Optional[int]  # TODO resolve against items
+    item_id: Optional[int]
+    item_: Optional[LazyLoader]
+
+    @property
+    def item(self) -> Optional["Item"]:
+        return self.item_() if self.item_ else None
 
 
 class GuildUpgrade(BaseModel):
@@ -72,7 +82,12 @@ class GuildUpgrade(BaseModel):
     build_time: int
     required_level: int
     experience: int
-    prerequisites: List[int]  # TODO resolve against other upgrades
+    prerequisites_: Optional[LazyLoader]
+
+    @property
+    def prerequisites(self) -> List["GuildUpgrade"]:
+        return self.prerequisites_() if self.prerequisites_ else []
+
     bag_max_items: Optional[int]
     bag_max_coins: Optional[int]
     costs: List[GuildUpgradeCost]
@@ -84,50 +99,99 @@ class GuildLogEntry(BaseModel):
     user: Optional[str]
     type: GuildLogEntryType
     invited_by: Optional[str]
+    kicked_by: Optional[str]
     changed_by: Optional[str]
     old_rank: Optional[str]
     new_rank: Optional[str]
-    item_id: Optional[int]  # TODO resolve against items
+    item_id: Optional[int]
+    item_: Optional[LazyLoader]
+
+    @property
+    def item(self) -> Optional["Item"]:
+        return self.item_() if self.item_ else None
+
+    operation: Optional[GuildStashOperation]
     count: Optional[int]
     coins: Optional[int]
     motd: Optional[str]
-    upgrade_id: Optional[int]  # TODO resolve against upgrades
-    recipe_id: Optional[int]  # TODO resolve against recipes
+    action: Optional[GuildUpgradeAction]
+    upgrade_id: Optional[int]
+    upgrade_: Optional[LazyLoader]
+
+    @property
+    def upgrade(self) -> Optional["GuildUpgrade"]:
+        return self.upgrade_() if self.upgrade_ else None
+
+    recipe_id: Optional[int]
+    recipe_: Optional[LazyLoader]
+
+    @property
+    def recipe(self) -> Optional["Recipe"]:
+        return self.recipe_() if self.recipe_ else None
 
 
 class GuildMember(BaseModel):
     name: str
-    rank: str  # TODO resolve against guild ranks
+    rank: str
     joined: datetime.datetime
 
 
 class GuildRank(BaseModel):
     id: str
     order: int
-    permissions: List[str]  # TODO resolve against permissions
+    permissions_: LazyLoader
+
+    @property
+    def permissions(self) -> List[GuildPermission]:
+        return self.permissions_()
+
     icon: str
 
 
 class GuildStashSlot(BaseModel):
-    id: int  # TODO resolve against items
+    id: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
     count: int
 
 
 class GuildStash(BaseModel):
-    upgrade_id: int  # TODO resolve against guild upgrades
+    upgrade_id: int
+    upgrade_: LazyLoader
+
+    @property
+    def upgrade(self) -> "GuildUpgrade":
+        return self.upgrade_()
+
     size: int
     coins: int
-    note: str
+    note: Optional[str]
     inventory: List[Union[GuildStashSlot, None]]
 
 
 class GuildTreasuryNeeded(BaseModel):
-    upgrade_id: int  # TODO resolve against upgrades
+    upgrade_id: int
+    upgrade_: LazyLoader
+
+    @property
+    def upgrade(self) -> "GuildUpgrade":
+        return self.upgrade_()
+
     count: int
 
 
 class GuildTreasury(BaseModel):
-    item_id: int  # TODO resolve against items
+    item_id: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
     count: int
     needed_by: List[GuildTreasuryNeeded]
 
@@ -148,10 +212,35 @@ class GuildTeam(BaseModel):
     id: int
     members: List
     name: str
-    aggregate: "PvpWinLoss"
-    ladders: "PvpLadderStats"
-    games: List["PvpGame"]
-    seasons: List[GuildTeamSeason]
+    aggregate: "GuildPvpWinLoss"
+    ladders: "GuildPvpLadderStats"
+    games: List["GuildPvpGame"]
+    seasons: Optional[List[GuildTeamSeason]]
+
+
+class GuildPvpWinLoss(BaseModel):
+    wins: int
+    losses: int
+    desertions: int
+    byes: int
+    forfeits: int
+
+
+class GuildPvpLadderStats(BaseModel):
+    ranked: Optional[GuildPvpWinLoss]
+    unranked: Optional[GuildPvpWinLoss]
+
+
+class GuildPvpGame(BaseModel):
+    id: str
+    map_id: int
+    started: datetime.datetime
+    ended: datetime.datetime
+    result: str
+    team: str
+    rating_type: Union[PvpRatingType, None]
+    rating_change: Optional[int]
+    scores: "PvpScores"
 
 
 Guild.update_forward_refs()

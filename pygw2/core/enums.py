@@ -38,6 +38,13 @@ class Discipline(str, Enum):
     Weaponsmith = "Weaponsmith"
 
 
+class EquipmentLocation(str, Enum):
+    Equipped = "Equipped"
+    Armory = "Armory"
+    EquippedFromLegendaryArmory = "EquippedFromLegendaryArmory"
+    LegendaryArmory = "LegendaryArmory"
+
+
 class EquipmentSlot(str, Enum):
     HelmAquatic = "HelmAquatic"
     Backpack = "Backpack"
@@ -46,7 +53,7 @@ class EquipmentSlot(str, Enum):
     Gloves = "Gloves"
     Helm = "Helm"
     Leggings = "Leggings"
-    Shoulders = "Shoulder"
+    Shoulders = "Shoulders"
     Accessory1 = "Accessory1"
     Accessory2 = "Accessory2"
     Ring1 = "Ring1"
@@ -95,6 +102,7 @@ class CharacterFlag(str, Enum):
 class ItemType(str, Enum):
     Armor = "Armor"
     Back = "Back"
+    Bag = "Bag"
     Consumable = "Consumable"
     Container = "Container"
     CraftingMaterial = "CraftingMaterial"
@@ -254,19 +262,22 @@ class WeaponType(str, Enum):
     Focus = "Focus"
     Hammer = "Hammer"
     Harpoon = "Harpoon"
-    LongBow = "LongBow"
+    Longbow = "Longbow"
     Mace = "Mace"
     Pistol = "Pistol"
     Rifle = "Rifle"
     Scepter = "Scepter"
     Shield = "Shield"
-    ShortBow = "ShortBow"
+    Shortbow = "Shortbow"
     Speargun = "Speargun"
+    Spear = "Spear"
     Staff = "Staff"
     Sword = "Sword"
+    Greatsword = "Greatsword"
     Torch = "Torch"
     Trident = "Trident"
     Warhorn = "Warhorn"
+    Null = "None"
 
 
 class UpgradeComponentFlag(str, Enum):
@@ -310,6 +321,13 @@ class AccountAccess(str, Enum):
 class AchievementType(str, Enum):
     Default = "Default"
     ItemSet = "ItemSet"
+
+
+class AchievementRewardType(str, Enum):
+    Coins = "Coins"
+    Item = "Item"
+    Mastery = "Mastery"
+    Title = "Title"
 
 
 class AchievementFlag(str, Enum):
@@ -419,6 +437,7 @@ class DyeSlotMaterial(str, Enum):
     cloth = "cloth"
     leather = "leather"
     metal = "metal"
+    fur = "fur"
 
 
 class ProfessionTrainingCategory(str, Enum):
@@ -442,13 +461,6 @@ class ProfessionWeaponFlag(str, Enum):
 class ProfessionWeaponFlags(str, Enum):
     NoRacialSkills = "NoRacialSkills"
     NoWeaponSwap = "NoWeaponSwap"
-
-
-class ProfessionWeaponSkillSlot(str, Enum):
-    Profession_1 = "Profession_1"
-    Utility = "Utility"
-    Heal = "Heal"
-    Elite = "Elite"
 
 
 class SkillType(str, Enum):
@@ -482,6 +494,7 @@ class SkillSlot(str, Enum):
 class SkillFactType(str, Enum):
     AttributeAdjust = "AttributeAdjust"
     Buff = "Buff"
+    BuffConversion = "BuffConversion"
     ComboField = "ComboField"
     ComboFinisher = "ComboFinisher"
     Damage = "Damage"
@@ -641,12 +654,13 @@ class GuildLogEntryType(str, Enum):
     joined = "joined"
     invited = "invited"
     kick = "kick"
-    kicked_by = "kicked_by"
     rank_change = "rank_change"
     treasury = "treasury"
     stash = "stash"
     motd = "motd"
     upgrade = "upgrade"
+    influence = "influence"
+    invite_declined = "invite_declined"
 
 
 class GuildStashOperation(str, Enum):
@@ -757,3 +771,12 @@ class WvWTeams(str, Enum):
 
 class WvWMapBonusTypes(str, Enum):
     Bloodlust = "Bloodlust"
+
+
+class MailcarrierFlags(str, Enum):
+    Default = "Default"
+
+
+class TokenTypes(str, Enum):
+    APIKey = "APIKey"
+    Subtoken = "Subtoken"
