@@ -1,3 +1,4 @@
+from typing import Optional
 from ..core.models.guild import (
     GuildEmblemImages,
     Guild,
@@ -10,7 +11,7 @@ from ..core.models.guild import (
     GuildTreasury,
     GuildTeam,
 )
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
 
 
 class GuildEmblemApi:
@@ -18,7 +19,7 @@ class GuildEmblemApi:
 
     def __new__(cls, *args, api_key: str = "", **kwargs):
         if api_key not in cls._instances:
-            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+            cls._instances[api_key] = super().__new__(cls)
         return cls._instances[api_key]
 
     def __init__(self, *, api_key: str = ""):
@@ -54,15 +55,17 @@ class GuildEmblemApi:
 class GuildApi:
     _instances = {}
 
-    def __new__(cls, *args, api_key: str = "", **kwargs):
-        if api_key not in cls._instances:
-            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
-        return cls._instances[api_key]
+    def __new__(
+        cls, *args, api_key: str = "", guild_id: Optional[str] = None, **kwargs
+    ):
+        if (api_key, guild_id) not in cls._instances:
+            cls._instances[(api_key, guild_id)] = super().__new__(cls)
+        return cls._instances[(api_key, guild_id)]
 
-    def __init__(self, guild_id=None, *, api_key: str = ""):
+    def __init__(self, guild_id: Optional[str] = None, *, api_key: str = ""):
         self.api_key: str = api_key
-        self.guild_id = guild_id
-        self._emblem = GuildEmblemApi()
+        self.guild_id: str = guild_id
+        self._emblem = GuildEmblemApi(api_key=api_key)
 
     @property
     def emblem(self) -> GuildEmblemApi:
@@ -114,6 +117,21 @@ class GuildApi:
         """
         if ids is None:
             return data
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+        guild_api = GuildApi(api_key=self.api_key)
+
+        for upgrade in data:
+            if "prerequisites" in upgrade and upgrade["prerequisites"]:
+                upgrade["prerequisites_"] = LazyLoader(
+                    guild_api.upgrades, *upgrade["prerequisites"]
+                )
+            if "costs" in upgrade and upgrade["costs"]:
+                for cost in upgrade["costs"]:
+                    if "item_id" in cost and cost["item_id"]:
+                        cost["item_"] = LazyLoader(items_api.get, cost["item_id"])
         return object_parse(data, GuildUpgrade)
 
     @endpoint("/v2/guild", subendpoint="/log")
@@ -123,7 +141,19 @@ class GuildApi:
         :param data:
         :return:
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+        guild_api = GuildApi(api_key=self.api_key)
+
         # TODO since parameter?
+        for entry in data:
+            if "item_id" in entry and entry["item_id"]:
+                entry["item_"] = LazyLoader(items_api.get, entry["item_id"])
+            if "upgrade_id" in entry and entry["upgrade_id"]:
+                entry["upgrade_"] = LazyLoader(guild_api.upgrades, entry["upgrade_id"])
+            if "recipe_id" in entry and entry["recipe_id"]:
+                entry["recipe_"] = LazyLoader(items_api.recipes, entry["recipe_id"])
         return object_parse(data, GuildLogEntry)
 
     @endpoint("/v2/guild", subendpoint="/members")
@@ -142,6 +172,8 @@ class GuildApi:
         :param data:
         :return:
         """
+        for rank in data:
+            rank["permissions_"] = LazyLoader(self.permissions, *rank["permissions"])
         return object_parse(data, GuildRank)
 
     @endpoint("/v2/guild", subendpoint="/stash")
@@ -151,6 +183,16 @@ class GuildApi:
         :param data:
         :return:
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+        guild_api = GuildApi(api_key=self.api_key)
+
+        for stash in data:
+            stash["upgrade_"] = LazyLoader(guild_api.upgrades, stash["upgrade_id"])
+            for slot in stash["inventory"]:
+                if slot:
+                    slot["item_"] = LazyLoader(items_api.get, slot["id"])
         return object_parse(data, GuildStash)
 
     @endpoint("/v2/guild", subendpoint="/treasury")
@@ -160,6 +202,16 @@ class GuildApi:
         :param data:
         :return:
         """
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+        guild_api = GuildApi(api_key=self.api_key)
+
+        for treasury in data:
+            treasury["item_"] = LazyLoader(items_api.get, treasury["item_id"])
+            for up in treasury["needed_by"]:
+                up["upgrade_"] = LazyLoader(guild_api.upgrades, up["upgrade_id"])
+
         return object_parse(data, GuildTreasury)
 
     @endpoint("/v2/guild", subendpoint="/teams")
@@ -172,11 +224,11 @@ class GuildApi:
         return object_parse(data, GuildTeam)
 
     @endpoint("/v2/guild", subendpoint="/upgrades")
-    async def upgrades(self, *, data):
+    async def upgraded(self, *, data):
         """
         Get Guild's upgrades.
         :param data:
         :return:
         """
-        # TODO resolve against guild upgrades?
-        return data
+        guild_api = GuildApi(api_key=self.api_key)
+        return await guild_api.upgrades(*data)

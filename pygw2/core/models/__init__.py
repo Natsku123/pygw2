@@ -34,6 +34,8 @@ Transaction.update_forward_refs(Item=Item)
 ItemListing.update_forward_refs(Item=Item)
 Price.update_forward_refs(Item=Item)
 
+GuildPvpGame.update_forward_refs(PvpScores=PvpScores)
+
 WvWMatchWorlds.update_forward_refs(World=World)
 WvWMapObjectives.update_forward_refs(Guild=Guild, GuildUpgrade=GuildUpgrade)
 WvWObjective.update_forward_refs(MapSector=MapSector, Map=Map)

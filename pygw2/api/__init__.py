@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Optional
 
 from .account import AccountApi
 from .achievements import AchievementsApi
@@ -63,9 +63,8 @@ class Api:
     def mechanics(self) -> MechanicsApi:
         return self._mechanics
 
-    @property
-    def guild(self) -> Type[GuildApi]:
-        return self._guild
+    def guild(self, guild_id: Optional[str] = None) -> GuildApi:
+        return self._guild(guild_id, api_key=self.api_key)
 
     @property
     def home(self) -> HomeApi:

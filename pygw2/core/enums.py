@@ -654,12 +654,13 @@ class GuildLogEntryType(str, Enum):
     joined = "joined"
     invited = "invited"
     kick = "kick"
-    kicked_by = "kicked_by"
     rank_change = "rank_change"
     treasury = "treasury"
     stash = "stash"
     motd = "motd"
     upgrade = "upgrade"
+    influence = "influence"
+    invite_declined = "invite_declined"
 
 
 class GuildStashOperation(str, Enum):
