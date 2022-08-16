@@ -5,7 +5,7 @@ setup(
     version="0.0.1",
     description="Python wrapper for Guild Wars 2 API.",
     license="MIT",
-    packages=["pygw2"],
+    packages=["pygw2", "pygw2.api", "pygw2.core", "pygw2.core.models"],
     install_requires=["requests", "pydantic"],
     author="Max Mecklin",
     author_email="max@meckl.in",
