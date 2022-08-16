@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from ..utils import endpoint, object_parse
+from ..utils import endpoint, object_parse, LazyLoader
 from ..core.models.commerce import (
     DeliveryBox,
     ExchangeRate,
@@ -9,17 +9,17 @@ from ..core.models.commerce import (
     Transaction,
 )
 
-from .items import ItemsApi
-
-items_api = ItemsApi()
-
 
 class TradingPostApi:
-    def __init__(self):
-        self.api_key: str = ""
+    _instances = {}
 
-    def setup(self, api_key: str):
-        self.api_key = api_key
+    def __new__(cls, *args, api_key: str = "", **kwargs):
+        if api_key not in cls._instances:
+            cls._instances[api_key] = super().__new__(cls, *args, **kwargs)
+        return cls._instances[api_key]
+
+    def __init__(self, *, api_key: str = ""):
+        self.api_key: str = api_key
 
     @endpoint("/v2/commerce/delivery")
     async def delivery(self, *, data) -> DeliveryBox:
@@ -28,8 +28,13 @@ class TradingPostApi:
         :param data: data from wrapper
         :return: object
         """
+
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for item in data["items"]:
-            item["item"] = (await items_api.get(ids=[item["id"]]))[0]
+            item["item_"] = LazyLoader(items_api.get, item["id"])
         return object_parse(data, DeliveryBox)
 
     @endpoint(
@@ -39,10 +44,11 @@ class TradingPostApi:
         max_ids=1,
         min_ids=1,
     )
-    async def exchange_coins(self, *, data) -> ExchangeRate:
+    async def exchange_coins(self, *, data, ids: list = None) -> ExchangeRate:
         """
         Get coins -> gems exchange rate from API.
         :param data: data from wrapper
+        :param ids: List with number of coins
         :return: object
         """
 
@@ -55,10 +61,11 @@ class TradingPostApi:
         max_ids=1,
         min_ids=1,
     )
-    async def exchange_gems(self, *, data) -> ExchangeRate:
+    async def exchange_gems(self, *, data, ids: list = None) -> ExchangeRate:
         """
         Get gems -> coins exchange rate from API.
         :param data: data from wrapper
+        :param ids: List with number of gems
         :return: object
         """
 
@@ -78,8 +85,12 @@ class TradingPostApi:
         if ids is None:
             return data
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for listing in data:
-            listing["item"] = await items_api.get(listing["id"])
+            listing["item_"] = LazyLoader(items_api.get, listing["id"])
 
         return object_parse(data, ItemListing)
 
@@ -95,8 +106,12 @@ class TradingPostApi:
         if ids is None:
             return data
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for price in data:
-            price["item"] = await items_api.get(price["id"])
+            price["item_"] = LazyLoader(items_api.get, price["id"])
 
         return object_parse(data, Price)
 
@@ -108,8 +123,12 @@ class TradingPostApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -121,8 +140,12 @@ class TradingPostApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -134,8 +157,12 @@ class TradingPostApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)
 
@@ -147,7 +174,11 @@ class TradingPostApi:
         :return: list
         """
 
+        from .items import ItemsApi
+
+        items_api = ItemsApi(api_key=self.api_key)
+
         for transaction in data:
-            transaction["item"] = await items_api.get(transaction["item_id"])
+            transaction["item_"] = LazyLoader(items_api.get, transaction["item_id"])
 
         return object_parse(data, Transaction)

@@ -1,17 +1,45 @@
 import datetime
-from typing import Optional, List
-from pydantic import BaseModel
+from typing import Optional, List, TYPE_CHECKING
 
-from pygw2.core.enums import Binding, AccountAccess, Region
+from pygw2.utils import LazyLoader, BaseModel
+
+from pygw2.core.enums import Binding, AccountAccess, Region, TokenTypes
+
+if TYPE_CHECKING:
+    from pygw2.core.models.items import Item
+    from pygw2.core.models.general import Skin, Finisher
+    from pygw2.core.models.misc import Currency
+    from pygw2.core.models.wvw import World
 
 
 class VaultSlot(BaseModel):
     id: int  # TODO resolve against items
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
     count: int
     charges: Optional[int]
-    skin: Optional[int]  # TODO resolve against skins
-    upgrades: Optional[List[int]]  # TODO resolve against items (?)
-    infusions: Optional[List[int]]  # TODO resolve against items (?)
+    skin_: Optional[LazyLoader]
+
+    @property
+    def skin(self) -> Optional["Skin"]:
+        return self.skin_() if self.skin_ is not None else None
+
+    upgrades_: Optional[LazyLoader]
+
+    @property
+    def upgrades(self) -> Optional[List["Item"]]:
+        return self.upgrades_() if self.upgrades_ is not None else None
+
+    infusions_: Optional[LazyLoader]
+
+    @property
+    def infusions(self) -> Optional[List["Item"]]:
+        return self.infusions_() if self.infusions_ is not None else None
+
     binding: Optional[Binding]
     bound_to: Optional[str]
 
@@ -40,7 +68,13 @@ class Mastery(BaseModel):
 
 
 class MasteryProgress(BaseModel):
-    id: int  # TODO resolve against mastery
+    id: int
+    mastery_: LazyLoader
+
+    @property
+    def mastery(self) -> "Mastery":
+        return self.mastery_()
+
     level: int
 
 
@@ -49,6 +83,12 @@ class Account(BaseModel):
     age: int
     name: str
     world: int  # TODO resolve against /v2/worlds
+    world_: LazyLoader
+
+    @property
+    def world(self) -> "World":
+        return self.world_()
+
     guilds: List[str] = []
     guild_leader: List[str] = []
     created: datetime.datetime
@@ -98,3 +138,109 @@ class MountType(BaseModel):
     default_skin: int  # TODO resolve against mount skins
     skins: List[int]  # TODO resolve against mount skins
     skills: List[MountSkill]
+
+
+class UnlockedFinisher(BaseModel):
+    id: int
+    finisher_: LazyLoader
+
+    @property
+    def finisher(self) -> "Finisher":
+        return self.finisher_()
+
+    permanent: bool
+    quantity: Optional[int]
+
+
+class SharedInventorySlot(BaseModel):
+    id: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
+    count: int
+    charges: Optional[int]
+    skin_: Optional[LazyLoader]
+
+    @property
+    def skin(self) -> Optional["Skin"]:
+        return self.skin_() if self.skin_ is not None else None
+
+    upgrades_: Optional[LazyLoader]
+
+    @property
+    def upgrades(self) -> Optional[List["Item"]]:
+        return self.upgrades_() if self.upgrades_ is not None else None
+
+    infusions_: Optional[LazyLoader]
+
+    @property
+    def infusions(self) -> Optional[List["Item"]]:
+        return self.infusions_() if self.infusions_ is not None else None
+
+    binding: Optional[Binding]
+
+
+class StorageMaterial(BaseModel):
+    id: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
+    category: int
+    count: int
+
+
+class WalletCurrency(BaseModel):
+    id: int
+    currency_: LazyLoader
+
+    @property
+    def currency(self) -> "Currency":
+        return self.currency_()
+
+    value: int
+
+
+class Legendary(BaseModel):
+    id: int
+    max_count: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
+
+class OwnedLegendary(BaseModel):
+    id: int
+    count: int
+    item_: LazyLoader
+
+    @property
+    def item(self) -> "Item":
+        return self.item_()
+
+    armory_: LazyLoader
+
+    @property
+    def max_count(self) -> int:
+        return self.armory_().max_count
+
+
+class SubToken(BaseModel):
+    subtoken: str
+
+
+class TokenInfo(BaseModel):
+    id: str
+    name: str
+    permissions: List[str]
+    type: TokenTypes
+    expires_at: Optional[str]
+    issued_at: Optional[str]
+    urls: Optional[List[str]]
