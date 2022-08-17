@@ -1,15 +1,16 @@
 from typing import Optional
-from pygw2.api.items import ItemsApi
-from pygw2.api.misc import MiscellaneousApi
 from pygw2.utils import LazyLoader
-
-items_api = ItemsApi()
-misc_api = MiscellaneousApi()
 
 
 def parse_item(data: Optional[dict]) -> Optional[dict]:
     if data is None:
         return data
+
+    from pygw2.api.items import ItemsApi
+    from pygw2.api.misc import MiscellaneousApi
+
+    items_api = ItemsApi()
+    misc_api = MiscellaneousApi()
 
     data["item_"] = LazyLoader(items_api.get, data["id"])
     if "infusions" in data and data["infusions"]:
