@@ -66,6 +66,11 @@ class AchievementsApi:
         :param data: Data from wrapper
         :return: dict
         """
+
+        for k in data.keys():
+            for a in data[k]:
+                a["achievement_"] = LazyLoader(self.get, a["id"])
+
         return object_parse(data, DailyAchievements)
 
     @endpoint("/v2/achievements/daily/tomorrow")
@@ -77,21 +82,11 @@ class AchievementsApi:
         :return: dict
         """
 
-        achies = {}
+        for k in data.keys():
+            for a in data[k]:
+                a["achievement_"] = LazyLoader(self.get, a["id"])
 
-        # Process achievements.
-        for dtype in data:
-            achies[dtype] = []
-            for achi in data[dtype]:
-                achies[dtype].append(
-                    {
-                        "achievement": await self.get(achi["id"]),
-                        "level": achi["level"],
-                        "required_access": achi.get("required_access", None),
-                    }
-                )
-
-        return achies
+        return object_parse(data, DailyAchievements)
 
     @endpoint("/v2/achievements/groups", has_ids=True)
     async def groups(self, *, data, ids: list = None):

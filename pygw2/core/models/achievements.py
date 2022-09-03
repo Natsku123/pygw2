@@ -107,7 +107,13 @@ class DailyAchievementLevel(BaseModel):
 
 
 class DailyAchievement(BaseModel):
-    id: int  # TODO resolve achievement
+    id: int
+    achievement_: LazyLoader
+
+    @property
+    def achievement(self) -> "Achievement":
+        return self.achievement_()
+
     level: DailyAchievementLevel
     required_access: Optional["ProductAccess"]
 
