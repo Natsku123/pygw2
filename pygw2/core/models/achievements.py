@@ -22,7 +22,11 @@ class AchievementCategory(BaseModel):
     description: str
     order: int
     icon: str
-    achievements: List[int]  # TODO resolve against achievements
+    achievements_: LazyLoader
+
+    @property
+    def achievements(self) -> List["Achievement"]:
+        return self.achievements_()
 
 
 class AchievementGroup(BaseModel):
@@ -30,7 +34,11 @@ class AchievementGroup(BaseModel):
     name: str
     description: str
     order: int
-    categories: List[int]  # TODO resolve against achievement categories
+    categories_: LazyLoader
+
+    @property
+    def categories(self) -> List["AchievementCategory"]:
+        return self.categories_()
 
 
 class AchievementTier(BaseModel):
