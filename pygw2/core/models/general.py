@@ -50,7 +50,7 @@ class Skin(BaseModel):
     rarity: str  # TODO same as ItemRarity?
     description: Optional[str]
     details: Optional[
-        Union["ArmorSkinDetails", "WeaponSkinDetails", "GatheringSkinDetails"]
+        Union["ArmorSkinDetails", "WeaponSkinDetails", "GatheringSkinDetails", "Foo"]
     ]
 
 
@@ -83,6 +83,10 @@ class WeaponSkinDetails(BaseModel):
 
 class GatheringSkinDetails(BaseModel):
     type: GatheringToolType
+
+
+class Foo(BaseModel):
+    type: str
 
 
 class MountSkin(BaseModel):

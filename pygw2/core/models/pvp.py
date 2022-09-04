@@ -97,7 +97,7 @@ class PvpGame(BaseModel):
     profession: Optional[str]
     scores: PvpScores
     rating_type: Union[PvpRatingType, None]
-    rating_change: int
+    rating_change: Optional[int]
     season_: Optional[LazyLoader]
 
     @property

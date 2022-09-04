@@ -316,6 +316,7 @@ class AccountAccess(str, Enum):
     GuildWars2 = "GuildWars2"
     HeartOfThorns = "HeartOfThorns"
     PathOfFire = "PathOfFire"
+    EndOfDragons = "EndOfDragons"
 
 
 class AchievementType(str, Enum):

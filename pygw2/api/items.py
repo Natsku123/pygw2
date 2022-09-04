@@ -206,7 +206,6 @@ class ItemsApi:
                             misc_api.colors,
                             s["details"]["dye_slots"]["overrides"]["color_id"],
                         )
-
         return object_parse(data, Skin)
 
     @endpoint("/v2/gliders", has_ids=True)
