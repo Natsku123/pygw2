@@ -105,7 +105,7 @@ class AchievementsApi:
         # Return list of groups.
         else:
             for g in data:
-                g["categories_"] = LazyLoader(self.categories, g["categories"])
+                g["categories_"] = LazyLoader(self.categories, *g["categories"])
             return object_parse(data, AchievementGroup)
 
     @endpoint("/v2/achievements/categories", has_ids=True)
@@ -129,5 +129,5 @@ class AchievementsApi:
         # Return list of categories.
         else:
             for c in data:
-                c["achievements_"] = LazyLoader(self.get, c["achievements"])
+                c["achievements_"] = LazyLoader(self.get, *c["achievements"])
             return object_parse(data, AchievementCategory)
