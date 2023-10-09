@@ -12,7 +12,8 @@ class Material(BaseModel):
 
 
 class RecipeIngredient(BaseModel):
-    item_id: int  # TODO resolve against items
+    id: int  # TODO resolve against items
+    type: str  # TODO enumarate
     count: int
 
 
