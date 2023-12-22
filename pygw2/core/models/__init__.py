@@ -14,28 +14,26 @@ from .backstory import *
 from .wvw import *
 
 # Update forward refs
-DailyAchievement.update_forward_refs(ProductAccess=ProductAccess)
+DailyAchievement.update_forward_refs()
 
-BiographyAnswer.update_forward_refs(BiographyQuestion=BiographyQuestion)
-Story.update_forward_refs(Season=Season)
+BiographyAnswer.update_forward_refs()
+Story.update_forward_refs()
 
-Character.update_forward_refs(SAB=SAB, PvPEquipment=PvPEquipment)
-EquipmentTab.update_forward_refs(PvPEquipment=PvPEquipment)
+Character.update_forward_refs()
+EquipmentTab.update_forward_refs()
 
-GuildTeam.update_forward_refs(
-    PvpWinLoss=PvpWinLoss, PvpLadderStats=PvpLadderStats, PvpGame=PvpGame
-)
+GuildTeam.update_forward_refs()
 
-Mini.update_forward_refs(Item=Item)
-Novelty.update_forward_refs(Item=Item)
-Title.update_forward_refs(Achievement=Achievement)
+Mini.update_forward_refs()
+Novelty.update_forward_refs()
+Title.update_forward_refs()
 
-Transaction.update_forward_refs(Item=Item)
-ItemListing.update_forward_refs(Item=Item)
-Price.update_forward_refs(Item=Item)
+Transaction.update_forward_refs()
+ItemListing.update_forward_refs()
+Price.update_forward_refs()
 
-GuildPvpGame.update_forward_refs(PvpScores=PvpScores)
+GuildPvpGame.update_forward_refs()
 
-WvWMatchWorlds.update_forward_refs(World=World)
-WvWMapObjectives.update_forward_refs(Guild=Guild, GuildUpgrade=GuildUpgrade)
-WvWObjective.update_forward_refs(MapSector=MapSector, Map=Map)
+WvWMatchWorlds.update_forward_refs()
+WvWMapObjectives.update_forward_refs()
+WvWObjective.update_forward_refs()
