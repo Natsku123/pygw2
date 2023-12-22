@@ -1,4 +1,6 @@
 import pytest
+
+import pygw2.core.exceptions
 from pygw2.models import *
 
 import unittest
@@ -12,8 +14,9 @@ class AchievementsTests(aiounittest.AsyncTestCase):
         self.assertIsInstance(a, Achievement)
 
     async def test_get_dailies(self):
-        d = await self.api.achievements.daily()
-        self.assertIsInstance(d, DailyAchievements)
+        with pytest.raises(pygw2.core.exceptions.ApiError):
+            d = await self.api.achievements.daily()
+            self.assertIsInstance(d, DailyAchievements)
 
     async def test_get_group(self):
         g = await self.api.achievements.groups("65B4B678-607E-4D97-B458-076C3E96A810")

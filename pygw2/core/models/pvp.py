@@ -1,44 +1,50 @@
+from __future__ import annotations
+
 import datetime
-from typing import Optional, Union, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 from pygw2.core.enums import PvpRatingType, PvpDivisionFlags
 
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item
+else:
+    Item = ForwardRef("Item")
+    PvpAmulet = ForwardRef("PvpAmulet")
+    PvpSeason = ForwardRef("PvpSeason")
 
 
 class PvPEquipment(BaseModel):
-    amulet_: Optional[LazyLoader]
+    amulet_: LazyLoader | None = None
 
     @property
-    def amulet(self) -> Optional["PvpAmulet"]:
+    def amulet(self) -> PvpAmulet | None:
         return self.amulet_() if self.amulet_ is not None else None
 
-    rune_: Optional[LazyLoader]
+    rune_: LazyLoader | None = None
 
     @property
-    def rune(self) -> Optional["Item"]:
+    def rune(self) -> Item | None:
         return self.rune_() if self.rune_ is not None else None
 
-    sigils_: Optional[LazyLoader]
+    sigils_: LazyLoader | None = None
 
     @property
-    def sigils(self) -> List["Item"]:
+    def sigils(self) -> list[Item]:
         return self.sigils_() if self.sigils_ is not None else None
 
 
 class PvpAttributes(BaseModel):
-    AgonyResistance: Optional[float]
-    BoonDuration: Optional[float]
-    ConditionDamage: Optional[float]
-    ConditionDuration: Optional[float]
-    CritDamage: Optional[float]
-    Healing: Optional[float]
-    Power: Optional[float]
-    Precision: Optional[float]
-    Toughness: Optional[float]
-    Vitality: Optional[float]
+    AgonyResistance: float | None = None
+    BoonDuration: float | None = None
+    ConditionDamage: float | None = None
+    ConditionDuration: float | None = None
+    CritDamage: float | None = None
+    Healing: float | None = None
+    Power: float | None = None
+    Precision: float | None = None
+    Toughness: float | None = None
+    Vitality: float | None = None
 
 
 class PvpAmulet(BaseModel):
@@ -57,15 +63,15 @@ class PvpWinLoss(BaseModel):
 
 
 class PvpStatsProfessions(BaseModel):
-    elementalist: Optional[PvpWinLoss]
-    engineer: Optional[PvpWinLoss]
-    guardian: Optional[PvpWinLoss]
-    mesmer: Optional[PvpWinLoss]
-    necromancer: Optional[PvpWinLoss]
-    ranger: Optional[PvpWinLoss]
-    revenant: Optional[PvpWinLoss]
-    thief: Optional[PvpWinLoss]
-    warrior: Optional[PvpWinLoss]
+    elementalist: PvpWinLoss | None = None
+    engineer: PvpWinLoss | None = None
+    guardian: PvpWinLoss | None = None
+    mesmer: PvpWinLoss | None = None
+    necromancer: PvpWinLoss | None = None
+    ranger: PvpWinLoss | None = None
+    revenant: PvpWinLoss | None = None
+    thief: PvpWinLoss | None = None
+    warrior: PvpWinLoss | None = None
 
 
 class PvpLadderStats(BaseModel):
@@ -94,14 +100,14 @@ class PvpGame(BaseModel):
     ended: datetime.datetime
     result: str
     team: str
-    profession: Optional[str]
+    profession: str | None = None
     scores: PvpScores
-    rating_type: Union[PvpRatingType, None]
-    rating_change: Optional[int]
-    season_: Optional[LazyLoader]
+    rating_type: PvpRatingType | None = None
+    rating_change: int | None = None
+    season_: LazyLoader | None = None
 
     @property
-    def season(self) -> Optional["PvpSeason"]:
+    def season(self) -> PvpSeason | None:
         return self.season_() if self.season_ else None
 
 
@@ -118,7 +124,7 @@ class PvpRank(BaseModel):
     icon: str
     min_rank: int
     max_rank: int
-    levels: List[PvpRankLevel]
+    levels: list[PvpRankLevel]
 
 
 class PvpDivisionTier(BaseModel):
@@ -127,22 +133,22 @@ class PvpDivisionTier(BaseModel):
 
 class PvpDivision(BaseModel):
     name: str
-    flags: List[PvpDivisionFlags]
+    flags: list[PvpDivisionFlags]
     large_icon: str
     small_icon: str
     pip_icon: str
-    tiers: List[PvpDivisionTier]
+    tiers: list[PvpDivisionTier]
 
 
 class PvpLeaderboardsLadderSettingsTier(BaseModel):
-    range: List[int]
+    range: list[int]
 
 
 class PvpLeaderboardsLadderSettings(BaseModel):
     name: str
-    duration: Optional[int]
+    duration: int | None = None
     scoring: str
-    tiers: List[PvpLeaderboardsLadderSettingsTier]
+    tiers: list[PvpLeaderboardsLadderSettingsTier]
 
 
 class PvpLeaderboardsLadderScoring(BaseModel):
@@ -155,11 +161,11 @@ class PvpLeaderboardsLadderScoring(BaseModel):
 
 class PvpLeaderboardsLadder(BaseModel):
     settings: PvpLeaderboardsLadderSettings
-    scorings: List[PvpLeaderboardsLadderScoring]
+    scorings: list[PvpLeaderboardsLadderScoring]
 
 
 class PvpLeaderboards(BaseModel):
-    ladder: Optional[PvpLeaderboardsLadder]
+    ladder: PvpLeaderboardsLadder | None = None
 
 
 class PvpSeason(BaseModel):
@@ -168,7 +174,7 @@ class PvpSeason(BaseModel):
     start: datetime.datetime
     end: datetime.datetime
     active: bool
-    divisions: List[PvpDivision]
+    divisions: list[PvpDivision]
     leaderboards: PvpLeaderboards
 
 
@@ -180,11 +186,11 @@ class PvpLeaderboardScore(BaseModel):
 class PvpLeaderboard(BaseModel):
     name: str
     rank: int
-    id: Optional[str]
-    team: Optional[str]
-    team_id: Optional[str]
+    id: str | None = None
+    team: str | None = None
+    team_id: str | None = None
     date: datetime.datetime
-    scores: List[PvpLeaderboardScore]
+    scores: list[PvpLeaderboardScore]
 
 
 class PvpHeroStats(BaseModel):
@@ -198,10 +204,10 @@ class PvpHeroSkin(BaseModel):
     name: str
     icon: str
     default: bool
-    unlock_items_: Optional[LazyLoader]
+    unlock_items_: LazyLoader | None = None
 
     @property
-    def unlock_items(self) -> Union[List["Item"], "Item"]:
+    def unlock_items(self) -> list[Item] | Item:
         return self.unlock_items_() if self.unlock_items_ is not None else None
 
 
@@ -212,7 +218,7 @@ class PvpHero(BaseModel):
     stats: PvpHeroStats
     overlay: str
     underlay: str
-    skins: List[PvpHeroSkin]
+    skins: list[PvpHeroSkin]
 
 
 class PvpStandingsCurrent(BaseModel):

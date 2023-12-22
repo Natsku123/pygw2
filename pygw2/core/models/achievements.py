@@ -1,4 +1,6 @@
-from typing import Optional, List, TYPE_CHECKING
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 
@@ -14,6 +16,11 @@ if TYPE_CHECKING:
     from pygw2.core.models.account import ProductAccess, Mastery
     from pygw2.core.models.items import Item
     from pygw2.core.models.misc import Title
+else:
+    ProductAccess = ForwardRef("ProductAccess")
+    Mastery = ForwardRef("Mastery")
+    Item = ForwardRef("Item")
+    Title = ForwardRef("Title")
 
 
 class AchievementCategory(BaseModel):
@@ -25,7 +32,7 @@ class AchievementCategory(BaseModel):
     achievements_: LazyLoader
 
     @property
-    def achievements(self) -> List["Achievement"]:
+    def achievements(self) -> list[Achievement]:
         return self.achievements_()
 
 
@@ -37,7 +44,7 @@ class AchievementGroup(BaseModel):
     categories_: LazyLoader
 
     @property
-    def categories(self) -> List["AchievementCategory"]:
+    def categories(self) -> list[AchievementCategory]:
         return self.categories_()
 
 
@@ -48,49 +55,49 @@ class AchievementTier(BaseModel):
 
 class AchievementReward(BaseModel):
     type: AchievementRewardType
-    id: Optional[int]
-    item_: Optional[LazyLoader]
+    id: int | None = None
+    item_: LazyLoader | None = None
 
     @property
-    def item(self) -> Optional["Item"]:
+    def item(self) -> Item | None:
         return self.item_() if self.item_ is not None else None
 
-    title_: Optional[LazyLoader]
+    title_: LazyLoader | None = None
 
     @property
-    def title(self) -> Optional["Title"]:
+    def title(self) -> Title | None:
         return self.title_() if self.title_ is not None else None
 
-    mastery_: Optional[LazyLoader]
+    mastery_: LazyLoader | None = None
 
     @property
-    def mastery(self) -> Optional["Mastery"]:
+    def mastery(self) -> Mastery | None:
         return self.mastery_() if self.mastery_ is not None else None
 
-    count: Optional[int]
-    region: Optional[Region]
+    count: int | None = None
+    region: Region | None = None
 
 
 class AchievementBits(BaseModel):
     type: AchievementBitsType
-    id: Optional[int]
-    text: Optional[str]
+    id: int | None = None
+    text: str | None = None
 
 
 class Achievement(BaseModel):
     id: int
-    icon: Optional[str]
+    icon: str | None = None
     name: str
     description: str
     requirement: str
     locked_text: str
     type: AchievementType
-    flags: List[AchievementFlag]
-    tiers: List[AchievementTier]
-    prerequisites: Optional[List[int]] = []  # TODO resolve achievements
-    rewards: Optional[List[AchievementReward]]
-    bits: Optional[List[AchievementBits]]
-    point_cap: Optional[int]
+    flags: list[AchievementFlag]
+    tiers: list[AchievementTier]
+    prerequisites: list[int] | None = []  # TODO resolve achievements
+    rewards: list[AchievementReward] | None = None
+    bits: list[AchievementBits] | None = None
+    point_cap: int | None = None
 
 
 class AchievementProgress(BaseModel):
@@ -98,15 +105,15 @@ class AchievementProgress(BaseModel):
     achievement_: LazyLoader
 
     @property
-    def achievement(self) -> "Achievement":
+    def achievement(self) -> Achievement:
         return self.achievement_()
 
-    bits: Optional[List[int]]
-    current: Optional[int]
-    max: Optional[int]
+    bits: list[int] | None = None
+    current: int | None = None
+    max: int | None = None
     done: bool
-    repeated: Optional[int]
-    unlocked: Optional[bool] = True
+    repeated: int | None = None
+    unlocked: bool | None = True
 
 
 class DailyAchievementLevel(BaseModel):
@@ -119,16 +126,16 @@ class DailyAchievement(BaseModel):
     achievement_: LazyLoader
 
     @property
-    def achievement(self) -> "Achievement":
+    def achievement(self) -> Achievement:
         return self.achievement_()
 
     level: DailyAchievementLevel
-    required_access: Optional["ProductAccess"]
+    required_access: ProductAccess | None = None
 
 
 class DailyAchievements(BaseModel):
-    pve: List[DailyAchievement]
-    pvp: List[DailyAchievement]
-    wvw: List[DailyAchievement]
-    fractals: List[DailyAchievement]
-    special: List[DailyAchievement]
+    pve: list[DailyAchievement]
+    pvp: list[DailyAchievement]
+    wvw: list[DailyAchievement]
+    fractals: list[DailyAchievement]
+    special: list[DailyAchievement]

@@ -1,6 +1,13 @@
-from typing import Optional, List
+from __future__ import annotations
+from typing import ForwardRef
+
 from pygw2.utils import LazyLoader, BaseModel
 from pygw2.core.enums import Professions, Races, StoryFlags
+
+BiographyQuestion = ForwardRef("BiographyQuestion")
+BiographyAnswer = ForwardRef("BiographyAnswer")
+Story = ForwardRef("Story")
+Season = ForwardRef("Season")
 
 
 class BiographyAnswer(BaseModel):
@@ -11,11 +18,11 @@ class BiographyAnswer(BaseModel):
     question_: LazyLoader
 
     @property
-    def question(self) -> "BiographyQuestion":
+    def question(self) -> BiographyQuestion:
         return self.question_()
 
-    professions: Optional[List[Professions]]
-    races: Optional[List[Races]]
+    professions: list[Professions] | None = None
+    races: list[Races] | None = None
 
 
 class BiographyQuestion(BaseModel):
@@ -25,12 +32,12 @@ class BiographyQuestion(BaseModel):
     answers_: LazyLoader
 
     @property
-    def answers(self) -> List["BiographyAnswer"]:
+    def answers(self) -> list[BiographyAnswer]:
         return self.answers_()
 
     order: int
-    races: Optional[List[Races]]
-    professions: Optional[List[Professions]]
+    races: list[Races] | None = None
+    professions: list[Professions] | None = None
 
 
 class StoryChapter(BaseModel):
@@ -42,7 +49,7 @@ class Story(BaseModel):
     season_: LazyLoader
 
     @property
-    def season(self) -> "Season":
+    def season(self) -> Season:
         return self.season_()
 
     name: str
@@ -50,9 +57,9 @@ class Story(BaseModel):
     timeline: str
     level: int
     order: int
-    chapters: List[StoryChapter]
-    races: Optional[List[Races]]
-    flags: Optional[List[StoryFlags]]
+    chapters: list[StoryChapter]
+    races: list[Races] | None = None
+    flags: list[StoryFlags] | None = None
 
 
 class Season(BaseModel):
@@ -62,7 +69,7 @@ class Season(BaseModel):
     stories_: LazyLoader
 
     @property
-    def stories(self) -> List["Story"]:
+    def stories(self) -> list[Story]:
         return self.stories_()
 
 
@@ -78,7 +85,7 @@ class Quest(BaseModel):
     story_: LazyLoader
 
     @property
-    def story(self) -> "Story":
+    def story(self) -> Story:
         return self.story_()
 
-    goals: List[QuestGoal]
+    goals: list[QuestGoal]

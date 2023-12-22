@@ -1,16 +1,24 @@
-from typing import Optional, List, Union, TYPE_CHECKING
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.core.enums import *
 from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
     from pygw2.core.models.misc import Color
+else:
+    Color = ForwardRef("Color")
+    ArmorSkinDetails = ForwardRef("ArmorSkinDetails")
+    WeaponSkinDetails = ForwardRef("WeaponSkinDetails")
+    GatheringSkinDetails = ForwardRef("GatheringSkinDetails")
+    Foo = ForwardRef("Foo")
 
 
 class Finisher(BaseModel):
     id: int = 0
     unlock_details: str = ""
-    unlock_items: Optional[List[int]]  # TODO resolve against items
+    unlock_items: list[int] | None  # TODO resolve against items
     order: int = 0
     icon: str = ""
     name: str = ""
@@ -25,7 +33,7 @@ class StatAttributes(BaseModel):
 class ItemStat(BaseModel):
     id: int = 0
     name: str = ""
-    attributes: List[StatAttributes]
+    attributes: list[StatAttributes]
 
 
 class DailyCrafting(BaseModel):
@@ -44,41 +52,41 @@ class Skin(BaseModel):
     id: int
     name: str
     type: SkinType
-    flags: List[SkinFlag]
-    restrictions: List[Races]
+    flags: list[SkinFlag]
+    restrictions: list[Races]
     icon: str
     rarity: str  # TODO same as ItemRarity?
-    description: Optional[str]
-    details: Optional[
-        Union["ArmorSkinDetails", "WeaponSkinDetails", "GatheringSkinDetails", "Foo"]
-    ]
+    description: str | None = None
+    details: ArmorSkinDetails | WeaponSkinDetails | GatheringSkinDetails | Foo | None = (
+        None
+    )
 
 
 class DyeSlot(BaseModel):
-    color_id: Optional[int]
-    color_: Optional[LazyLoader]
+    color_id: int | None = None
+    color_: LazyLoader | None = None
 
     @property
-    def color(self) -> Optional["Color"]:
+    def color(self) -> Color | None:
         return self.color_() if self.color_ is not None else None
 
-    material: Optional[DyeSlotMaterial]
+    material: DyeSlotMaterial | None = None
 
 
 class SkinDyeSlots(BaseModel):
-    default: List[Optional[DyeSlot]]
+    default: list[DyeSlot | None]
     overrides: DyeSlot
 
 
 class ArmorSkinDetails(BaseModel):
     type: ArmorSlot
     weight_class: WeightClass
-    dye_slots: Optional[SkinDyeSlots]
+    dye_slots: SkinDyeSlots | None = None
 
 
 class WeaponSkinDetails(BaseModel):
     type: WeaponType
-    damage_type: Optional[DamageType]
+    damage_type: DamageType | None = None
 
 
 class GatheringSkinDetails(BaseModel):
@@ -94,7 +102,7 @@ class MountSkin(BaseModel):
     name: str = ""
     icon: str = ""
     mount: str = ""  # TODO resolve against mount types
-    dye_slots: List[DyeSlot]
+    dye_slots: list[DyeSlot]
 
 
-Skin.update_forward_refs()
+Skin.model_rebuild()

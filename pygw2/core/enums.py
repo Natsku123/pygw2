@@ -68,6 +68,13 @@ class EquipmentSlot(str, Enum):
     Sickle = "Sickle"
     Axe = "Axe"
     Pick = "Pick"
+    FishingRod = "FishingRod"
+    FishingBait = "FishingBait"
+    FishingLure = "FishingLure"
+    PowerCore = "PowerCore"
+    SensoryArray = "SensoryArray"
+    ServiceChip = "ServiceChip"
+    Relic = "Relic"
 
 
 class NoveltySlot(str, Enum):

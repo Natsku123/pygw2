@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import datetime
-from typing import Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 
@@ -10,6 +12,12 @@ if TYPE_CHECKING:
     from pygw2.core.models.general import Skin, Finisher
     from pygw2.core.models.misc import Currency
     from pygw2.core.models.wvw import World
+else:
+    Item = ForwardRef("Item")
+    Mastery = ForwardRef("Mastery")
+    World = ForwardRef("World")
+    Finisher = ForwardRef("Finisher")
+    Currency = ForwardRef("Currency")
 
 
 class VaultSlot(BaseModel):
@@ -17,36 +25,36 @@ class VaultSlot(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     count: int
-    charges: Optional[int]
-    skin_: Optional[LazyLoader]
+    charges: int | None = None
+    skin_: LazyLoader | None = None
 
     @property
-    def skin(self) -> Optional["Skin"]:
+    def skin(self) -> Skin | None:
         return self.skin_() if self.skin_ is not None else None
 
-    upgrades_: Optional[LazyLoader]
+    upgrades_: LazyLoader | None = None
 
     @property
-    def upgrades(self) -> Optional[List["Item"]]:
+    def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    infusions_: Optional[LazyLoader]
+    infusions_: LazyLoader | None = None
 
     @property
-    def infusions(self) -> Optional[List["Item"]]:
+    def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
-    binding: Optional[Binding]
-    bound_to: Optional[str]
+    binding: Binding | None = None
+    bound_to: str | None = None
 
 
 class Coins(BaseModel):
     count: int
-    type: Optional[str]
+    type: str | None = None
 
 
 class MasteryLevel(BaseModel):
@@ -63,8 +71,8 @@ class Mastery(BaseModel):
     requirement: str = ""
     order: int = 0
     background: str = ""
-    region: "Region"
-    levels: List[MasteryLevel]
+    region: Region
+    levels: list[MasteryLevel]
 
 
 class MasteryProgress(BaseModel):
@@ -72,7 +80,7 @@ class MasteryProgress(BaseModel):
     mastery_: LazyLoader
 
     @property
-    def mastery(self) -> "Mastery":
+    def mastery(self) -> Mastery:
         return self.mastery_()
 
     level: int
@@ -86,13 +94,13 @@ class Account(BaseModel):
     world_: LazyLoader
 
     @property
-    def world(self) -> "World":
+    def world(self) -> World:
         return self.world_()
 
-    guilds: List[str] = []
-    guild_leader: List[str] = []
+    guilds: list[str] = []
+    guild_leader: list[str] = []
     created: datetime.datetime
-    access: List[AccountAccess]
+    access: list[AccountAccess]
     commander: bool
     fractal_level: int
     daily_ap: int
@@ -115,12 +123,12 @@ class Pet(BaseModel):
     name: str = ""
     description: str = ""
     icon: str = ""
-    skills: List[PetSkill]
+    skills: list[PetSkill]
 
 
 class HomeCat(BaseModel):
     id: int
-    hint: Optional[str]
+    hint: str | None = None
 
 
 class HomeNode(BaseModel):
@@ -136,8 +144,8 @@ class MountType(BaseModel):
     id: str = ""
     name: str = ""
     default_skin: int  # TODO resolve against mount skins
-    skins: List[int]  # TODO resolve against mount skins
-    skills: List[MountSkill]
+    skins: list[int]  # TODO resolve against mount skins
+    skills: list[MountSkill]
 
 
 class UnlockedFinisher(BaseModel):
@@ -145,11 +153,11 @@ class UnlockedFinisher(BaseModel):
     finisher_: LazyLoader
 
     @property
-    def finisher(self) -> "Finisher":
+    def finisher(self) -> Finisher:
         return self.finisher_()
 
     permanent: bool
-    quantity: Optional[int]
+    quantity: int | None = None
 
 
 class SharedInventorySlot(BaseModel):
@@ -157,30 +165,30 @@ class SharedInventorySlot(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     count: int
-    charges: Optional[int]
-    skin_: Optional[LazyLoader]
+    charges: int | None = None
+    skin_: LazyLoader | None = None
 
     @property
-    def skin(self) -> Optional["Skin"]:
+    def skin(self) -> Skin | None:
         return self.skin_() if self.skin_ is not None else None
 
-    upgrades_: Optional[LazyLoader]
+    upgrades_: LazyLoader | None = None
 
     @property
-    def upgrades(self) -> Optional[List["Item"]]:
+    def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    infusions_: Optional[LazyLoader]
+    infusions_: LazyLoader | None = None
 
     @property
-    def infusions(self) -> Optional[List["Item"]]:
+    def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
-    binding: Optional[Binding]
+    binding: Binding | None = None
 
 
 class StorageMaterial(BaseModel):
@@ -188,7 +196,7 @@ class StorageMaterial(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     category: int
@@ -200,7 +208,7 @@ class WalletCurrency(BaseModel):
     currency_: LazyLoader
 
     @property
-    def currency(self) -> "Currency":
+    def currency(self) -> Currency:
         return self.currency_()
 
     value: int
@@ -212,7 +220,7 @@ class Legendary(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
 
@@ -222,7 +230,7 @@ class OwnedLegendary(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     armory_: LazyLoader
@@ -239,8 +247,8 @@ class SubToken(BaseModel):
 class TokenInfo(BaseModel):
     id: str
     name: str
-    permissions: List[str]
+    permissions: list[str]
     type: TokenTypes
-    expires_at: Optional[str]
-    issued_at: Optional[str]
-    urls: Optional[List[str]]
+    expires_at: str | None = None
+    issued_at: str | None = None
+    urls: list[str] | None = None

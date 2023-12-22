@@ -1,4 +1,3 @@
-from typing import List
 from pygw2.utils import LazyLoader, BaseModel
 
 
@@ -20,6 +19,6 @@ class SABSong(BaseModel):
 
 
 class SAB(BaseModel):
-    zones: List[SABZones] = []
-    unlocks: List[SABUnlocks] = []
-    songs: List[SABSong] = []
+    zones: list[SABZones] = []
+    unlocks: list[SABUnlocks] = []
+    songs: list[SABSong] = []
