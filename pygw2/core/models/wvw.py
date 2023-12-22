@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import datetime
-from typing import Optional, List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from pygw2.core.enums import WvWMapTypes, WvWObjectiveTypes, WvWTeams, WvWMapBonusTypes
 from pygw2.utils import BaseModel, LazyLoader
@@ -20,7 +22,7 @@ class WvWAbility(BaseModel):
     name: str
     description: str
     icon: str
-    ranks: List[WvWAbilityRank]
+    ranks: list[WvWAbilityRank]
 
 
 class WvWStats(BaseModel):
@@ -35,15 +37,15 @@ class WvWMatchWorlds(BaseModel):
     green_: LazyLoader
 
     @property
-    def red(self) -> Union["World", List["World"]]:
+    def red(self) -> "World" | list["World"]:
         return self.red_()
 
     @property
-    def blue(self) -> Union["World", List["World"]]:
+    def blue(self) -> "World" | list["World"]:
         return self.blue_()
 
     @property
-    def green(self) -> Union["World", List["World"]]:
+    def green(self) -> "World" | list["World"]:
         return self.green_()
 
 
@@ -52,22 +54,22 @@ class WvWMapObjectives(BaseModel):
     type: WvWObjectiveTypes
     owner: WvWTeams
     last_flipped: datetime.datetime
-    claimed_by_: Optional[LazyLoader]
+    claimed_by_: LazyLoader | None
 
     @property
-    def claimed_by(self) -> Optional["Guild"]:
+    def claimed_by(self) -> "Guild" | None:
         return self.claimed_by_() if self.claimed_by_ else None
 
-    claimed_at: Optional[datetime.datetime]
+    claimed_at: datetime.datetime | None
     points_tick: int
     points_capture: int
-    guild_upgrades_: Optional[LazyLoader]
+    guild_upgrades_: LazyLoader | None
 
     @property
-    def guild_upgrades(self) -> Optional[List["GuildUpgrade"]]:
+    def guild_upgrades(self) -> list["GuildUpgrade"] | None:
         return self.guild_upgrades_() if self.guild_upgrades_ else None
 
-    yaks_delivered: Optional[int]
+    yaks_delivered: int | None
 
 
 class WvWMapBonus(BaseModel):
@@ -78,11 +80,11 @@ class WvWMapBonus(BaseModel):
 class WvWMatchMap(BaseModel):
     id: int
     type: WvWMapTypes
-    scores: Optional[WvWStats]
-    kills: Optional[WvWStats]
-    deaths: Optional[WvWStats]
-    objectives: Optional[List[WvWMapObjectives]]
-    bonuses: Optional[List[WvWMapBonus]]
+    scores: WvWStats | None
+    kills: WvWStats | None
+    deaths: WvWStats | None
+    objectives: list[WvWMapObjectives] | None
+    bonuses: list[WvWMapBonus] | None
 
 
 class WvWMapScores(BaseModel):
@@ -93,21 +95,21 @@ class WvWMapScores(BaseModel):
 class WvWSkirmish(BaseModel):
     id: int
     scores: WvWStats
-    map_scores: List[WvWMapScores]
+    map_scores: list[WvWMapScores]
 
 
 class WvWMatch(BaseModel):
     id: str
-    start_time: Optional[datetime.datetime]
-    end_time: Optional[datetime.datetime]
-    scores: Optional[WvWStats]
-    worlds: Optional[WvWMatchWorlds]
-    all_worlds: Optional[WvWMatchWorlds]
-    deaths: Optional[WvWStats]
-    kills: Optional[WvWStats]
-    victory_points: Optional[WvWStats]
-    maps: Optional[List[WvWMatchMap]]
-    skirmishes: Optional[List[WvWSkirmish]]
+    start_time: datetime.datetime | None
+    end_time: datetime.datetime | None
+    scores: WvWStats | None
+    worlds: WvWMatchWorlds | None
+    all_worlds: WvWMatchWorlds | None
+    deaths: WvWStats | None
+    kills: WvWStats | None
+    victory_points: WvWStats | None
+    maps: list[WvWMatchMap] | None
+    skirmishes: list[WvWSkirmish] | None
 
 
 class WvWUpgradeTierUpgrade(BaseModel):
@@ -119,12 +121,12 @@ class WvWUpgradeTierUpgrade(BaseModel):
 class WvWUpgradeTier(BaseModel):
     name: str
     yaks_required: int
-    upgrades: List[WvWUpgradeTierUpgrade]
+    upgrades: list[WvWUpgradeTierUpgrade]
 
 
 class WvWUpgrade(BaseModel):
     id: int
-    tiers: List[WvWUpgradeTier]
+    tiers: list[WvWUpgradeTier]
 
 
 class WvWObjective(BaseModel):
@@ -132,16 +134,16 @@ class WvWObjective(BaseModel):
     name: str
     type: WvWObjectiveTypes
     sector_id: int
-    sector: Optional["MapSector"]
+    sector: "MapSector" | None
     map_id: int
-    map: Optional["Map"]
+    map: "Map" | None
     map_type: WvWMapTypes
-    coord: Optional[List[int]]
-    label_coord: Optional[List[int]]
-    marker: Optional[str]
+    coord: list[int] | None
+    label_coord: list[int] | None
+    marker: str | None
     chat_link: str
-    upgrade_id: Optional[int]
-    upgrade: Optional[WvWUpgrade]
+    upgrade_id: int | None
+    upgrade: WvWUpgrade | None
 
 
 class WvWRank(BaseModel):

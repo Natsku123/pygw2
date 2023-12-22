@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import datetime
-from typing import Optional, List, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from pygw2.utils import LazyLoader, BaseModel
 
@@ -21,32 +23,32 @@ class VaultSlot(BaseModel):
         return self.item_()
 
     count: int
-    charges: Optional[int]
-    skin_: Optional[LazyLoader]
+    charges: int | None
+    skin_: LazyLoader | None
 
     @property
-    def skin(self) -> Optional["Skin"]:
+    def skin(self) -> "Skin" | None:
         return self.skin_() if self.skin_ is not None else None
 
-    upgrades_: Optional[LazyLoader]
+    upgrades_: LazyLoader | None
 
     @property
-    def upgrades(self) -> Optional[List["Item"]]:
+    def upgrades(self) -> list["Item"] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    infusions_: Optional[LazyLoader]
+    infusions_: LazyLoader | None
 
     @property
-    def infusions(self) -> Optional[List["Item"]]:
+    def infusions(self) -> list["Item"] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
-    binding: Optional[Binding]
-    bound_to: Optional[str]
+    binding: Binding | None
+    bound_to: str | None
 
 
 class Coins(BaseModel):
     count: int
-    type: Optional[str]
+    type: str | None
 
 
 class MasteryLevel(BaseModel):
@@ -64,7 +66,7 @@ class Mastery(BaseModel):
     order: int = 0
     background: str = ""
     region: "Region"
-    levels: List[MasteryLevel]
+    levels: list[MasteryLevel]
 
 
 class MasteryProgress(BaseModel):
@@ -89,10 +91,10 @@ class Account(BaseModel):
     def world(self) -> "World":
         return self.world_()
 
-    guilds: List[str] = []
-    guild_leader: List[str] = []
+    guilds: list[str] = []
+    guild_leader: list[str] = []
     created: datetime.datetime
-    access: List[AccountAccess]
+    access: list[AccountAccess]
     commander: bool
     fractal_level: int
     daily_ap: int
@@ -115,12 +117,12 @@ class Pet(BaseModel):
     name: str = ""
     description: str = ""
     icon: str = ""
-    skills: List[PetSkill]
+    skills: list[PetSkill]
 
 
 class HomeCat(BaseModel):
     id: int
-    hint: Optional[str]
+    hint: str | None
 
 
 class HomeNode(BaseModel):
@@ -136,8 +138,8 @@ class MountType(BaseModel):
     id: str = ""
     name: str = ""
     default_skin: int  # TODO resolve against mount skins
-    skins: List[int]  # TODO resolve against mount skins
-    skills: List[MountSkill]
+    skins: list[int]  # TODO resolve against mount skins
+    skills: list[MountSkill]
 
 
 class UnlockedFinisher(BaseModel):
@@ -149,7 +151,7 @@ class UnlockedFinisher(BaseModel):
         return self.finisher_()
 
     permanent: bool
-    quantity: Optional[int]
+    quantity: int | None
 
 
 class SharedInventorySlot(BaseModel):
@@ -161,26 +163,26 @@ class SharedInventorySlot(BaseModel):
         return self.item_()
 
     count: int
-    charges: Optional[int]
-    skin_: Optional[LazyLoader]
+    charges: int | None
+    skin_: LazyLoader | None
 
     @property
-    def skin(self) -> Optional["Skin"]:
+    def skin(self) -> "Skin" | None:
         return self.skin_() if self.skin_ is not None else None
 
-    upgrades_: Optional[LazyLoader]
+    upgrades_: LazyLoader | None
 
     @property
-    def upgrades(self) -> Optional[List["Item"]]:
+    def upgrades(self) -> list["Item"] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    infusions_: Optional[LazyLoader]
+    infusions_: LazyLoader | None
 
     @property
-    def infusions(self) -> Optional[List["Item"]]:
+    def infusions(self) -> list["Item"] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
-    binding: Optional[Binding]
+    binding: Binding | None
 
 
 class StorageMaterial(BaseModel):
@@ -239,8 +241,8 @@ class SubToken(BaseModel):
 class TokenInfo(BaseModel):
     id: str
     name: str
-    permissions: List[str]
+    permissions: list[str]
     type: TokenTypes
-    expires_at: Optional[str]
-    issued_at: Optional[str]
-    urls: Optional[List[str]]
+    expires_at: str | None
+    issued_at: str | None
+    urls: list[str] | None

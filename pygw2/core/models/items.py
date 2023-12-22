@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from pygw2.core.enums import *
 
-from typing import Optional, List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from pygw2.utils import LazyLoader, BaseModel
 
@@ -20,39 +22,24 @@ class Item(BaseModel):
     id: int
     chat_link: str
     name: str
-    icon: Optional[str]
-    description: Optional[str]
+    icon: str | None
+    description: str | None
     type: ItemType
     rarity: ItemRarity
     level: int
     vendor_value: int
-    default_skin_: Optional[LazyLoader]
+    default_skin_: LazyLoader | None
 
     @property
-    def default_skin(self) -> Optional["Skin"]:
+    def default_skin(self) -> "Skin" | None:
         return self.default_skin_() if self.default_skin_ is not None else None
 
-    flags: List[ItemFlags] = []
-    game_types: List[GameTypes] = []
-    restrictions: List[Union[Races, Professions]] = []
-    upgrades_into: Optional[List[Upgrade]] = []
-    upgrades_from: Optional[List[Upgrade]] = []
-    details: Optional[
-        Union[
-            "ArmorDetails",
-            "BackDetails",
-            "BagDetails",
-            "ConsumableDetails",
-            "ContainerDetails",
-            "GatheringToolDetails",
-            "GizmoDetails",
-            "MiniatureDetails",
-            "SalvageKitDetails",
-            "TrinketDetails",
-            "UpgradeComponentDetails",
-            "WeaponDetails",
-        ]
-    ]
+    flags: list[ItemFlags] = []
+    game_types: list[GameTypes] = []
+    restrictions: list[Races | Professions] = []
+    upgrades_into: list[Upgrade] | None = []
+    upgrades_from: list[Upgrade] | None = []
+    details: "ArmorDetails" | "BackDetails" | "BagDetails" | "ConsumableDetails" | "ContainerDetails" | "GatheringToolDetails" | "GizmoDetails" | "MiniatureDetails" | "SalvageKitDetails" | "TrinketDetails" | "UpgradeComponentDetails" | "WeaponDetails" | None
 
 
 class InfixAttribute(BaseModel):
@@ -62,46 +49,46 @@ class InfixAttribute(BaseModel):
 
 class InfixBuff(BaseModel):
     skill_id: int
-    description: Optional[str]
+    description: str | None
 
 
 class InfixUpgrade(BaseModel):
     id: int
-    attributes: List[InfixAttribute]
-    buff: Optional[InfixBuff]
+    attributes: list[InfixAttribute]
+    buff: InfixBuff | None
 
 
 class InfusionSlot(BaseModel):
-    flags: List[InfusionSlotType]
-    item_id: Optional[int]
+    flags: list[InfusionSlotType]
+    item_id: int | None
 
 
 class ArmorDetails(BaseModel):
     type: ArmorSlot
     weight_class: WeightClass
     defense: int
-    infusion_slots: List[InfusionSlot] = []
+    infusion_slots: list[InfusionSlot] = []
     attribute_adjustment: int
-    infix_upgrade: Optional[InfixUpgrade]
-    suffix_item_id: Optional[int]
+    infix_upgrade: InfixUpgrade | None
+    suffix_item_id: int | None
     secondary_suffix_item_id: str = ""
-    stat_choices_: Optional[LazyLoader]
+    stat_choices_: LazyLoader | None
 
     @property
-    def stat_choices(self) -> Optional[List["ItemStat"]]:
+    def stat_choices(self) -> list["ItemStat"] | None:
         return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
 class BackDetails(BaseModel):
-    infusion_slots: List[InfusionSlot] = []
+    infusion_slots: list[InfusionSlot] = []
     attribute_adjustment: int
-    infix_upgrade: Optional[InfixUpgrade]
-    suffix_item_id: Optional[int]
+    infix_upgrade: InfixUpgrade | None
+    suffix_item_id: int | None
     secondary_suffix_item_id: str = ""
-    stat_choices_: Optional[LazyLoader]
+    stat_choices_: LazyLoader | None
 
     @property
-    def stat_choices(self) -> Optional[List["ItemStat"]]:
+    def stat_choices(self) -> list["ItemStat"] | None:
         return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
@@ -112,44 +99,44 @@ class BagDetails(BaseModel):
 
 class ConsumableDetails(BaseModel):
     type: ConsumableType
-    description: Optional[str]
-    duration_ms: Optional[int]
-    unlock_type: Optional[UnlockType]
-    color_id: Optional[int]
-    color_: Optional[LazyLoader]
+    description: str | None
+    duration_ms: int | None
+    unlock_type: UnlockType | None
+    color_id: int | None
+    color_: LazyLoader | None
 
     @property
-    def color(self) -> Optional["Color"]:
+    def color(self) -> "Color" | None:
         return self.color_() if self.color_ is not None else None
 
-    recipe_id: Optional[int]
-    recipe_: Optional[LazyLoader]
+    recipe_id: int | None
+    recipe_: LazyLoader | None
 
     @property
-    def recipe(self) -> Optional["Recipe"]:
+    def recipe(self) -> "Recipe" | None:
         return self.recipe_() if self.recipe_ is not None else None
 
-    extra_recipe_ids: Optional[List[int]] = []
-    extra_recipes_: Optional[LazyLoader]
+    extra_recipe_ids: list[int] | None = []
+    extra_recipes_: LazyLoader | None
 
     @property
-    def extra_recipes(self) -> Optional[List["Recipe"]]:
+    def extra_recipes(self) -> list["Recipe"] | None:
         return self.extra_recipes_() if self.extra_recipes_ is not None else None
 
-    guild_upgrade_id: Optional[int]
-    guild_upgrade_: Optional[LazyLoader]
+    guild_upgrade_id: int | None
+    guild_upgrade_: LazyLoader | None
 
     @property
-    def guild_upgrade(self) -> Optional["GuildUpgrade"]:
+    def guild_upgrade(self) -> "GuildUpgrade" | None:
         return self.guild_upgrade_() if self.guild_upgrade_ is not None else None
 
-    apply_count: Optional[int]
-    name: Optional[str]
-    icon: Optional[str]
-    skins_: Optional[LazyLoader]
+    apply_count: int | None
+    name: str | None
+    icon: str | None
+    skins_: LazyLoader | None
 
     @property
-    def skins(self) -> Optional[List["Skin"]]:
+    def skins(self) -> list["Skin"] | None:
         return self.skins_() if self.skins_ is not None else None
 
 
@@ -163,14 +150,14 @@ class GatheringToolDetails(BaseModel):
 
 class GizmoDetails(BaseModel):
     type: GizmoType
-    guild_upgrade_id: Optional[int]
-    guild_upgrade_: Optional[LazyLoader]
+    guild_upgrade_id: int | None
+    guild_upgrade_: LazyLoader | None
 
     @property
-    def guild_upgrade(self) -> Optional["GuildUpgrade"]:
+    def guild_upgrade(self) -> "GuildUpgrade" | None:
         return self.guild_upgrade_() if self.guild_upgrade_ is not None else None
 
-    vendor_ids: List[int] = []  # TODO resolve?
+    vendor_ids: list[int] = []  # TODO resolve?
 
 
 class MiniatureDetails(BaseModel):
@@ -188,42 +175,42 @@ class SalvageKitDetails(BaseModel):
 
 
 class TrinketDetails(BaseModel):
-    infusion_slots: List[InfusionSlot] = []
+    infusion_slots: list[InfusionSlot] = []
     attribute_adjustment: int
-    infix_upgrade: Optional[InfixUpgrade]
-    suffix_item_id: Optional[int]
+    infix_upgrade: InfixUpgrade | None
+    suffix_item_id: int | None
     secondary_suffix_item_id: str = ""
-    stat_choices_: Optional[LazyLoader]
+    stat_choices_: LazyLoader | None
 
     @property
-    def stat_choices(self) -> Optional[List["ItemStat"]]:
+    def stat_choices(self) -> list["ItemStat"] | None:
         return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
 class UpgradeComponentDetails(BaseModel):
     type: UpgradeComponentType
-    flags: List[Union[WeaponType, UpgradeComponentFlag]] = []
-    infusion_upgrade_flags: List[InfusionUpgradeFlag] = []
+    flags: list[WeaponType | UpgradeComponentFlag] = []
+    infusion_upgrade_flags: list[InfusionUpgradeFlag] = []
     suffix: str
     infix_upgrade: InfixUpgrade
-    bonuses: List[str]
+    bonuses: list[str]
 
 
 class WeaponDetails(BaseModel):
-    type: Union[WeaponType, AdditionalWeaponType]
+    type: WeaponType | AdditionalWeaponType
     damage_type: DamageType
     min_power: int
     max_power: int
     defense: int
-    infusion_slots: List[InfusionSlot] = []
+    infusion_slots: list[InfusionSlot] = []
     attribute_adjustment: int
-    infix_upgrade: Optional[InfixUpgrade]
-    suffix_item_id: Optional[int]
+    infix_upgrade: InfixUpgrade | None
+    suffix_item_id: int | None
     secondary_suffix_item_id: str
-    stat_choices_: Optional[LazyLoader]
+    stat_choices_: LazyLoader | None
 
     @property
-    def stat_choices(self) -> Optional[List["ItemStat"]]:
+    def stat_choices(self) -> list["ItemStat"] | None:
         return self.stat_choices_() if self.stat_choices_ is not None else None
 
 
@@ -234,7 +221,7 @@ class Outfit(BaseModel):
     unlock_items_: LazyLoader
 
     @property
-    def unlock_items(self) -> List["Item"]:
+    def unlock_items(self) -> list["Item"]:
         return self.unlock_items_()
 
 
@@ -243,17 +230,17 @@ class Glider(BaseModel):
     unlock_items_: LazyLoader
 
     @property
-    def unlock_items(self) -> Union[List["Item"], "Item"]:
+    def unlock_items(self) -> list["Item"] | "Item":
         return self.unlock_items_()
 
     order: int
     icon: str
     name: str
     description: str
-    default_dyes_: Optional[LazyLoader]
+    default_dyes_: LazyLoader | None
 
     @property
-    def default_dyes(self) -> List["Color"]:
+    def default_dyes(self) -> list["Color"]:
         return self.default_dyes_() if self.default_dyes_ is not None else None
 
 
@@ -262,13 +249,13 @@ class Mailcarrier(BaseModel):
     unlock_items_: LazyLoader
 
     @property
-    def unlock_items(self) -> Union[List["Item"], "Item"]:
+    def unlock_items(self) -> list["Item"] | "Item":
         return self.unlock_items_()
 
     order: int
     icon: str
     name: str
-    flags: List["MailcarrierFlags"]
+    flags: list["MailcarrierFlags"]
 
 
-Item.update_forward_refs()
+Item.model_rebuild()

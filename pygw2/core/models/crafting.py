@@ -1,4 +1,4 @@
-from typing import Optional, List
+from __future__ import annotations
 
 from pygw2.core.enums import RecipeType, Discipline, RecipeFlag
 from pygw2.utils import LazyLoader, BaseModel
@@ -7,7 +7,7 @@ from pygw2.utils import LazyLoader, BaseModel
 class Material(BaseModel):
     id: int
     name: str
-    items: List[int]  # TODO resolve against items
+    items: list[int]  # TODO resolve against items
     order: int
 
 
@@ -28,10 +28,10 @@ class Recipe(BaseModel):
     output_item_id: int  # TODO resolve against items
     output_item_count: int
     time_to_craft_ms: int
-    disciplines: List[Discipline]
+    disciplines: list[Discipline]
     min_rating: int
-    flags: List[RecipeFlag]
-    ingredients: List[RecipeIngredient]
-    guild_ingredients: Optional[List[RecipeGuildIngredient]]
-    output_upgrade_id: Optional[int]  # TODO resolve against guild upgrades
+    flags: list[RecipeFlag]
+    ingredients: list[RecipeIngredient]
+    guild_ingredients: list[RecipeGuildIngredient] | None
+    output_upgrade_id: int | None  # TODO resolve against guild upgrades
     chat_link: str

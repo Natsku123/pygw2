@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 
-from typing import List, Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from pygw2.core.enums import (
     GuildEmblemFlags,
@@ -22,18 +24,18 @@ if TYPE_CHECKING:
 
 class GuildEmblemBackground(BaseModel):
     id: int  # TODO resolve against backgrounds
-    colors: List[int]  # TODO resolve against colors
+    colors: list[int]  # TODO resolve against colors
 
 
 class GuildEmblemForeground(BaseModel):
     id: int  # TODO resolve against foregrounds
-    colors: List[int]  # TODO resolve against colors
+    colors: list[int]  # TODO resolve against colors
 
 
 class GuildEmblem(BaseModel):
     background: GuildEmblemBackground
     foreground: GuildEmblemForeground
-    flags: List[GuildEmblemFlags]
+    flags: list[GuildEmblemFlags]
 
 
 class Guild(BaseModel):
@@ -52,7 +54,7 @@ class Guild(BaseModel):
 
 class GuildEmblemImages(BaseModel):
     id: int
-    layers: List[str]
+    layers: list[str]
 
 
 class GuildPermission(BaseModel):
@@ -63,13 +65,13 @@ class GuildPermission(BaseModel):
 
 class GuildUpgradeCost(BaseModel):
     type: GuildUpgradeCostType
-    name: Optional[str]
+    name: str | None
     count: int
-    item_id: Optional[int]
-    item_: Optional[LazyLoader]
+    item_id: int | None
+    item_: LazyLoader | None
 
     @property
-    def item(self) -> Optional["Item"]:
+    def item(self) -> "Item" | None:
         return self.item_() if self.item_ else None
 
 
@@ -82,51 +84,51 @@ class GuildUpgrade(BaseModel):
     build_time: int
     required_level: int
     experience: int
-    prerequisites_: Optional[LazyLoader]
+    prerequisites_: LazyLoader | None
 
     @property
-    def prerequisites(self) -> List["GuildUpgrade"]:
+    def prerequisites(self) -> list["GuildUpgrade"]:
         return self.prerequisites_() if self.prerequisites_ else []
 
-    bag_max_items: Optional[int]
-    bag_max_coins: Optional[int]
-    costs: List[GuildUpgradeCost]
+    bag_max_items: int | None
+    bag_max_coins: int | None
+    costs: list[GuildUpgradeCost]
 
 
 class GuildLogEntry(BaseModel):
     id: int
     time: datetime.datetime
-    user: Optional[str]
+    user: str | None
     type: GuildLogEntryType
-    invited_by: Optional[str]
-    kicked_by: Optional[str]
-    changed_by: Optional[str]
-    old_rank: Optional[str]
-    new_rank: Optional[str]
-    item_id: Optional[int]
-    item_: Optional[LazyLoader]
+    invited_by: str | None
+    kicked_by: str | None
+    changed_by: str | None
+    old_rank: str | None
+    new_rank: str | None
+    item_id: int | None
+    item_: LazyLoader | None
 
     @property
-    def item(self) -> Optional["Item"]:
+    def item(self) -> "Item" | None:
         return self.item_() if self.item_ else None
 
-    operation: Optional[GuildStashOperation]
-    count: Optional[int]
-    coins: Optional[int]
-    motd: Optional[str]
-    action: Optional[GuildUpgradeAction]
-    upgrade_id: Optional[int]
-    upgrade_: Optional[LazyLoader]
+    operation: GuildStashOperation | None
+    count: int | None
+    coins: int | None
+    motd: str | None
+    action: GuildUpgradeAction | None
+    upgrade_id: int | None
+    upgrade_: LazyLoader | None
 
     @property
-    def upgrade(self) -> Optional["GuildUpgrade"]:
+    def upgrade(self) -> "GuildUpgrade" | None:
         return self.upgrade_() if self.upgrade_ else None
 
-    recipe_id: Optional[int]
-    recipe_: Optional[LazyLoader]
+    recipe_id: int | None
+    recipe_: LazyLoader | None
 
     @property
-    def recipe(self) -> Optional["Recipe"]:
+    def recipe(self) -> "Recipe" | None:
         return self.recipe_() if self.recipe_ else None
 
 
@@ -142,7 +144,7 @@ class GuildRank(BaseModel):
     permissions_: LazyLoader
 
     @property
-    def permissions(self) -> List[GuildPermission]:
+    def permissions(self) -> list[GuildPermission]:
         return self.permissions_()
 
     icon: str
@@ -169,8 +171,8 @@ class GuildStash(BaseModel):
 
     size: int
     coins: int
-    note: Optional[str]
-    inventory: List[Union[GuildStashSlot, None]]
+    note: str | None
+    inventory: list[GuildStashSlot | None]
 
 
 class GuildTreasuryNeeded(BaseModel):
@@ -193,7 +195,7 @@ class GuildTreasury(BaseModel):
         return self.item_()
 
     count: int
-    needed_by: List[GuildTreasuryNeeded]
+    needed_by: list[GuildTreasuryNeeded]
 
 
 class GuildTeamMember(BaseModel):
@@ -210,12 +212,12 @@ class GuildTeamSeason(BaseModel):
 
 class GuildTeam(BaseModel):
     id: int
-    members: List
+    members: list
     name: str
     aggregate: "GuildPvpWinLoss"
     ladders: "GuildPvpLadderStats"
-    games: List["GuildPvpGame"]
-    seasons: Optional[List[GuildTeamSeason]]
+    games: list["GuildPvpGame"]
+    seasons: list[GuildTeamSeason] | None
 
 
 class GuildPvpWinLoss(BaseModel):
@@ -227,8 +229,8 @@ class GuildPvpWinLoss(BaseModel):
 
 
 class GuildPvpLadderStats(BaseModel):
-    ranked: Optional[GuildPvpWinLoss]
-    unranked: Optional[GuildPvpWinLoss]
+    ranked: GuildPvpWinLoss | None
+    unranked: GuildPvpWinLoss | None
 
 
 class GuildPvpGame(BaseModel):
@@ -238,9 +240,9 @@ class GuildPvpGame(BaseModel):
     ended: datetime.datetime
     result: str
     team: str
-    rating_type: Union[PvpRatingType, None]
-    rating_change: Optional[int]
+    rating_type: PvpRatingType | None
+    rating_change: int | None
     scores: "PvpScores"
 
 
-Guild.update_forward_refs()
+Guild.model_rebuild()

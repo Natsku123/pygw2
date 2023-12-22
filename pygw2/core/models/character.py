@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import datetime
-from typing import Optional, List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from pygw2.core.enums import *
 from pygw2.utils import LazyLoader, BaseModel
@@ -22,14 +24,14 @@ class Crafting(BaseModel):
 
 
 class Attributes(BaseModel):
-    Power: Optional[int] = 0
-    Precision: Optional[int] = 0
-    Toughness: Optional[int] = 0
-    Vitality: Optional[int] = 0
-    ConditionDamage: Optional[int] = 0
-    ConditionDuration: Optional[int] = 0
-    Healing: Optional[int] = 0
-    BoonDuration: Optional[int] = 0
+    Power: int | None = 0
+    Precision: int | None = 0
+    Toughness: int | None = 0
+    Vitality: int | None = 0
+    ConditionDamage: int | None = 0
+    ConditionDuration: int | None = 0
+    Healing: int | None = 0
+    BoonDuration: int | None = 0
 
 
 class Stats(BaseModel):
@@ -46,40 +48,40 @@ class Stats(BaseModel):
 class Equipment(BaseModel):
     id: int
     item_: LazyLoader
-    tabs: Optional[List[int]]
+    tabs: list[int] | None
 
     @property
     def item(self) -> "Item":
         return self.item_()
 
-    slot: Optional[EquipmentSlot]
+    slot: EquipmentSlot | None
     location: EquipmentLocation
-    infusions_: Optional[LazyLoader]
+    infusions_: LazyLoader | None
 
     @property
-    def infusions(self) -> List["Item"]:
+    def infusions(self) -> list["Item"]:
         return self.infusions_() if self.infusions_ is not None else None
 
-    upgrades_: Optional[LazyLoader]
+    upgrades_: LazyLoader | None
 
     @property
-    def upgrades(self) -> List["Item"]:
+    def upgrades(self) -> list["Item"]:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    skin_: Optional[LazyLoader]
+    skin_: LazyLoader | None
 
     @property
-    def skin(self) -> List["Skin"]:
+    def skin(self) -> list["Skin"]:
         return self.skin_() if self.skin_ is not None else None
 
-    stats: Optional[Stats] = None
-    binding: Optional[Binding] = None
-    charges: Optional[int] = None
-    bound_to: Optional[str] = None
-    dyes_: Optional[LazyLoader]
+    stats: Stats | None = None
+    binding: Binding | None = None
+    charges: int | None = None
+    bound_to: str | None = None
+    dyes_: LazyLoader | None
 
     @property
-    def dyes(self) -> List["Color"]:
+    def dyes(self) -> list["Color"]:
         return self.dyes_() if self.dyes_ is not None else None
 
 
@@ -92,27 +94,27 @@ class ItemInventory(BaseModel):
         return self.item_()
 
     count: int
-    infusions_: Optional[LazyLoader]
+    infusions_: LazyLoader | None
 
     @property
-    def infusions(self) -> List["Item"]:
+    def infusions(self) -> list["Item"]:
         return self.infusions_() if self.infusions_ is not None else None
 
-    upgrades_: Optional[LazyLoader]
+    upgrades_: LazyLoader | None
 
     @property
-    def upgrades(self) -> List["Item"]:
+    def upgrades(self) -> list["Item"]:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    skin_: Optional[LazyLoader]
+    skin_: LazyLoader | None
 
     @property
-    def skin(self) -> List["Skin"]:
+    def skin(self) -> list["Skin"]:
         return self.skin_() if self.skin_ is not None else None
 
-    stats: Optional[Stats] = None
-    binding: Optional[Binding] = None
-    bound_to: Optional[str] = None
+    stats: Stats | None = None
+    binding: Binding | None = None
+    bound_to: str | None = None
 
 
 class Bag(BaseModel):
@@ -124,29 +126,29 @@ class Bag(BaseModel):
         return self.item_()
 
     size: int
-    inventory: List[Union[ItemInventory, None]]
+    inventory: list[ItemInventory | None]
 
 
 class SkillsBase(BaseModel):
-    heal_: Optional[LazyLoader]
+    heal_: LazyLoader | None
 
     @property
     def heal(self) -> "Skill":
         return self.heal_() if self.heal_ else None
 
-    utilities_: Optional[LazyLoader]
+    utilities_: LazyLoader | None
 
     @property
-    def utilities(self) -> List["Skill"]:
+    def utilities(self) -> list["Skill"]:
         return self.utilities_() if self.utilities_ else None
 
-    elite_: Optional[LazyLoader]
+    elite_: LazyLoader | None
 
     @property
     def elite(self):
         return self.elite_() if self.elite_ else None
 
-    legends_: Optional[LazyLoader]
+    legends_: LazyLoader | None
 
     @property
     def legends(self):
@@ -166,17 +168,17 @@ class Skills(BaseModel):
 
 
 class SpecializationBase(BaseModel):
-    id: Optional[int]
-    specialization_: Optional[LazyLoader]
+    id: int | None
+    specialization_: LazyLoader | None
 
     @property
     def specialization(self) -> "Specialization":
         return self.specialization_() if self.specialization_ else None
 
-    traits_: Optional[LazyLoader]
+    traits_: LazyLoader | None
 
     @property
-    def traits(self) -> List["Trait"]:
+    def traits(self) -> list["Trait"]:
         return self.traits_() if self.traits_ else None
 
 
@@ -192,7 +194,7 @@ class CharacterCore(BaseModel):
     gender: Gender
     profession: Professions
     level: int
-    guild_: Optional[LazyLoader] = None
+    guild_: LazyLoader | None = None
 
     @property
     def guild(self) -> "Guild":
@@ -201,7 +203,7 @@ class CharacterCore(BaseModel):
     age: int
     created: datetime.datetime
     deaths: int
-    title_: Optional[LazyLoader] = None
+    title_: LazyLoader | None = None
 
     @property
     def title(self) -> "Title":
@@ -211,7 +213,7 @@ class CharacterCore(BaseModel):
 class Build(BaseModel):
     name: str
     profession: Professions
-    specializations: List[SpecializationBase]
+    specializations: list[SpecializationBase]
     skills: SkillsBase
     aquatic_skills: SkillsBase
 
@@ -226,7 +228,7 @@ class EquipmentTab(BaseModel):
     tab: int
     name: str
     is_active: bool
-    equipment: List["Equipment"]
+    equipment: list["Equipment"]
     equipment_pvp: "PvPEquipment"
 
 
@@ -240,7 +242,7 @@ class Character(BaseModel):
     active_build_tab: int
     equipment_tabs_unlocked: int
     active_equipment_tab: int
-    guild_: Optional[LazyLoader] = None
+    guild_: LazyLoader | None = None
 
     @property
     def guild(self) -> "Guild":
@@ -249,7 +251,7 @@ class Character(BaseModel):
     age: int
     created: datetime.datetime
     deaths: int
-    title_: Optional[LazyLoader] = None
+    title_: LazyLoader | None = None
 
     @property
     def title(self) -> "Title":
@@ -258,34 +260,34 @@ class Character(BaseModel):
     backstory_: LazyLoader
 
     @property
-    def backstory(self) -> List["BiographyAnswer"]:
+    def backstory(self) -> list["BiographyAnswer"]:
         return self.backstory_()
 
-    crafting: List["Crafting"]
-    equipment: List["Equipment"]
-    build_tabs: List["BuildTab"]
-    equipment_tabs: List["EquipmentTab"]
+    crafting: list["Crafting"]
+    equipment: list["Equipment"]
+    build_tabs: list["BuildTab"]
+    equipment_tabs: list["EquipmentTab"]
     heropoints_: LazyLoader
 
     @property
-    def heropoints(self) -> List["str"]:  # TODO replace with proper lookup
+    def heropoints(self) -> list["str"]:  # TODO replace with proper lookup
         return self.heropoints_()
 
-    bags: List[Optional[Bag]] = []
+    bags: list[Bag | None] = []
 
     @property
-    def inventory(self) -> List[Optional[Bag]]:
+    def inventory(self) -> list[Bag | None]:
         return self.bags
 
-    training: List[SkillTree]
+    training: list[SkillTree]
     sab_: LazyLoader
 
     @property
     def sab(self) -> "SAB":
         return self.sab_()
 
-    wvw_abilities: List["CharacterWvWAbility"]
-    flags: List[CharacterFlag] = []
+    wvw_abilities: list["CharacterWvWAbility"]
+    flags: list[CharacterFlag] = []
 
 
 class CharacterWvWAbility(BaseModel):
@@ -302,18 +304,18 @@ class CharacterWvWAbility(BaseModel):
 class ProfessionTrainingTrack(BaseModel):
     cost: int = 0
     type: ProfessionTrainingTrackType
-    skill_id: Optional[int]
-    skill_: Optional[LazyLoader]
+    skill_id: int | None
+    skill_: LazyLoader | None
 
     @property
-    def skill(self) -> Optional["Skill"]:
+    def skill(self) -> "Skill" | None:
         return self.skill_() if self.skill_ is not None else None
 
-    trait_id: Optional[int]
-    trait_: Optional[LazyLoader]
+    trait_id: int | None
+    trait_: LazyLoader | None
 
     @property
-    def trait(self) -> Optional["Trait"]:
+    def trait(self) -> "Trait" | None:
         return self.trait_() if self.trait_ is not None else None
 
 
@@ -333,7 +335,7 @@ class ProfessionTraining(BaseModel):
 
     category: ProfessionTrainingCategory
     name: str
-    track: List[ProfessionTrainingTrack]
+    track: list[ProfessionTrainingTrack]
 
 
 class WeaponSkill(BaseModel):
@@ -345,42 +347,42 @@ class WeaponSkill(BaseModel):
         return self.skill_()
 
     slot: SkillSlot
-    offhand: Optional[str]
-    attunement: Optional[str]
-    source: Optional[str]
+    offhand: str | None
+    attunement: str | None
+    source: str | None
 
 
 class ProfessionWeapon(BaseModel):
-    flag: Optional[List[ProfessionWeaponFlag]]
-    specialization_: Optional[LazyLoader]
+    flag: list[ProfessionWeaponFlag] | None
+    specialization_: LazyLoader | None
 
     @property
-    def specialization(self) -> Optional["Specialization"]:
+    def specialization(self) -> Specialization | None:
         return self.specialization_() if self.specialization_ is not None else None
 
-    skills: List[WeaponSkill]
+    skills: list[WeaponSkill]
 
 
 class ProfessionWeapons(BaseModel):
-    Axe: Optional["ProfessionWeapon"]
-    Dagger: Optional["ProfessionWeapon"]
-    Mace: Optional["ProfessionWeapon"]
-    Pistol: Optional["ProfessionWeapon"]
-    Sword: Optional["ProfessionWeapon"]
-    Scepter: Optional["ProfessionWeapon"]
-    Focus: Optional["ProfessionWeapon"]
-    Shield: Optional["ProfessionWeapon"]
-    Torch: Optional["ProfessionWeapon"]
-    Warhorn: Optional["ProfessionWeapon"]
-    Greatsword: Optional["ProfessionWeapon"]
-    Hammer: Optional["ProfessionWeapon"]
-    Longbow: Optional["ProfessionWeapon"]
-    Rifle: Optional["ProfessionWeapon"]
-    Shortbow: Optional["ProfessionWeapon"]
-    Staff: Optional["ProfessionWeapon"]
-    Speargun: Optional["ProfessionWeapon"]
-    Spear: Optional["ProfessionWeapon"]
-    Trident: Optional["ProfessionWeapon"]
+    Axe: ProfessionWeapon | None
+    Dagger: ProfessionWeapon | None
+    Mace: ProfessionWeapon | None
+    Pistol: ProfessionWeapon | None
+    Sword: ProfessionWeapon | None
+    Scepter: ProfessionWeapon | None
+    Focus: ProfessionWeapon | None
+    Shield: ProfessionWeapon | None
+    Torch: ProfessionWeapon | None
+    Warhorn: ProfessionWeapon | None
+    Greatsword: ProfessionWeapon | None
+    Hammer: ProfessionWeapon | None
+    Longbow: ProfessionWeapon | None
+    Rifle: ProfessionWeapon | None
+    Shortbow: ProfessionWeapon | None
+    Staff: ProfessionWeapon | None
+    Speargun: ProfessionWeapon | None
+    Spear: ProfessionWeapon | None
+    Trident: ProfessionWeapon | None
 
 
 class Profession(BaseModel):
@@ -391,10 +393,10 @@ class Profession(BaseModel):
     specializations_: LazyLoader
 
     @property
-    def specializations(self) -> List["Specialization"]:
+    def specializations(self) -> list["Specialization"]:
         return self.specializations_()
 
-    training: List[ProfessionTraining]
+    training: list[ProfessionTraining]
     weapons: ProfessionWeapons
 
 
@@ -403,7 +405,7 @@ class Race(BaseModel):
     skills_: LazyLoader
 
     @property
-    def skills(self) -> List["Skill"]:
+    def skills(self) -> list["Skill"]:
         return self.skills_()
 
 
@@ -417,13 +419,13 @@ class Specialization(BaseModel):
     minor_traits_: LazyLoader
 
     @property
-    def minor_traits(self) -> List["Trait"]:
+    def minor_traits(self) -> list["Trait"]:
         return self.minor_traits_()
 
     major_traits_: LazyLoader
 
     @property
-    def major_traits(self) -> List["Trait"]:
+    def major_traits(self) -> list["Trait"]:
         return self.major_traits_()
 
 
@@ -435,22 +437,22 @@ class SkillFactPrefix(BaseModel):
 
 
 class SkillFact(BaseModel):
-    text: Optional[str]
-    icon: Optional[str]
+    text: str | None
+    icon: str | None
     type: SkillFactType
-    value: Optional[Union[int, bool]]
-    target: Optional[str]
-    status: Optional[str]
-    description: Optional[str]
-    apply_count: Optional[int]
-    duration: Optional[int]
-    field_type: Optional[ComboFieldType]
-    finisher_type: Optional[ComboFinisherType]
-    percent: Optional[int]
-    hit_count: Optional[int]
-    dmg_multiplier: Optional[int]
-    distance: Optional[int]
-    prefix: Optional[SkillFactPrefix]
+    value: int | bool | None
+    target: str | None
+    status: str | None
+    description: str | None
+    apply_count: int | None
+    duration: int | None
+    field_type: ComboFieldType | None
+    finisher_type: ComboFinisherType | None
+    percent: int | None
+    hit_count: int | None
+    dmg_multiplier: int | None
+    distance: int | None
+    prefix: SkillFactPrefix | None
 
 
 class SkillTraitedFact(SkillFact):
@@ -460,60 +462,60 @@ class SkillTraitedFact(SkillFact):
     def requires_trait(self) -> "Trait":
         return self.requires_trait_()
 
-    overrides: Optional[int]  # TODO resolve from facts
+    overrides: int | None  # TODO resolve from facts
 
 
 class Skill(BaseModel):
     id: int
     name: str
-    description: Optional[str]
+    description: str | None
     icon: str
     chat_link: str
-    type: Optional[SkillType]
-    weapon_type: Optional[WeaponType]
-    professions: List[Professions]
+    type: SkillType | None
+    weapon_type: WeaponType | None
+    professions: list[Professions]
     slot: SkillSlot
-    facts: Optional[List[SkillFact]]
-    traited_facts: Optional[List[SkillTraitedFact]]
-    categories: Optional[List[SkillCategories]]
-    attunement: Optional[Attunement]
-    cost: Optional[int]
-    dual_wield: Optional[str]
-    flip_skill_: Optional[LazyLoader]
+    facts: list[SkillFact] | None
+    traited_facts: list[SkillTraitedFact] | None
+    categories: list[SkillCategories] | None
+    attunement: Attunement | None
+    cost: int | None
+    dual_wield: str | None
+    flip_skill_: LazyLoader | None
 
     @property
-    def flip_skill(self) -> Optional["Skill"]:
+    def flip_skill(self) -> "Skill" | None:
         return self.flip_skill_() if self.flip_skill_ is not None else None
 
-    initiative: Optional[int]
-    next_chain_: Optional[LazyLoader]
+    initiative: int | None
+    next_chain_: LazyLoader | None
 
     @property
-    def next_chain(self) -> Optional["Skill"]:
+    def next_chain(self) -> "Skill" | None:
         return self.next_chain_() if self.next_chain_ is not None else None
 
-    prev_chain_: Optional[LazyLoader]
+    prev_chain_: LazyLoader | None
 
     @property
-    def prev_chain(self) -> Optional["Skill"]:
+    def prev_chain(self) -> "Skill" | None:
         return self.prev_chain_ if self.prev_chain_ is not None else None
 
-    transform_skills_: Optional[LazyLoader]
+    transform_skills_: LazyLoader | None
 
     @property
-    def transform_skills(self) -> Optional[List["Skill"]]:
+    def transform_skills(self) -> list["Skill"] | None:
         return self.transform_skills_ if self.transform_skills_ is not None else None
 
-    bundle_skills_: Optional[LazyLoader]
+    bundle_skills_: LazyLoader | None
 
     @property
-    def bundle_skills(self) -> Optional[List["Skill"]]:
+    def bundle_skills(self) -> list["Skill"] | None:
         return self.bundle_skills_ if self.bundle_skills_ is not None else None
 
-    toolbelt_skill_: Optional[LazyLoader]
+    toolbelt_skill_: LazyLoader | None
 
     @property
-    def toolbelt_skill(self) -> Optional["Skill"]:
+    def toolbelt_skill(self) -> "Skill" | None:
         return self.toolbelt_skill_ if self.toolbelt_skill_ is not None else None
 
 
@@ -522,8 +524,8 @@ class TraitSkill(BaseModel):
     name: str
     description: str
     icon: str
-    facts: Optional[List[SkillFact]]
-    traited_facts: Optional[List[SkillTraitedFact]]
+    facts: list[SkillFact] | None
+    traited_facts: list[SkillTraitedFact] | None
 
 
 class Trait(BaseModel):
@@ -539,9 +541,9 @@ class Trait(BaseModel):
 
     tier: TraitTier
     slot: TraitSlot
-    facts: Optional[List[SkillFact]]
-    traited_facts: Optional[List[SkillTraitedFact]]
-    skills: Optional[List[TraitSkill]]
+    facts: list[SkillFact] | None
+    traited_facts: list[SkillTraitedFact] | None
+    skills: list[TraitSkill] | None
 
 
 class Legend(BaseModel):
@@ -567,5 +569,5 @@ class Legend(BaseModel):
     utilities_: LazyLoader
 
     @property
-    def utilities(self) -> List["Skill"]:
+    def utilities(self) -> list["Skill"]:
         return self.utilities_()

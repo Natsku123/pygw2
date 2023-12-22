@@ -1,4 +1,6 @@
-from typing import Optional, List, Union, TYPE_CHECKING
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 from pygw2.core.enums import (
     ColorCategoryHue,
     ColorCategoryRarity,
@@ -23,25 +25,25 @@ class ColorDetails(BaseModel):
     hue: int
     saturation: int
     lightness: int
-    rgb: List[int]
+    rgb: list[int]
 
 
 class Color(BaseModel):
     id: int
     name: str
-    base_rgb: List[int]
+    base_rgb: list[int]
     cloth: ColorDetails
     leather: ColorDetails
     metal: ColorDetails
-    fur: Optional[ColorDetails] = None
-    item_: Optional[LazyLoader]
+    fur: ColorDetails | None = None
+    item_: LazyLoader | None
 
     @property
-    def item(self) -> Optional["Item"]:
+    def item(self) -> "Item" | None:
         return self.item_() if self.item_ is not None else None
 
-    categories: List[
-        Union[ColorCategoryHue, ColorCategoryRarity, ColorCategoryMaterial]
+    categories: list[
+        ColorCategoryHue | ColorCategoryRarity | ColorCategoryMaterial
     ] = []
 
 
@@ -60,7 +62,7 @@ class DungeonPath(BaseModel):
 
 class Dungeon(BaseModel):
     id: str
-    paths: List[DungeonPath]
+    paths: list[DungeonPath]
 
 
 class File(BaseModel):
@@ -92,10 +94,10 @@ class Novelty(BaseModel):
     description: str
     icon: str
     slot: NoveltySlot
-    unlock_item_: Optional[LazyLoader]
+    unlock_item_: LazyLoader | None
 
     @property
-    def unlock_item(self) -> Optional[List["Item"]]:
+    def unlock_item(self) -> list["Item"] | None:
         return self.unlock_item_() if self.unlock_item_ is not None else None
 
 
@@ -106,24 +108,24 @@ class RaidWingEvent(BaseModel):
 
 class RaidWing(BaseModel):
     id: str
-    events: List[RaidWingEvent]
+    events: list[RaidWingEvent]
 
 
 class Raid(BaseModel):
     id: str
-    wings: List[RaidWing]
+    wings: list[RaidWing]
 
 
 class Title(BaseModel):
     id: int
     name: str
-    achievements_: Optional[LazyLoader]
+    achievements_: LazyLoader | None
 
     @property
-    def achievements(self) -> Optional[List["Achievement"]]:
+    def achievements(self) -> list["Achievement"] | None:
         return self.achievements_() if self.achievements_ is not None else None
 
-    ap_required: Optional[int]
+    ap_required: int | None
 
 
 class World(BaseModel):

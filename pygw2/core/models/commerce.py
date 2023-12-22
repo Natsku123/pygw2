@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import datetime
-from typing import Optional, List, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from pygw2.utils import LazyLoader, BaseModel
 
@@ -19,7 +21,7 @@ class DeliveryBoxItem(BaseModel):
 
 class DeliveryBox(BaseModel):
     coins: int
-    items: List[DeliveryBoxItem]
+    items: list[DeliveryBoxItem]
 
 
 class ExchangeRate(BaseModel):
@@ -28,7 +30,7 @@ class ExchangeRate(BaseModel):
 
 
 class Listing(BaseModel):
-    listings: int
+    Listings: int
     unit_price: int
     quantity: int
 
@@ -41,8 +43,8 @@ class ItemListing(BaseModel):
     def item(self) -> "Item":
         return self.item_()
 
-    buys: List[Listing]
-    sells: List[Listing]
+    buys: list[Listing]
+    sells: list[Listing]
 
 
 class PriceInfo(BaseModel):
@@ -75,4 +77,4 @@ class Transaction(BaseModel):
     price: int
     quantity: int
     created: datetime.datetime
-    purchased: Optional[datetime.datetime]
+    purchased: datetime.datetime | None

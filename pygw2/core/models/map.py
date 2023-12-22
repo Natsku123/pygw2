@@ -1,4 +1,4 @@
-from typing import List, Optional
+from __future__ import annotations
 
 from pygw2.utils import BaseModel
 
@@ -6,18 +6,18 @@ from pygw2.utils import BaseModel
 class Continent(BaseModel):
     id: int
     name: str
-    continent_dims: List[int]
+    continent_dims: list[int]
     min_zoom: int
     max_zoom: int
-    floors: List[int]  # TODO parse subendpoints?
+    floors: list[int]  # TODO parse subendpoints?
 
 
 class MapSector(BaseModel):
     id: int
     name: str
     level: int
-    coord: List[int]
-    bounds: List[List[int]]
+    coord: list[int]
+    bounds: list[list[int]]
     chat_link: str
 
 
@@ -27,10 +27,10 @@ class Map(BaseModel):
     min_level: int
     max_level: int
     default_floor: int
-    floors: List[int]  # TODO resolve?
+    floors: list[int]  # TODO resolve?
     region_id: int  # TODO resolve region?
-    region_name: Optional[str]
+    region_name: str | None
     continent_id: int  # TODO resolve continent?
     continent_name: str
-    map_rect: List[List[int]]
-    continent_rect: List[List[int]]
+    map_rect: list[list[int]]
+    continent_rect: list[list[int]]
