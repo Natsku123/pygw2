@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 from pygw2.core.enums import (
     ColorCategoryHue,
     ColorCategoryRarity,
@@ -17,6 +17,9 @@ from pygw2.utils import BaseModel, LazyLoader
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item
     from pygw2.core.models.achievements import Achievement
+else:
+    Item = ForwardRef("Item")
+    Achievement = ForwardRef("Achievement")
 
 
 class ColorDetails(BaseModel):
@@ -39,7 +42,7 @@ class Color(BaseModel):
     item_: LazyLoader | None
 
     @property
-    def item(self) -> "Item" | None:
+    def item(self) -> Item | None:
         return self.item_() if self.item_ is not None else None
 
     categories: list[
@@ -84,7 +87,7 @@ class Mini(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
 
@@ -97,7 +100,7 @@ class Novelty(BaseModel):
     unlock_item_: LazyLoader | None
 
     @property
-    def unlock_item(self) -> list["Item"] | None:
+    def unlock_item(self) -> list[Item] | None:
         return self.unlock_item_() if self.unlock_item_ is not None else None
 
 
@@ -122,7 +125,7 @@ class Title(BaseModel):
     achievements_: LazyLoader | None
 
     @property
-    def achievements(self) -> list["Achievement"] | None:
+    def achievements(self) -> list[Achievement] | None:
         return self.achievements_() if self.achievements_ is not None else None
 
     ap_required: int | None

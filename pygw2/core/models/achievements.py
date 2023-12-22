@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 
@@ -16,6 +16,11 @@ if TYPE_CHECKING:
     from pygw2.core.models.account import ProductAccess, Mastery
     from pygw2.core.models.items import Item
     from pygw2.core.models.misc import Title
+else:
+    ProductAccess = ForwardRef("ProductAccess")
+    Mastery = ForwardRef("Mastery")
+    Item = ForwardRef("Item")
+    Title = ForwardRef("Title")
 
 
 class AchievementCategory(BaseModel):
@@ -27,7 +32,7 @@ class AchievementCategory(BaseModel):
     achievements_: LazyLoader
 
     @property
-    def achievements(self) -> list["Achievement"]:
+    def achievements(self) -> list[Achievement]:
         return self.achievements_()
 
 
@@ -39,7 +44,7 @@ class AchievementGroup(BaseModel):
     categories_: LazyLoader
 
     @property
-    def categories(self) -> list["AchievementCategory"]:
+    def categories(self) -> list[AchievementCategory]:
         return self.categories_()
 
 
@@ -54,19 +59,19 @@ class AchievementReward(BaseModel):
     item_: LazyLoader | None
 
     @property
-    def item(self) -> "Item" | None:
+    def item(self) -> Item | None:
         return self.item_() if self.item_ is not None else None
 
     title_: LazyLoader | None
 
     @property
-    def title(self) -> "Title" | None:
+    def title(self) -> Title | None:
         return self.title_() if self.title_ is not None else None
 
     mastery_: LazyLoader | None
 
     @property
-    def mastery(self) -> "Mastery" | None:
+    def mastery(self) -> Mastery | None:
         return self.mastery_() if self.mastery_ is not None else None
 
     count: int | None
@@ -100,7 +105,7 @@ class AchievementProgress(BaseModel):
     achievement_: LazyLoader
 
     @property
-    def achievement(self) -> "Achievement":
+    def achievement(self) -> Achievement:
         return self.achievement_()
 
     bits: list[int] | None
@@ -121,11 +126,11 @@ class DailyAchievement(BaseModel):
     achievement_: LazyLoader
 
     @property
-    def achievement(self) -> "Achievement":
+    def achievement(self) -> Achievement:
         return self.achievement_()
 
     level: DailyAchievementLevel
-    required_access: "ProductAccess" | None
+    required_access: ProductAccess | None
 
 
 class DailyAchievements(BaseModel):

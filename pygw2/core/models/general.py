@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.core.enums import *
 from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
     from pygw2.core.models.misc import Color
+else:
+    Color = ForwardRef("Color")
+    ArmorSkinDetails = ForwardRef("ArmorSkinDetails")
+    WeaponSkinDetails = ForwardRef("WeaponSkinDetails")
+    GatheringSkinDetails = ForwardRef("GatheringSkinDetails")
+    Foo = ForwardRef("Foo")
 
 
 class Finisher(BaseModel):
@@ -51,7 +57,7 @@ class Skin(BaseModel):
     icon: str
     rarity: str  # TODO same as ItemRarity?
     description: str | None
-    details: "ArmorSkinDetails" | "WeaponSkinDetails" | "GatheringSkinDetails" | "Foo" | None
+    details: ArmorSkinDetails | WeaponSkinDetails | GatheringSkinDetails | Foo | None
 
 
 class DyeSlot(BaseModel):
@@ -59,7 +65,7 @@ class DyeSlot(BaseModel):
     color_: LazyLoader | None
 
     @property
-    def color(self) -> "Color" | None:
+    def color(self) -> Color | None:
         return self.color_() if self.color_ is not None else None
 
     material: DyeSlotMaterial | None

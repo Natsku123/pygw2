@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 
@@ -12,6 +12,13 @@ if TYPE_CHECKING:
     from pygw2.core.models.general import Skin, Finisher
     from pygw2.core.models.misc import Currency
     from pygw2.core.models.wvw import World
+else:
+    Item = ForwardRef("Item")
+    Region = ForwardRef("Region")
+    Mastery = ForwardRef("Mastery")
+    World = ForwardRef("World")
+    Finisher = ForwardRef("Finisher")
+    Currency = ForwardRef("Currency")
 
 
 class VaultSlot(BaseModel):
@@ -19,7 +26,7 @@ class VaultSlot(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     count: int
@@ -27,19 +34,19 @@ class VaultSlot(BaseModel):
     skin_: LazyLoader | None
 
     @property
-    def skin(self) -> "Skin" | None:
+    def skin(self) -> Skin | None:
         return self.skin_() if self.skin_ is not None else None
 
     upgrades_: LazyLoader | None
 
     @property
-    def upgrades(self) -> list["Item"] | None:
+    def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
     infusions_: LazyLoader | None
 
     @property
-    def infusions(self) -> list["Item"] | None:
+    def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
     binding: Binding | None
@@ -65,7 +72,7 @@ class Mastery(BaseModel):
     requirement: str = ""
     order: int = 0
     background: str = ""
-    region: "Region"
+    region: Region
     levels: list[MasteryLevel]
 
 
@@ -74,7 +81,7 @@ class MasteryProgress(BaseModel):
     mastery_: LazyLoader
 
     @property
-    def mastery(self) -> "Mastery":
+    def mastery(self) -> Mastery:
         return self.mastery_()
 
     level: int
@@ -88,7 +95,7 @@ class Account(BaseModel):
     world_: LazyLoader
 
     @property
-    def world(self) -> "World":
+    def world(self) -> World:
         return self.world_()
 
     guilds: list[str] = []
@@ -147,7 +154,7 @@ class UnlockedFinisher(BaseModel):
     finisher_: LazyLoader
 
     @property
-    def finisher(self) -> "Finisher":
+    def finisher(self) -> Finisher:
         return self.finisher_()
 
     permanent: bool
@@ -159,7 +166,7 @@ class SharedInventorySlot(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     count: int
@@ -167,19 +174,19 @@ class SharedInventorySlot(BaseModel):
     skin_: LazyLoader | None
 
     @property
-    def skin(self) -> "Skin" | None:
+    def skin(self) -> Skin | None:
         return self.skin_() if self.skin_ is not None else None
 
     upgrades_: LazyLoader | None
 
     @property
-    def upgrades(self) -> list["Item"] | None:
+    def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
     infusions_: LazyLoader | None
 
     @property
-    def infusions(self) -> list["Item"] | None:
+    def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
     binding: Binding | None
@@ -190,7 +197,7 @@ class StorageMaterial(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     category: int
@@ -202,7 +209,7 @@ class WalletCurrency(BaseModel):
     currency_: LazyLoader
 
     @property
-    def currency(self) -> "Currency":
+    def currency(self) -> Currency:
         return self.currency_()
 
     value: int
@@ -214,7 +221,7 @@ class Legendary(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
 
@@ -224,7 +231,7 @@ class OwnedLegendary(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     armory_: LazyLoader

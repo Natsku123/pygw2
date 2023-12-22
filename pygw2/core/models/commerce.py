@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item
+else:
+    Item = ForwardRef("Item")
 
 
 class DeliveryBoxItem(BaseModel):
@@ -15,7 +17,7 @@ class DeliveryBoxItem(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
 
@@ -40,7 +42,7 @@ class ItemListing(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     buys: list[Listing]
@@ -57,7 +59,7 @@ class Price(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     whitelisted: bool
@@ -71,7 +73,7 @@ class Transaction(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     price: int

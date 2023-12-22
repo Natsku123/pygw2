@@ -1,32 +1,36 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 from pygw2.core.enums import PvpRatingType, PvpDivisionFlags
 
 if TYPE_CHECKING:
     from pygw2.core.models.items import Item
+else:
+    Item = ForwardRef("Item")
+    PvpAmulet = ForwardRef("PvpAmulet")
+    PvpSeason = ForwardRef("PvpSeason")
 
 
 class PvPEquipment(BaseModel):
     amulet_: LazyLoader | None
 
     @property
-    def amulet(self) -> "PvpAmulet" | None:
+    def amulet(self) -> PvpAmulet | None:
         return self.amulet_() if self.amulet_ is not None else None
 
     rune_: LazyLoader | None
 
     @property
-    def rune(self) -> "Item" | None:
+    def rune(self) -> Item | None:
         return self.rune_() if self.rune_ is not None else None
 
     sigils_: LazyLoader | None
 
     @property
-    def sigils(self) -> list["Item"]:
+    def sigils(self) -> list[Item]:
         return self.sigils_() if self.sigils_ is not None else None
 
 
@@ -103,7 +107,7 @@ class PvpGame(BaseModel):
     season_: LazyLoader | None
 
     @property
-    def season(self) -> "PvpSeason" | None:
+    def season(self) -> PvpSeason | None:
         return self.season_() if self.season_ else None
 
 
@@ -203,7 +207,7 @@ class PvpHeroSkin(BaseModel):
     unlock_items_: LazyLoader | None
 
     @property
-    def unlock_items(self) -> list["Item"] | "Item":
+    def unlock_items(self) -> list[Item] | Item:
         return self.unlock_items_() if self.unlock_items_ is not None else None
 
 

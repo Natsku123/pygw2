@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ForwardRef
 
 from pygw2.core.enums import (
     GuildEmblemFlags,
@@ -20,6 +20,14 @@ from pygw2.utils import BaseModel, LazyLoader
 if TYPE_CHECKING:
     from pygw2.core.models.pvp import PvpScores
     from pygw2.core.models.items import Item, Recipe
+else:
+    PvpScores = ForwardRef("PvpScores")
+    Item = ForwardRef("Item")
+    Recipe = ForwardRef("Recipe")
+    GuildUpgrade = ForwardRef("GuildUpgrade")
+    GuildPvpWinLoss = ForwardRef("GuildPvpWinLoss")
+    GuildPvpLadderStats = ForwardRef("GuildPvpLadderStats")
+    GuildPvpGame = ForwardRef("GuildPvpGame")
 
 
 class GuildEmblemBackground(BaseModel):
@@ -71,7 +79,7 @@ class GuildUpgradeCost(BaseModel):
     item_: LazyLoader | None
 
     @property
-    def item(self) -> "Item" | None:
+    def item(self) -> Item | None:
         return self.item_() if self.item_ else None
 
 
@@ -87,7 +95,7 @@ class GuildUpgrade(BaseModel):
     prerequisites_: LazyLoader | None
 
     @property
-    def prerequisites(self) -> list["GuildUpgrade"]:
+    def prerequisites(self) -> list[GuildUpgrade]:
         return self.prerequisites_() if self.prerequisites_ else []
 
     bag_max_items: int | None
@@ -109,7 +117,7 @@ class GuildLogEntry(BaseModel):
     item_: LazyLoader | None
 
     @property
-    def item(self) -> "Item" | None:
+    def item(self) -> Item | None:
         return self.item_() if self.item_ else None
 
     operation: GuildStashOperation | None
@@ -121,14 +129,14 @@ class GuildLogEntry(BaseModel):
     upgrade_: LazyLoader | None
 
     @property
-    def upgrade(self) -> "GuildUpgrade" | None:
+    def upgrade(self) -> GuildUpgrade | None:
         return self.upgrade_() if self.upgrade_ else None
 
     recipe_id: int | None
     recipe_: LazyLoader | None
 
     @property
-    def recipe(self) -> "Recipe" | None:
+    def recipe(self) -> Recipe | None:
         return self.recipe_() if self.recipe_ else None
 
 
@@ -155,7 +163,7 @@ class GuildStashSlot(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     count: int
@@ -166,7 +174,7 @@ class GuildStash(BaseModel):
     upgrade_: LazyLoader
 
     @property
-    def upgrade(self) -> "GuildUpgrade":
+    def upgrade(self) -> GuildUpgrade:
         return self.upgrade_()
 
     size: int
@@ -180,7 +188,7 @@ class GuildTreasuryNeeded(BaseModel):
     upgrade_: LazyLoader
 
     @property
-    def upgrade(self) -> "GuildUpgrade":
+    def upgrade(self) -> GuildUpgrade:
         return self.upgrade_()
 
     count: int
@@ -191,7 +199,7 @@ class GuildTreasury(BaseModel):
     item_: LazyLoader
 
     @property
-    def item(self) -> "Item":
+    def item(self) -> Item:
         return self.item_()
 
     count: int
@@ -214,9 +222,9 @@ class GuildTeam(BaseModel):
     id: int
     members: list
     name: str
-    aggregate: "GuildPvpWinLoss"
-    ladders: "GuildPvpLadderStats"
-    games: list["GuildPvpGame"]
+    aggregate: GuildPvpWinLoss
+    ladders: GuildPvpLadderStats
+    games: list[GuildPvpGame]
     seasons: list[GuildTeamSeason] | None
 
 
@@ -242,7 +250,7 @@ class GuildPvpGame(BaseModel):
     team: str
     rating_type: PvpRatingType | None
     rating_change: int | None
-    scores: "PvpScores"
+    scores: PvpScores
 
 
 Guild.model_rebuild()
