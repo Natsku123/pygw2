@@ -60,22 +60,22 @@ class WvWMapObjectives(BaseModel):
     type: WvWObjectiveTypes
     owner: WvWTeams
     last_flipped: datetime.datetime
-    claimed_by_: LazyLoader | None
+    claimed_by_: LazyLoader | None = None
 
     @property
     def claimed_by(self) -> Guild | None:
         return self.claimed_by_() if self.claimed_by_ else None
 
-    claimed_at: datetime.datetime | None
+    claimed_at: datetime.datetime | None = None
     points_tick: int
     points_capture: int
-    guild_upgrades_: LazyLoader | None
+    guild_upgrades_: LazyLoader | None = None
 
     @property
     def guild_upgrades(self) -> list[GuildUpgrade] | None:
         return self.guild_upgrades_() if self.guild_upgrades_ else None
 
-    yaks_delivered: int | None
+    yaks_delivered: int | None = None
 
 
 class WvWMapBonus(BaseModel):
@@ -86,11 +86,11 @@ class WvWMapBonus(BaseModel):
 class WvWMatchMap(BaseModel):
     id: int
     type: WvWMapTypes
-    scores: WvWStats | None
-    kills: WvWStats | None
-    deaths: WvWStats | None
-    objectives: list[WvWMapObjectives] | None
-    bonuses: list[WvWMapBonus] | None
+    scores: WvWStats | None = None
+    kills: WvWStats | None = None
+    deaths: WvWStats | None = None
+    objectives: list[WvWMapObjectives] | None = None
+    bonuses: list[WvWMapBonus] | None = None
 
 
 class WvWMapScores(BaseModel):
@@ -106,16 +106,16 @@ class WvWSkirmish(BaseModel):
 
 class WvWMatch(BaseModel):
     id: str
-    start_time: datetime.datetime | None
-    end_time: datetime.datetime | None
-    scores: WvWStats | None
-    worlds: WvWMatchWorlds | None
-    all_worlds: WvWMatchWorlds | None
-    deaths: WvWStats | None
-    kills: WvWStats | None
-    victory_points: WvWStats | None
-    maps: list[WvWMatchMap] | None
-    skirmishes: list[WvWSkirmish] | None
+    start_time: datetime.datetime | None = None
+    end_time: datetime.datetime | None = None
+    scores: WvWStats | None = None
+    worlds: WvWMatchWorlds | None = None
+    all_worlds: WvWMatchWorlds | None = None
+    deaths: WvWStats | None = None
+    kills: WvWStats | None = None
+    victory_points: WvWStats | None = None
+    maps: list[WvWMatchMap] | None = None
+    skirmishes: list[WvWSkirmish] | None = None
 
 
 class WvWUpgradeTierUpgrade(BaseModel):
@@ -140,16 +140,16 @@ class WvWObjective(BaseModel):
     name: str
     type: WvWObjectiveTypes
     sector_id: int
-    sector: MapSector | None
+    sector: MapSector | None = None
     map_id: int
-    map: Map | None
+    map: Map | None = None
     map_type: WvWMapTypes
-    coord: list[int] | None
-    label_coord: list[int] | None
-    marker: str | None
+    coord: list[float] | None = None
+    label_coord: list[float] | None = None
+    marker: str | None = None
     chat_link: str
-    upgrade_id: int | None
-    upgrade: WvWUpgrade | None
+    upgrade_id: int | None = None
+    upgrade: WvWUpgrade | None = None
 
 
 class WvWRank(BaseModel):

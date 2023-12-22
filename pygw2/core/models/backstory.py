@@ -21,8 +21,8 @@ class BiographyAnswer(BaseModel):
     def question(self) -> BiographyQuestion:
         return self.question_()
 
-    professions: list[Professions] | None
-    races: list[Races] | None
+    professions: list[Professions] | None = None
+    races: list[Races] | None = None
 
 
 class BiographyQuestion(BaseModel):
@@ -36,8 +36,8 @@ class BiographyQuestion(BaseModel):
         return self.answers_()
 
     order: int
-    races: list[Races] | None
-    professions: list[Professions] | None
+    races: list[Races] | None = None
+    professions: list[Professions] | None = None
 
 
 class StoryChapter(BaseModel):
@@ -58,8 +58,8 @@ class Story(BaseModel):
     level: int
     order: int
     chapters: list[StoryChapter]
-    races: list[Races] | None
-    flags: list[StoryFlags] | None
+    races: list[Races] | None = None
+    flags: list[StoryFlags] | None = None
 
 
 class Season(BaseModel):

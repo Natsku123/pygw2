@@ -16,8 +16,8 @@ class MapSector(BaseModel):
     id: int
     name: str
     level: int
-    coord: list[int]
-    bounds: list[list[int]]
+    coord: list[float]
+    bounds: list[list[float]]
     chat_link: str
 
 
@@ -29,7 +29,7 @@ class Map(BaseModel):
     default_floor: int
     floors: list[int]  # TODO resolve?
     region_id: int  # TODO resolve region?
-    region_name: str | None
+    region_name: str | None = None
     continent_id: int  # TODO resolve continent?
     continent_name: str
     map_rect: list[list[int]]

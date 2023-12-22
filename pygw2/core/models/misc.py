@@ -23,12 +23,12 @@ else:
 
 
 class ColorDetails(BaseModel):
-    brightness: int
-    contrast: int
-    hue: int
-    saturation: int
-    lightness: int
-    rgb: list[int]
+    brightness: float
+    contrast: float
+    hue: float
+    saturation: float
+    lightness: float
+    rgb: list[float]
 
 
 class Color(BaseModel):
@@ -39,7 +39,7 @@ class Color(BaseModel):
     leather: ColorDetails
     metal: ColorDetails
     fur: ColorDetails | None = None
-    item_: LazyLoader | None
+    item_: LazyLoader | None = None
 
     @property
     def item(self) -> Item | None:
@@ -97,7 +97,7 @@ class Novelty(BaseModel):
     description: str
     icon: str
     slot: NoveltySlot
-    unlock_item_: LazyLoader | None
+    unlock_item_: LazyLoader | None = None
 
     @property
     def unlock_item(self) -> list[Item] | None:
@@ -122,13 +122,13 @@ class Raid(BaseModel):
 class Title(BaseModel):
     id: int
     name: str
-    achievements_: LazyLoader | None
+    achievements_: LazyLoader | None = None
 
     @property
     def achievements(self) -> list[Achievement] | None:
         return self.achievements_() if self.achievements_ is not None else None
 
-    ap_required: int | None
+    ap_required: int | None = None
 
 
 class World(BaseModel):

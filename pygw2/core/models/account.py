@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     from pygw2.core.models.wvw import World
 else:
     Item = ForwardRef("Item")
-    Region = ForwardRef("Region")
     Mastery = ForwardRef("Mastery")
     World = ForwardRef("World")
     Finisher = ForwardRef("Finisher")
@@ -30,32 +29,32 @@ class VaultSlot(BaseModel):
         return self.item_()
 
     count: int
-    charges: int | None
-    skin_: LazyLoader | None
+    charges: int | None = None
+    skin_: LazyLoader | None = None
 
     @property
     def skin(self) -> Skin | None:
         return self.skin_() if self.skin_ is not None else None
 
-    upgrades_: LazyLoader | None
+    upgrades_: LazyLoader | None = None
 
     @property
     def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    infusions_: LazyLoader | None
+    infusions_: LazyLoader | None = None
 
     @property
     def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
-    binding: Binding | None
-    bound_to: str | None
+    binding: Binding | None = None
+    bound_to: str | None = None
 
 
 class Coins(BaseModel):
     count: int
-    type: str | None
+    type: str | None = None
 
 
 class MasteryLevel(BaseModel):
@@ -129,7 +128,7 @@ class Pet(BaseModel):
 
 class HomeCat(BaseModel):
     id: int
-    hint: str | None
+    hint: str | None = None
 
 
 class HomeNode(BaseModel):
@@ -158,7 +157,7 @@ class UnlockedFinisher(BaseModel):
         return self.finisher_()
 
     permanent: bool
-    quantity: int | None
+    quantity: int | None = None
 
 
 class SharedInventorySlot(BaseModel):
@@ -170,26 +169,26 @@ class SharedInventorySlot(BaseModel):
         return self.item_()
 
     count: int
-    charges: int | None
-    skin_: LazyLoader | None
+    charges: int | None = None
+    skin_: LazyLoader | None = None
 
     @property
     def skin(self) -> Skin | None:
         return self.skin_() if self.skin_ is not None else None
 
-    upgrades_: LazyLoader | None
+    upgrades_: LazyLoader | None = None
 
     @property
     def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    infusions_: LazyLoader | None
+    infusions_: LazyLoader | None = None
 
     @property
     def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
-    binding: Binding | None
+    binding: Binding | None = None
 
 
 class StorageMaterial(BaseModel):
@@ -250,6 +249,6 @@ class TokenInfo(BaseModel):
     name: str
     permissions: list[str]
     type: TokenTypes
-    expires_at: str | None
-    issued_at: str | None
-    urls: list[str] | None
+    expires_at: str | None = None
+    issued_at: str | None = None
+    urls: list[str] | None = None

@@ -50,7 +50,7 @@ class Guild(BaseModel):
     level: int
     motd: str
     influence: int
-    aetherium: str
+    aetherium: int
     favor: int
     member_count: int
     member_capacity: int
@@ -73,10 +73,10 @@ class GuildPermission(BaseModel):
 
 class GuildUpgradeCost(BaseModel):
     type: GuildUpgradeCostType
-    name: str | None
+    name: str | None = None
     count: int
-    item_id: int | None
-    item_: LazyLoader | None
+    item_id: int | None = None
+    item_: LazyLoader | None = None
 
     @property
     def item(self) -> Item | None:
@@ -92,48 +92,48 @@ class GuildUpgrade(BaseModel):
     build_time: int
     required_level: int
     experience: int
-    prerequisites_: LazyLoader | None
+    prerequisites_: LazyLoader | None = None
 
     @property
     def prerequisites(self) -> list[GuildUpgrade]:
         return self.prerequisites_() if self.prerequisites_ else []
 
-    bag_max_items: int | None
-    bag_max_coins: int | None
+    bag_max_items: int | None = None
+    bag_max_coins: int | None = None
     costs: list[GuildUpgradeCost]
 
 
 class GuildLogEntry(BaseModel):
     id: int
     time: datetime.datetime
-    user: str | None
+    user: str | None = None
     type: GuildLogEntryType
-    invited_by: str | None
-    kicked_by: str | None
-    changed_by: str | None
-    old_rank: str | None
-    new_rank: str | None
-    item_id: int | None
-    item_: LazyLoader | None
+    invited_by: str | None = None
+    kicked_by: str | None = None
+    changed_by: str | None = None
+    old_rank: str | None = None
+    new_rank: str | None = None
+    item_id: int | None = None
+    item_: LazyLoader | None = None
 
     @property
     def item(self) -> Item | None:
         return self.item_() if self.item_ else None
 
-    operation: GuildStashOperation | None
-    count: int | None
-    coins: int | None
-    motd: str | None
-    action: GuildUpgradeAction | None
-    upgrade_id: int | None
-    upgrade_: LazyLoader | None
+    operation: GuildStashOperation | None = None
+    count: int | None = None
+    coins: int | None = None
+    motd: str | None = None
+    action: GuildUpgradeAction | None = None
+    upgrade_id: int | None = None
+    upgrade_: LazyLoader | None = None
 
     @property
     def upgrade(self) -> GuildUpgrade | None:
         return self.upgrade_() if self.upgrade_ else None
 
-    recipe_id: int | None
-    recipe_: LazyLoader | None
+    recipe_id: int | None = None
+    recipe_: LazyLoader | None = None
 
     @property
     def recipe(self) -> Recipe | None:
@@ -179,7 +179,7 @@ class GuildStash(BaseModel):
 
     size: int
     coins: int
-    note: str | None
+    note: str | None = None
     inventory: list[GuildStashSlot | None]
 
 
@@ -225,7 +225,7 @@ class GuildTeam(BaseModel):
     aggregate: GuildPvpWinLoss
     ladders: GuildPvpLadderStats
     games: list[GuildPvpGame]
-    seasons: list[GuildTeamSeason] | None
+    seasons: list[GuildTeamSeason] | None = None
 
 
 class GuildPvpWinLoss(BaseModel):
@@ -237,8 +237,8 @@ class GuildPvpWinLoss(BaseModel):
 
 
 class GuildPvpLadderStats(BaseModel):
-    ranked: GuildPvpWinLoss | None
-    unranked: GuildPvpWinLoss | None
+    ranked: GuildPvpWinLoss | None = None
+    unranked: GuildPvpWinLoss | None = None
 
 
 class GuildPvpGame(BaseModel):
@@ -248,8 +248,8 @@ class GuildPvpGame(BaseModel):
     ended: datetime.datetime
     result: str
     team: str
-    rating_type: PvpRatingType | None
-    rating_change: int | None
+    rating_type: PvpRatingType | None = None
+    rating_change: int | None = None
     scores: PvpScores
 
 

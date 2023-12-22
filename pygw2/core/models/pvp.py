@@ -15,19 +15,19 @@ else:
 
 
 class PvPEquipment(BaseModel):
-    amulet_: LazyLoader | None
+    amulet_: LazyLoader | None = None
 
     @property
     def amulet(self) -> PvpAmulet | None:
         return self.amulet_() if self.amulet_ is not None else None
 
-    rune_: LazyLoader | None
+    rune_: LazyLoader | None = None
 
     @property
     def rune(self) -> Item | None:
         return self.rune_() if self.rune_ is not None else None
 
-    sigils_: LazyLoader | None
+    sigils_: LazyLoader | None = None
 
     @property
     def sigils(self) -> list[Item]:
@@ -35,16 +35,16 @@ class PvPEquipment(BaseModel):
 
 
 class PvpAttributes(BaseModel):
-    AgonyResistance: float | None
-    BoonDuration: float | None
-    ConditionDamage: float | None
-    ConditionDuration: float | None
-    CritDamage: float | None
-    Healing: float | None
-    Power: float | None
-    Precision: float | None
-    Toughness: float | None
-    Vitality: float | None
+    AgonyResistance: float | None = None
+    BoonDuration: float | None = None
+    ConditionDamage: float | None = None
+    ConditionDuration: float | None = None
+    CritDamage: float | None = None
+    Healing: float | None = None
+    Power: float | None = None
+    Precision: float | None = None
+    Toughness: float | None = None
+    Vitality: float | None = None
 
 
 class PvpAmulet(BaseModel):
@@ -63,15 +63,15 @@ class PvpWinLoss(BaseModel):
 
 
 class PvpStatsProfessions(BaseModel):
-    elementalist: PvpWinLoss | None
-    engineer: PvpWinLoss | None
-    guardian: PvpWinLoss | None
-    mesmer: PvpWinLoss | None
-    necromancer: PvpWinLoss | None
-    ranger: PvpWinLoss | None
-    revenant: PvpWinLoss | None
-    thief: PvpWinLoss | None
-    warrior: PvpWinLoss | None
+    elementalist: PvpWinLoss | None = None
+    engineer: PvpWinLoss | None = None
+    guardian: PvpWinLoss | None = None
+    mesmer: PvpWinLoss | None = None
+    necromancer: PvpWinLoss | None = None
+    ranger: PvpWinLoss | None = None
+    revenant: PvpWinLoss | None = None
+    thief: PvpWinLoss | None = None
+    warrior: PvpWinLoss | None = None
 
 
 class PvpLadderStats(BaseModel):
@@ -100,11 +100,11 @@ class PvpGame(BaseModel):
     ended: datetime.datetime
     result: str
     team: str
-    profession: str | None
+    profession: str | None = None
     scores: PvpScores
-    rating_type: PvpRatingType | None
-    rating_change: int | None
-    season_: LazyLoader | None
+    rating_type: PvpRatingType | None = None
+    rating_change: int | None = None
+    season_: LazyLoader | None = None
 
     @property
     def season(self) -> PvpSeason | None:
@@ -146,7 +146,7 @@ class PvpLeaderboardsLadderSettingsTier(BaseModel):
 
 class PvpLeaderboardsLadderSettings(BaseModel):
     name: str
-    duration: int | None
+    duration: int | None = None
     scoring: str
     tiers: list[PvpLeaderboardsLadderSettingsTier]
 
@@ -165,7 +165,7 @@ class PvpLeaderboardsLadder(BaseModel):
 
 
 class PvpLeaderboards(BaseModel):
-    ladder: PvpLeaderboardsLadder | None
+    ladder: PvpLeaderboardsLadder | None = None
 
 
 class PvpSeason(BaseModel):
@@ -186,9 +186,9 @@ class PvpLeaderboardScore(BaseModel):
 class PvpLeaderboard(BaseModel):
     name: str
     rank: int
-    id: str | None
-    team: str | None
-    team_id: str | None
+    id: str | None = None
+    team: str | None = None
+    team_id: str | None = None
     date: datetime.datetime
     scores: list[PvpLeaderboardScore]
 
@@ -204,7 +204,7 @@ class PvpHeroSkin(BaseModel):
     name: str
     icon: str
     default: bool
-    unlock_items_: LazyLoader | None
+    unlock_items_: LazyLoader | None = None
 
     @property
     def unlock_items(self) -> list[Item] | Item:

@@ -32,7 +32,7 @@ class ExchangeRate(BaseModel):
 
 
 class Listing(BaseModel):
-    Listings: int
+    listings: int
     unit_price: int
     quantity: int
 
@@ -79,4 +79,4 @@ class Transaction(BaseModel):
     price: int
     quantity: int
     created: datetime.datetime
-    purchased: datetime.datetime | None
+    purchased: datetime.datetime | None = None

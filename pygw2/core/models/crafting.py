@@ -32,6 +32,6 @@ class Recipe(BaseModel):
     min_rating: int
     flags: list[RecipeFlag]
     ingredients: list[RecipeIngredient]
-    guild_ingredients: list[RecipeGuildIngredient] | None
-    output_upgrade_id: int | None  # TODO resolve against guild upgrades
+    guild_ingredients: list[RecipeGuildIngredient] | None = None
+    output_upgrade_id: int | None = None  # TODO resolve against guild upgrades
     chat_link: str

@@ -55,38 +55,38 @@ class AchievementTier(BaseModel):
 
 class AchievementReward(BaseModel):
     type: AchievementRewardType
-    id: int | None
-    item_: LazyLoader | None
+    id: int | None = None
+    item_: LazyLoader | None = None
 
     @property
     def item(self) -> Item | None:
         return self.item_() if self.item_ is not None else None
 
-    title_: LazyLoader | None
+    title_: LazyLoader | None = None
 
     @property
     def title(self) -> Title | None:
         return self.title_() if self.title_ is not None else None
 
-    mastery_: LazyLoader | None
+    mastery_: LazyLoader | None = None
 
     @property
     def mastery(self) -> Mastery | None:
         return self.mastery_() if self.mastery_ is not None else None
 
-    count: int | None
-    region: Region | None
+    count: int | None = None
+    region: Region | None = None
 
 
 class AchievementBits(BaseModel):
     type: AchievementBitsType
-    id: int | None
-    text: str | None
+    id: int | None = None
+    text: str | None = None
 
 
 class Achievement(BaseModel):
     id: int
-    icon: str | None
+    icon: str | None = None
     name: str
     description: str
     requirement: str
@@ -95,9 +95,9 @@ class Achievement(BaseModel):
     flags: list[AchievementFlag]
     tiers: list[AchievementTier]
     prerequisites: list[int] | None = []  # TODO resolve achievements
-    rewards: list[AchievementReward] | None
-    bits: list[AchievementBits] | None
-    point_cap: int | None
+    rewards: list[AchievementReward] | None = None
+    bits: list[AchievementBits] | None = None
+    point_cap: int | None = None
 
 
 class AchievementProgress(BaseModel):
@@ -108,11 +108,11 @@ class AchievementProgress(BaseModel):
     def achievement(self) -> Achievement:
         return self.achievement_()
 
-    bits: list[int] | None
-    current: int | None
-    max: int | None
+    bits: list[int] | None = None
+    current: int | None = None
+    max: int | None = None
     done: bool
-    repeated: int | None
+    repeated: int | None = None
     unlocked: bool | None = True
 
 
@@ -130,7 +130,7 @@ class DailyAchievement(BaseModel):
         return self.achievement_()
 
     level: DailyAchievementLevel
-    required_access: ProductAccess | None
+    required_access: ProductAccess | None = None
 
 
 class DailyAchievements(BaseModel):

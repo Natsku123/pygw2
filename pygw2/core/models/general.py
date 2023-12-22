@@ -56,19 +56,21 @@ class Skin(BaseModel):
     restrictions: list[Races]
     icon: str
     rarity: str  # TODO same as ItemRarity?
-    description: str | None
-    details: ArmorSkinDetails | WeaponSkinDetails | GatheringSkinDetails | Foo | None
+    description: str | None = None
+    details: ArmorSkinDetails | WeaponSkinDetails | GatheringSkinDetails | Foo | None = (
+        None
+    )
 
 
 class DyeSlot(BaseModel):
-    color_id: int | None
-    color_: LazyLoader | None
+    color_id: int | None = None
+    color_: LazyLoader | None = None
 
     @property
     def color(self) -> Color | None:
         return self.color_() if self.color_ is not None else None
 
-    material: DyeSlotMaterial | None
+    material: DyeSlotMaterial | None = None
 
 
 class SkinDyeSlots(BaseModel):
@@ -79,12 +81,12 @@ class SkinDyeSlots(BaseModel):
 class ArmorSkinDetails(BaseModel):
     type: ArmorSlot
     weight_class: WeightClass
-    dye_slots: SkinDyeSlots | None
+    dye_slots: SkinDyeSlots | None = None
 
 
 class WeaponSkinDetails(BaseModel):
     type: WeaponType
-    damage_type: DamageType | None
+    damage_type: DamageType | None = None
 
 
 class GatheringSkinDetails(BaseModel):

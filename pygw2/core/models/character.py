@@ -59,27 +59,27 @@ class Stats(BaseModel):
 class Equipment(BaseModel):
     id: int
     item_: LazyLoader
-    tabs: list[int] | None
+    tabs: list[int] | None = None
 
     @property
     def item(self) -> Item:
         return self.item_()
 
-    slot: EquipmentSlot | None
+    slot: EquipmentSlot | None = None
     location: EquipmentLocation
-    infusions_: LazyLoader | None
+    infusions_: LazyLoader | None = None
 
     @property
     def infusions(self) -> list[Item]:
         return self.infusions_() if self.infusions_ is not None else None
 
-    upgrades_: LazyLoader | None
+    upgrades_: LazyLoader | None = None
 
     @property
     def upgrades(self) -> list[Item]:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    skin_: LazyLoader | None
+    skin_: LazyLoader | None = None
 
     @property
     def skin(self) -> list[Skin]:
@@ -89,7 +89,7 @@ class Equipment(BaseModel):
     binding: Binding | None = None
     charges: int | None = None
     bound_to: str | None = None
-    dyes_: LazyLoader | None
+    dyes_: LazyLoader | None = None
 
     @property
     def dyes(self) -> list[Color]:
@@ -105,19 +105,19 @@ class ItemInventory(BaseModel):
         return self.item_()
 
     count: int
-    infusions_: LazyLoader | None
+    infusions_: LazyLoader | None = None
 
     @property
     def infusions(self) -> list[Item]:
         return self.infusions_() if self.infusions_ is not None else None
 
-    upgrades_: LazyLoader | None
+    upgrades_: LazyLoader | None = None
 
     @property
     def upgrades(self) -> list[Item]:
         return self.upgrades_() if self.upgrades_ is not None else None
 
-    skin_: LazyLoader | None
+    skin_: LazyLoader | None = None
 
     @property
     def skin(self) -> list[Skin]:
@@ -141,25 +141,25 @@ class Bag(BaseModel):
 
 
 class SkillsBase(BaseModel):
-    heal_: LazyLoader | None
+    heal_: LazyLoader | None = None
 
     @property
     def heal(self) -> Skill:
         return self.heal_() if self.heal_ else None
 
-    utilities_: LazyLoader | None
+    utilities_: LazyLoader | None = None
 
     @property
     def utilities(self) -> list[Skill]:
         return self.utilities_() if self.utilities_ else None
 
-    elite_: LazyLoader | None
+    elite_: LazyLoader | None = None
 
     @property
     def elite(self):
         return self.elite_() if self.elite_ else None
 
-    legends_: LazyLoader | None
+    legends_: LazyLoader | None = None
 
     @property
     def legends(self):
@@ -179,14 +179,14 @@ class Skills(BaseModel):
 
 
 class SpecializationBase(BaseModel):
-    id: int | None
-    specialization_: LazyLoader | None
+    id: int | None = None
+    specialization_: LazyLoader | None = None
 
     @property
     def specialization(self) -> Specialization:
         return self.specialization_() if self.specialization_ else None
 
-    traits_: LazyLoader | None
+    traits_: LazyLoader | None = None
 
     @property
     def traits(self) -> list[Trait]:
@@ -315,15 +315,15 @@ class CharacterWvWAbility(BaseModel):
 class ProfessionTrainingTrack(BaseModel):
     cost: int = 0
     type: ProfessionTrainingTrackType
-    skill_id: int | None
-    skill_: LazyLoader | None
+    skill_id: int | None = None
+    skill_: LazyLoader | None = None
 
     @property
     def skill(self) -> Skill | None:
         return self.skill_() if self.skill_ is not None else None
 
-    trait_id: int | None
-    trait_: LazyLoader | None
+    trait_id: int | None = None
+    trait_: LazyLoader | None = None
 
     @property
     def trait(self) -> Trait | None:
@@ -358,14 +358,14 @@ class WeaponSkill(BaseModel):
         return self.skill_()
 
     slot: SkillSlot
-    offhand: str | None
-    attunement: str | None
-    source: str | None
+    offhand: str | None = None
+    attunement: str | None = None
+    source: str | None = None
 
 
 class ProfessionWeapon(BaseModel):
-    flag: list[ProfessionWeaponFlag] | None
-    specialization_: LazyLoader | None
+    flag: list[ProfessionWeaponFlag] | None = None
+    specialization_: LazyLoader | None = None
 
     @property
     def specialization(self) -> Specialization | None:
@@ -375,25 +375,25 @@ class ProfessionWeapon(BaseModel):
 
 
 class ProfessionWeapons(BaseModel):
-    Axe: ProfessionWeapon | None
-    Dagger: ProfessionWeapon | None
-    Mace: ProfessionWeapon | None
-    Pistol: ProfessionWeapon | None
-    Sword: ProfessionWeapon | None
-    Scepter: ProfessionWeapon | None
-    Focus: ProfessionWeapon | None
-    Shield: ProfessionWeapon | None
-    Torch: ProfessionWeapon | None
-    Warhorn: ProfessionWeapon | None
-    Greatsword: ProfessionWeapon | None
-    Hammer: ProfessionWeapon | None
-    Longbow: ProfessionWeapon | None
-    Rifle: ProfessionWeapon | None
-    Shortbow: ProfessionWeapon | None
-    Staff: ProfessionWeapon | None
-    Speargun: ProfessionWeapon | None
-    Spear: ProfessionWeapon | None
-    Trident: ProfessionWeapon | None
+    Axe: ProfessionWeapon | None = None
+    Dagger: ProfessionWeapon | None = None
+    Mace: ProfessionWeapon | None = None
+    Pistol: ProfessionWeapon | None = None
+    Sword: ProfessionWeapon | None = None
+    Scepter: ProfessionWeapon | None = None
+    Focus: ProfessionWeapon | None = None
+    Shield: ProfessionWeapon | None = None
+    Torch: ProfessionWeapon | None = None
+    Warhorn: ProfessionWeapon | None = None
+    Greatsword: ProfessionWeapon | None = None
+    Hammer: ProfessionWeapon | None = None
+    Longbow: ProfessionWeapon | None = None
+    Rifle: ProfessionWeapon | None = None
+    Shortbow: ProfessionWeapon | None = None
+    Staff: ProfessionWeapon | None = None
+    Speargun: ProfessionWeapon | None = None
+    Spear: ProfessionWeapon | None = None
+    Trident: ProfessionWeapon | None = None
 
 
 class Profession(BaseModel):
@@ -448,22 +448,22 @@ class SkillFactPrefix(BaseModel):
 
 
 class SkillFact(BaseModel):
-    text: str | None
-    icon: str | None
+    text: str | None = None
+    icon: str | None = None
     type: SkillFactType
-    value: int | bool | None
-    target: str | None
-    status: str | None
-    description: str | None
-    apply_count: int | None
-    duration: int | None
-    field_type: ComboFieldType | None
-    finisher_type: ComboFinisherType | None
-    percent: int | None
-    hit_count: int | None
-    dmg_multiplier: int | None
-    distance: int | None
-    prefix: SkillFactPrefix | None
+    value: int | bool | None = None
+    target: str | None = None
+    status: str | None = None
+    description: str | None = None
+    apply_count: int | None = None
+    duration: int | None = None
+    field_type: ComboFieldType | None = None
+    finisher_type: ComboFinisherType | None = None
+    percent: int | None = None
+    hit_count: int | None = None
+    dmg_multiplier: float | None = None
+    distance: int | None = None
+    prefix: SkillFactPrefix | None = None
 
 
 class SkillTraitedFact(SkillFact):
@@ -479,51 +479,51 @@ class SkillTraitedFact(SkillFact):
 class Skill(BaseModel):
     id: int
     name: str
-    description: str | None
+    description: str | None = None
     icon: str
     chat_link: str
-    type: SkillType | None
-    weapon_type: WeaponType | None
+    type: SkillType | None = None
+    weapon_type: WeaponType | None = None
     professions: list[Professions]
     slot: SkillSlot
-    facts: list[SkillFact] | None
-    traited_facts: list[SkillTraitedFact] | None
-    categories: list[SkillCategories] | None
-    attunement: Attunement | None
-    cost: int | None
-    dual_wield: str | None
-    flip_skill_: LazyLoader | None
+    facts: list[SkillFact] | None = None
+    traited_facts: list[SkillTraitedFact] | None = None
+    categories: list[SkillCategories] | None = None
+    attunement: Attunement | None = None
+    cost: int | None = None
+    dual_wield: str | None = None
+    flip_skill_: LazyLoader | None = None
 
     @property
     def flip_skill(self) -> Skill | None:
         return self.flip_skill_() if self.flip_skill_ is not None else None
 
-    initiative: int | None
-    next_chain_: LazyLoader | None
+    initiative: int | None = None
+    next_chain_: LazyLoader | None = None
 
     @property
     def next_chain(self) -> Skill | None:
         return self.next_chain_() if self.next_chain_ is not None else None
 
-    prev_chain_: LazyLoader | None
+    prev_chain_: LazyLoader | None = None
 
     @property
     def prev_chain(self) -> Skill | None:
         return self.prev_chain_ if self.prev_chain_ is not None else None
 
-    transform_skills_: LazyLoader | None
+    transform_skills_: LazyLoader | None = None
 
     @property
     def transform_skills(self) -> list[Skill] | None:
         return self.transform_skills_ if self.transform_skills_ is not None else None
 
-    bundle_skills_: LazyLoader | None
+    bundle_skills_: LazyLoader | None = None
 
     @property
     def bundle_skills(self) -> list[Skill] | None:
         return self.bundle_skills_ if self.bundle_skills_ is not None else None
 
-    toolbelt_skill_: LazyLoader | None
+    toolbelt_skill_: LazyLoader | None = None
 
     @property
     def toolbelt_skill(self) -> Skill | None:
@@ -535,8 +535,8 @@ class TraitSkill(BaseModel):
     name: str
     description: str
     icon: str
-    facts: list[SkillFact] | None
-    traited_facts: list[SkillTraitedFact] | None
+    facts: list[SkillFact] | None = None
+    traited_facts: list[SkillTraitedFact] | None = None
 
 
 class Trait(BaseModel):
@@ -552,9 +552,9 @@ class Trait(BaseModel):
 
     tier: TraitTier
     slot: TraitSlot
-    facts: list[SkillFact] | None
-    traited_facts: list[SkillTraitedFact] | None
-    skills: list[TraitSkill] | None
+    facts: list[SkillFact] | None = None
+    traited_facts: list[SkillTraitedFact] | None = None
+    skills: list[TraitSkill] | None = None
 
 
 class Legend(BaseModel):
