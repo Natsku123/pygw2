@@ -14,26 +14,26 @@ from .backstory import *
 from .wvw import *
 
 # Update forward refs
-DailyAchievement.update_forward_refs()
+DailyAchievement.model_rebuild()
 
-BiographyAnswer.update_forward_refs()
-Story.update_forward_refs()
+BiographyAnswer.model_rebuild()
+Story.model_rebuild()
 
-Character.update_forward_refs()
-EquipmentTab.update_forward_refs()
+Character.model_rebuild()
+EquipmentTab.model_rebuild()
 
-GuildTeam.update_forward_refs()
+GuildTeam.model_rebuild()
 
-Mini.update_forward_refs()
-Novelty.update_forward_refs()
-Title.update_forward_refs()
+Mini.model_rebuild()
+Novelty.model_rebuild()
+Title.model_rebuild()
 
-Transaction.update_forward_refs()
-ItemListing.update_forward_refs()
-Price.update_forward_refs()
+Transaction.model_rebuild()
+ItemListing.model_rebuild()
+Price.model_rebuild()
 
-GuildPvpGame.update_forward_refs()
+GuildPvpGame.model_rebuild()
 
-WvWMatchWorlds.update_forward_refs()
-WvWMapObjectives.update_forward_refs()
-WvWObjective.update_forward_refs()
+WvWMatchWorlds.model_rebuild()
+WvWMapObjectives.model_rebuild()
+WvWObjective.model_rebuild()
