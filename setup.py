@@ -10,7 +10,6 @@ setup(
         "pygw2.api",
         "pygw2.core",
         "pygw2.core.models",
-        "pygw2.settings",
     ],
     install_requires=["requests", "pydantic"],
     author="Max Mecklin",
