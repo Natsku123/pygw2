@@ -26,7 +26,7 @@ class HomeApi:
             return data
         return object_parse(data, HomeCat)
 
-    @endpoint("/v2/home/nodes", has_ids=True)
+    @endpoint("/v2/home/nodes", has_ids=True, max_ids=1)
     async def nodes(self, *, data, ids: list = None):
         """
         Get unlockable nodes by ID(s).

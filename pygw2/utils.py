@@ -5,7 +5,7 @@ from functools import wraps
 from typing import List, Dict, Union, Any, Type, Callable, Optional
 
 from aiohttp import ClientSession
-from pydantic import parse_obj_as, BaseModel as PydanticBase
+from pydantic import TypeAdapter, ConfigDict, BaseModel as PydanticBase
 
 from .core.exceptions import ApiError
 from .settings import *
@@ -14,8 +14,7 @@ pool = concurrent.futures.ThreadPoolExecutor()
 
 
 class BaseModel(PydanticBase):
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class LimitedDict(dict):
@@ -147,7 +146,7 @@ def object_parse(
     if isinstance(data, dict):
         return data_type(**data)
     elif isinstance(data, list):
-        result = parse_obj_as(List[data_type], data)
+        result = TypeAdapter(List[data_type]).validate_python(data)
 
         if len(result) == 1 and not force_list:
             return result[0]

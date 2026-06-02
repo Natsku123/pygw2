@@ -25,7 +25,7 @@ class MechanicsMountsApi:
     def __init__(self, *, api_key: str = ""):
         self.api_key: str = api_key
 
-    @endpoint("/v2/mounts/skins", has_ids=True)
+    @endpoint("/v2/mounts/skins", has_ids=True, max_ids=1)
     async def skins(
         self, *, data, ids: list = None
     ) -> Union[MountSkin, List[MountSkin], List[str], List[int]]:
@@ -40,7 +40,7 @@ class MechanicsMountsApi:
             return data
         return object_parse(data, MountSkin)
 
-    @endpoint("/v2/mounts/types", has_ids=True)
+    @endpoint("/v2/mounts/types", has_ids=True, max_ids=1)
     async def types(
         self, *, data, ids: list = None
     ) -> Union[MountType, List[MountType], List[str], List[int]]:

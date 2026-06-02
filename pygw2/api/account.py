@@ -157,7 +157,15 @@ class AccountHomeApi:
 
         home_api = HomeApi(api_key=self.api_key)
 
-        return await home_api.nodes(*data)
+        if not data:
+            return []
+
+        nodes = await home_api.nodes(*data)
+        if nodes is None:
+            return []
+        if isinstance(nodes, list):
+            return [node for node in nodes if node is not None]
+        return [nodes]
 
 
 class AccountMountsApi:
@@ -182,7 +190,15 @@ class AccountMountsApi:
 
         mecha_api = MechanicsApi(api_key=self.api_key)
 
-        return await mecha_api.mounts.skins(*data)
+        if not data:
+            return []
+
+        skins = await mecha_api.mounts.skins(*data)
+        if skins is None:
+            return []
+        if isinstance(skins, list):
+            return [skin for skin in skins if skin is not None]
+        return [skins]
 
     @endpoint("/v2/account/mounts/types")
     async def types(self, *, data) -> List[MountType]:
@@ -195,7 +211,15 @@ class AccountMountsApi:
 
         mecha_api = MechanicsApi(api_key=self.api_key)
 
-        return await mecha_api.mounts.types(*data)
+        if not data:
+            return []
+
+        types = await mecha_api.mounts.types(*data)
+        if types is None:
+            return []
+        if isinstance(types, list):
+            return [mount for mount in types if mount is not None]
+        return [types]
 
 
 class CharactersApi:
