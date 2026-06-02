@@ -119,7 +119,9 @@ class ContinentFloorRegionMapApi:
         :param ids: list of IDs
         :return:
         """
-        return object_parse(data, MapSector)
+        if ids:
+            return object_parse(data, MapSector)
+        return data
 
     @endpoint("/v2/continents", subendpoint="/pois")
     async def pois(self, *, data):

@@ -1,4 +1,13 @@
-venv/
 .idea/
-test.py
+
+# Local virtual environments
+venv/
+venv2/
+.venv/
+
+# Python cache and test artifacts
+__pycache__/
 .pytest_cache/
+
+# Local scratch file
+test.py

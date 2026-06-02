@@ -4,6 +4,28 @@
 
 Python wrapper for Guild Wars 2 api.
 
+## Installation
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
+
+Install runtime dependencies:
+
+```bash
+uv sync
+```
+
+Install development dependencies (tests, coverage):
+
+```bash
+uv sync --group dev
+```
+
+Run tests:
+
+```bash
+uv run pytest --cov=pygw2/ --cov-report=xml
+```
+
 ## How to use
 
 Basic principle is that every endpoint needing IDs to fetch, allow `0` to `n`
@@ -45,7 +67,7 @@ api.account.character(character_id).core()
 ```python
 from pygw2.api import Api
 
-api = Api(api_key="YOUR API KEY HERE (if you want to use it)')
+api = Api(api_key="YOUR API KEY HERE (if you want to use it)")
 
 # Get one achievement by ID
 achievement = api.achievements.get(1)

@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygw2"
+version = "0.0.1"
+description = "Python wrapper for Guild Wars 2 API."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+  { name = "Max Mecklin", email = "max@meckl.in" }
+]
+keywords = ["api", "python", "guild", "wars", "2", "gw2"]
+dependencies = [
+  "aiohttp",
+  "pydantic",
+  "requests"
+]
+
+[project.urls]
+Homepage = "https://github.com/Natsku123/pygw2"
+Repository = "https://github.com/Natsku123/pygw2"
+
+[tool.setuptools.packages.find]
+include = ["pygw2*"]
+
+[dependency-groups]
+dev = [
+  "aiounittest",
+  "coverage",
+  "pytest",
+  "pytest-cov"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
