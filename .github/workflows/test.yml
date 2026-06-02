@@ -9,7 +9,7 @@ jobs:
       matrix:
         python-version: [ 3.11, 3.12 ]
     env:
-      api_key: ${{ secrets.API_KEY }}
+      API_KEY: ${{ secrets.API_KEY }}
       PYTHON: ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4

@@ -26,6 +26,30 @@ Run tests:
 uv run pytest --cov=pygw2/ --cov-report=xml
 ```
 
+### Running tests with an API key safely
+
+This repository includes `.env.example` for local test configuration.
+
+1. Create a local env file:
+
+```bash
+cp .env.example .env
+```
+
+2. Put your key into `.env`:
+
+```bash
+API_KEY=your-real-gw2-api-key
+```
+
+3. Run tests normally:
+
+```bash
+uv run pytest --cov=pygw2/ --cov-report=xml
+```
+
+The real `.env` file is ignored by git, so your API key will not be committed.
+
 ## How to use
 
 Basic principle is that every endpoint needing IDs to fetch, allow `0` to `n`

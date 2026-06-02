@@ -8,6 +8,12 @@ venv2/
 # Python cache and test artifacts
 __pycache__/
 .pytest_cache/
+pygw2.egg-info/
 
 # Local scratch file
 test.py
+
+# Local secrets
+.env
+.env.*
+!.env.example
