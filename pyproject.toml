@@ -7,7 +7,7 @@ name = "pygw2"
 version = "0.0.1"
 description = "Python wrapper for Guild Wars 2 API."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
   { name = "Max Mecklin", email = "max@meckl.in" }
