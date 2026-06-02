@@ -842,7 +842,19 @@ class AccountApi:
         if not data:
             return data
 
-        return await items_api.recipes(*data)
+        # Keep request URLs small for accounts with very large unlocked recipe sets.
+        # The downstream endpoint also batches, but explicit chunking avoids edge cases.
+        chunk_size = 100
+        recipes = []
+        for i in range(0, len(data), chunk_size):
+            chunk = data[i : i + chunk_size]
+            parsed = await items_api.recipes(*chunk)
+            if isinstance(parsed, list):
+                recipes.extend(parsed)
+            else:
+                recipes.append(parsed)
+
+        return recipes
 
     @endpoint("/v2/account/skins")
     async def skins(self, *, data) -> List["Skin"]:

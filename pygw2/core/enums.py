@@ -324,6 +324,8 @@ class AccountAccess(str, Enum):
     HeartOfThorns = "HeartOfThorns"
     PathOfFire = "PathOfFire"
     EndOfDragons = "EndOfDragons"
+    SecretsOfTheObscure = "SecretsOfTheObscure"
+    JanthirWilds = "JanthirWilds"
 
 
 class AchievementType(str, Enum):
@@ -669,6 +671,7 @@ class GuildLogEntryType(str, Enum):
     upgrade = "upgrade"
     influence = "influence"
     invite_declined = "invite_declined"
+    mission = "mission"
 
 
 class GuildStashOperation(str, Enum):

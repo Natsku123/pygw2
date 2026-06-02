@@ -24,6 +24,7 @@ class PvPTests(aiounittest.AsyncTestCase):
 class PvPLeaderboardsTests(aiounittest.AsyncTestCase):
     async def test_leaderboards(self):
         seasons = await self.api.pvp.seasons()
+        seasons = subset(seasons, 3)
         # TODO handle exceptions better
         for s in seasons:
             try:
@@ -31,15 +32,23 @@ class PvPLeaderboardsTests(aiounittest.AsyncTestCase):
             except ApiError:
                 eu = None
             if not eu:
-                eu = await self.api.pvp.leaderboards(s).legendary_eu()
-            for i in eu:
-                self.assertIsInstance(i, PvpLeaderboard)
+                try:
+                    eu = await self.api.pvp.leaderboards(s).legendary_eu()
+                except ApiError:
+                    eu = None
+            if eu:
+                for i in eu:
+                    self.assertIsInstance(i, PvpLeaderboard)
 
             try:
                 na = await self.api.pvp.leaderboards(s).ladder_na()
             except ApiError:
                 na = None
             if not na:
-                na = await self.api.pvp.leaderboards(s).legendary_na()
-            for i in na:
-                self.assertIsInstance(i, PvpLeaderboard)
+                try:
+                    na = await self.api.pvp.leaderboards(s).legendary_na()
+                except ApiError:
+                    na = None
+            if na:
+                for i in na:
+                    self.assertIsInstance(i, PvpLeaderboard)

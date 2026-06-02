@@ -56,7 +56,7 @@ class ItemTests(aiounittest.AsyncTestCase):
         self.assertIsInstance(item, Item)
 
     async def test_not_found(self):
-        item = await self.api.items.get(45022)
+        item = await self.api.items.get(999999999)
         self.assertIsNone(item)
 
     async def test_get_multiple(self):

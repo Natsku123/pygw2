@@ -467,13 +467,13 @@ class SkillFact(BaseModel):
 
 
 class SkillTraitedFact(SkillFact):
-    requires_trait_: LazyLoader
+    requires_trait_: LazyLoader | None = None
 
     @property
-    def requires_trait(self) -> Trait:
-        return self.requires_trait_()
+    def requires_trait(self) -> Trait | None:
+        return self.requires_trait_() if self.requires_trait_ is not None else None
 
-    overrides: int | None  # TODO resolve from facts
+    overrides: int | None = None  # TODO resolve from facts
 
 
 class Skill(BaseModel):
@@ -544,11 +544,11 @@ class Trait(BaseModel):
     name: str
     icon: str
     description: str
-    specialization_: LazyLoader
+    specialization_: LazyLoader | None = None
 
     @property
-    def specialization(self) -> Specialization:
-        return self.specialization_()
+    def specialization(self) -> Specialization | None:
+        return self.specialization_() if self.specialization_ is not None else None
 
     tier: TraitTier
     slot: TraitSlot
