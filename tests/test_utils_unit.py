@@ -1,7 +1,7 @@
 import pytest
 from aiohttp import ContentTypeError
 
-from pygw2.core.exceptions import ApiError
+from pygw2.core.exceptions import UpstreamApiError
 from pygw2.utils import endpoint
 import pygw2.utils as utils
 
@@ -50,7 +50,7 @@ async def test_endpoint_raises_api_error_for_server_errors(monkeypatch):
         utils, "ClientSession", lambda: _FakeSession(_FakeResponse(status=503))
     )
 
-    with pytest.raises(ApiError, match="API returned status 503"):
+    with pytest.raises(UpstreamApiError, match="API returned status 503"):
         await _DummyApi().get()
 
 
@@ -73,5 +73,7 @@ async def test_endpoint_wraps_non_json_responses(monkeypatch):
         ),
     )
 
-    with pytest.raises(ApiError, match="Unexpected non-JSON API response with status 200"):
+    with pytest.raises(
+        UpstreamApiError, match="Unexpected non-JSON API response with status 200"
+    ):
         await _DummyApi().get()

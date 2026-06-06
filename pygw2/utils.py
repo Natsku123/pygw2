@@ -7,7 +7,7 @@ from typing import List, Dict, Union, Any, Type, Callable, Optional
 from aiohttp import ClientSession, ContentTypeError
 from pydantic import parse_obj_as, BaseModel as PydanticBase
 
-from .core.exceptions import ApiError
+from .core.exceptions import ApiError, UpstreamApiError
 from .settings import *
 
 pool = concurrent.futures.ThreadPoolExecutor()
@@ -313,13 +313,13 @@ def endpoint(
                             continue
 
                         if r.status >= 500:
-                            raise ApiError(f"API returned status {r.status}.")
+                            raise UpstreamApiError(f"API returned status {r.status}.")
 
                         # Parse json
                         try:
                             data = await r.json()
                         except ContentTypeError as exc:
-                            raise ApiError(
+                            raise UpstreamApiError(
                                 f"Unexpected non-JSON API response with status {r.status}."
                             ) from exc
 
