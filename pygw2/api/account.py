@@ -750,9 +750,14 @@ class AccountApi:
         daily_api = DailyApi(api_key=self.api_key)
 
         if not data:
-            return data
+            return []
 
-        return await daily_api.mapchests(*data)
+        mapchests = await daily_api.mapchests(*data)
+        if mapchests is None:
+            return []
+        if isinstance(mapchests, list):
+            return mapchests
+        return [mapchests]
 
     @endpoint("/v2/account/masteries")
     async def masteries(self, *, data) -> List["MasteryProgress"]:

@@ -4,7 +4,7 @@ import datetime
 from functools import wraps
 from typing import List, Dict, Union, Any, Type, Callable, Optional
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, ContentTypeError
 from pydantic import TypeAdapter, ConfigDict, BaseModel as PydanticBase
 
 from .core.exceptions import ApiError
@@ -299,35 +299,58 @@ def endpoint(
                         elif override_ids in parameters:
                             del parameters[override_ids]
 
-                    async with session.get(
-                        base_url + path + path_id + subendpoint, params=parameters
-                    ) as r:
+                    retries = 3
+                    delay = 0.5
+                    for attempt in range(retries):
+                        async with session.get(
+                            base_url + path + path_id + subendpoint, params=parameters
+                        ) as r:
 
-                        # Check known status codes
-                        if r.status == 414:
-                            raise ApiError("Too many IDs.")
-                        elif r.status == 404:
-                            # Not found
-                            result.append(None)
-                            continue
+                            # Retry transient upstream failures.
+                            if 500 <= r.status < 600:
+                                if attempt < retries - 1:
+                                    await asyncio.sleep(delay)
+                                    delay *= 2
+                                    continue
+                                raise ApiError(f"Server error {r.status}.")
 
-                        # Parse json
-                        data = await r.json()
+                            # Check known status codes
+                            if r.status == 414:
+                                raise ApiError("Too many IDs.")
+                            elif r.status == 404:
+                                # Not found
+                                result.append(None)
+                                break
 
-                        # Check for errors.
-                        if "text" in data:
-                            raise ApiError(data["text"])
+                            # Parse json
+                            try:
+                                data = await r.json()
+                            except ContentTypeError:
+                                if attempt < retries - 1:
+                                    await asyncio.sleep(delay)
+                                    delay *= 2
+                                    continue
+                                raise ApiError(
+                                    f"Unexpected response type for status {r.status}."
+                                )
 
-                        # Check if IDs used
-                        if has_ids:
+                            # Check for errors.
+                            if "text" in data:
+                                raise ApiError(data["text"])
 
-                            # Check if fetched all
-                            if len(args) == 0:
-                                i = None
+                            # Check if IDs used
+                            if has_ids:
 
-                            result.append(await func(self, **kwargs, data=data, ids=i))
-                        else:
-                            result.append(await func(self, **kwargs, data=data))
+                                # Check if fetched all
+                                if len(args) == 0:
+                                    i = None
+
+                                result.append(
+                                    await func(self, **kwargs, data=data, ids=i)
+                                )
+                            else:
+                                result.append(await func(self, **kwargs, data=data))
+                            break
 
             # If only one batch was fetched, return it
             # Else compile a single list
