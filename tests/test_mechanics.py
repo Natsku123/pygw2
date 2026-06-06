@@ -1,8 +1,20 @@
 import aiounittest
-import unittest
 import pytest
 
-from pygw2.models import *
+from pygw2.models import (
+    Legend,
+    Legendary,
+    Mastery,
+    MountSkin,
+    MountType,
+    Outfit,
+    Pet,
+    Profession,
+    Race,
+    Skill,
+    Specialization,
+    Trait,
+)
 
 from .helpers import ids_helper
 

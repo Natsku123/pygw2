@@ -1,9 +1,33 @@
 from __future__ import annotations
 
-from pygw2.core.enums import *
-
 from typing import TYPE_CHECKING, ForwardRef
 
+from pygw2.core.enums import (
+    AdditionalWeaponType,
+    ArmorSlot,
+    Attribute,
+    ConsumableType,
+    ContainerType,
+    DamageType,
+    GameTypes,
+    GatheringToolType,
+    GizmoType,
+    InfusionSlotType,
+    InfusionUpgradeFlag,
+    ItemFlags,
+    ItemRarity,
+    ItemType,
+    MailcarrierFlags,
+    Professions,
+    Races,
+    SalvageKitType,
+    UnlockType,
+    UpgradeComponentFlag,
+    UpgradeComponentType,
+    UpgradeType,
+    WeaponType,
+    WeightClass,
+)
 from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
@@ -58,9 +82,21 @@ class Item(BaseModel):
     restrictions: list[Races | Professions] = []
     upgrades_into: list[Upgrade] | None = []
     upgrades_from: list[Upgrade] | None = []
-    details: ArmorDetails | BackDetails | BagDetails | ConsumableDetails | ContainerDetails | GatheringToolDetails | GizmoDetails | MiniatureDetails | SalvageKitDetails | TrinketDetails | UpgradeComponentDetails | WeaponDetails | None = (
-        None
-    )
+    details: (
+        ArmorDetails
+        | BackDetails
+        | BagDetails
+        | ConsumableDetails
+        | ContainerDetails
+        | GatheringToolDetails
+        | GizmoDetails
+        | MiniatureDetails
+        | SalvageKitDetails
+        | TrinketDetails
+        | UpgradeComponentDetails
+        | WeaponDetails
+        | None
+    ) = None
 
 
 class InfixAttribute(BaseModel):
@@ -261,7 +297,7 @@ class Glider(BaseModel):
     default_dyes_: LazyLoader | None = None
 
     @property
-    def default_dyes(self) -> list[Color]:
+    def default_dyes(self) -> list[Color] | None:
         return self.default_dyes_() if self.default_dyes_ is not None else None
 
 

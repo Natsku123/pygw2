@@ -23,7 +23,7 @@ class BackstoryApi:
 
     @endpoint("/v2/backstory/answers", has_ids=True)
     async def answers(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> List[Union[BiographyAnswer, int, str]]:
         """
         Get Biography answers from API by list of IDs or one ID.
@@ -42,7 +42,7 @@ class BackstoryApi:
 
     @endpoint("/v2/backstory/questions", has_ids=True)
     async def questions(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> List[Union[BiographyQuestion, int, str]]:
         """
         Get Biography questions from API by list of IDs or one ID.
@@ -60,7 +60,9 @@ class BackstoryApi:
         return object_parse(data, BiographyQuestion)
 
     @endpoint("/v2/stories", has_ids=True)
-    async def stories(self, *, data, ids: list = None) -> List[Union[Story, int, str]]:
+    async def stories(
+        self, *, data, ids: list | None = None
+    ) -> List[Union[Story, int, str]]:
         """
         Get stories from API by list of IDs or one ID.
         :param data: Data from wrapper
@@ -77,7 +79,9 @@ class BackstoryApi:
         return object_parse(data, Story)
 
     @endpoint("/v2/stories/seasons", has_ids=True)
-    async def seasons(self, *, data, ids: list = None) -> List[Union[Season, int, str]]:
+    async def seasons(
+        self, *, data, ids: list | None = None
+    ) -> List[Union[Season, int, str]]:
         """
         Get seasons from API by list of IDs or one ID.
         :param data: Data from wrapper
@@ -94,7 +98,9 @@ class BackstoryApi:
         return object_parse(data, Season)
 
     @endpoint("/v2/quests", has_ids=True)
-    async def quests(self, *, data, ids: list = None) -> List[Union[Quest, int, str]]:
+    async def quests(
+        self, *, data, ids: list | None = None
+    ) -> List[Union[Quest, int, str]]:
         """
         Get quests from API by list of IDs or one ID.
         :param data: Data from wrapper

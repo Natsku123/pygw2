@@ -1,10 +1,19 @@
 import aiounittest
-import unittest
 import pytest
 
-from pygw2.models import *
+from pygw2.models import (
+    Guild,
+    GuildLogEntry,
+    GuildMember,
+    GuildPermission,
+    GuildRank,
+    GuildStash,
+    GuildTeam,
+    GuildTreasury,
+    GuildUpgrade,
+)
 
-from .helpers import subset, ids_helper
+from .helpers import ids_helper
 
 
 TEST_GUILD_ID = "B95A726D-DD83-E511-AEFB-AC162DC05865"
@@ -24,8 +33,8 @@ class GuildTests(aiounittest.AsyncTestCase):
 
     async def test_log(self):
         logs = await self.api.guild(TEST_GUILD_ID).log()
-        for l in logs:
-            self.assertIsInstance(l, GuildLogEntry)
+        for log_entry in logs:
+            self.assertIsInstance(log_entry, GuildLogEntry)
 
     async def test_members(self):
         members = await self.api.guild(TEST_GUILD_ID).members()

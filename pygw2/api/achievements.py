@@ -22,7 +22,7 @@ class AchievementsApi:
         self.api_key: str = api_key
 
     @endpoint("/v2/achievements", has_ids=True)
-    async def get(self, *, data, ids: list = None):
+    async def get(self, *, data, ids: list | None = None):
         """
         Get achievements from API by list of IDs.
         https://api.guildwars2.com/v2/achievements
@@ -89,7 +89,7 @@ class AchievementsApi:
         return object_parse(data, DailyAchievements)
 
     @endpoint("/v2/achievements/groups", has_ids=True)
-    async def groups(self, *, data, ids: list = None):
+    async def groups(self, *, data, ids: list | None = None):
         """
         Get groups for achievements from API by list of IDs or one ID.
         https://api.guildwars2.com/v2/achievements/groups
@@ -109,7 +109,7 @@ class AchievementsApi:
             return object_parse(data, AchievementGroup)
 
     @endpoint("/v2/achievements/categories", has_ids=True)
-    async def categories(self, *, data, ids: list = None):
+    async def categories(self, *, data, ids: list | None = None):
         """
         Get categories for achievements from API by list of IDs or one ID.
         https://api.guildwars2.com/v2/achievements/categories

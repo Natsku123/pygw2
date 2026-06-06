@@ -31,7 +31,9 @@ dev = [
   "aiounittest",
   "coverage",
   "pytest",
-  "pytest-cov"
+  "pytest-cov",
+  "ruff>=0.15.16",
+  "ty>=0.0.44",
 ]
 
 [tool.pytest.ini_options]

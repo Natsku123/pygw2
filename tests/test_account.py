@@ -2,7 +2,48 @@ import aiounittest
 import unittest
 import pytest
 
-from pygw2.models import *
+from pygw2.models import (
+    Account,
+    Achievement,
+    AchievementProgress,
+    Bag,
+    BiographyAnswer,
+    Character,
+    CharacterCore,
+    Color,
+    Crafting,
+    DailyCrafting,
+    DailyMapChest,
+    DailyWorldBoss,
+    Equipment,
+    Finisher,
+    Glider,
+    HomeCat,
+    HomeNode,
+    Item,
+    Mailcarrier,
+    Mastery,
+    MasteryProgress,
+    Mini,
+    MountSkin,
+    MountType,
+    Novelty,
+    Outfit,
+    OwnedLegendary,
+    PvpGame,
+    PvpStandings,
+    PvpStats,
+    Recipe,
+    SAB,
+    SharedInventorySlot,
+    Skin,
+    SkillTree,
+    StorageMaterial,
+    Title,
+    TokenInfo,
+    UnlockedFinisher,
+    WalletCurrency,
+)
 
 from .helpers import subset, ids_helper
 
@@ -248,8 +289,8 @@ class CharacterTests(aiounittest.AsyncTestCase):
 
     async def test_legendary_armory(self):
         legs = await self.api.account.legendary_armory()
-        for l in legs:
-            self.assertIsInstance(l, OwnedLegendary)
+        for legendary in legs:
+            self.assertIsInstance(legendary, OwnedLegendary)
 
     async def test_tokeninfo(self):
         info = await self.api.account.tokeninfo()

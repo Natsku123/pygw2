@@ -17,7 +17,7 @@ class ItemsApi:
         self.api_key: str = api_key
 
     @endpoint("/v2/items", has_ids=True)
-    async def get(self, *, data, ids: list = None):
+    async def get(self, *, data, ids: list | None = None):
         """
         Get items from API by list of IDs or one ID.
         None returns all item IDs.
@@ -82,7 +82,7 @@ class ItemsApi:
         return object_parse(data, Item)
 
     @endpoint("/v2/finishers", has_ids=True)
-    async def finishers(self, *, data, ids: list = None):
+    async def finishers(self, *, data, ids: list | None = None):
         """
         Get finishers from API by list of IDs or one ID.
         None returns all IDs.
@@ -98,7 +98,7 @@ class ItemsApi:
             return object_parse(data, Finisher)
 
     @endpoint("/v2/itemstats", has_ids=True)
-    async def itemstats(self, *, data, ids: list = None):
+    async def itemstats(self, *, data, ids: list | None = None):
         """
         Get itemstats from API by list of IDs or one ID.
         None returns all IDs.
@@ -113,7 +113,7 @@ class ItemsApi:
             return object_parse(data, ItemStat)
 
     @endpoint("/v2/materials", has_ids=True)
-    async def materials(self, *, data, ids: list = None):
+    async def materials(self, *, data, ids: list | None = None):
         """
         Get materials from API by list of IDs or one ID.
         None returns all IDs.
@@ -128,7 +128,7 @@ class ItemsApi:
             return object_parse(data, Material)
 
     @endpoint("/v2/pvp/amulets", has_ids=True)
-    async def pvp_amulets(self, *, data, ids: list = None):
+    async def pvp_amulets(self, *, data, ids: list | None = None):
         """
         Get Pvp amulets from API by list of IDs or one ID.
         None returns all IDs.
@@ -143,7 +143,7 @@ class ItemsApi:
             return object_parse(data, PvpAmulet)
 
     @endpoint("/v2/recipes", has_ids=True)
-    async def recipes(self, *, data, ids: list = None):
+    async def recipes(self, *, data, ids: list | None = None):
         """
         Get Recipes from API by list of IDs or one ID.
         None returns all IDs.
@@ -171,7 +171,7 @@ class ItemsApi:
             return data
 
     @endpoint("/v2/skins", has_ids=True)
-    async def skins(self, *, data, ids: list = None):
+    async def skins(self, *, data, ids: list | None = None):
         """
         Get Skins from API by list of IDs or one ID.
         None returns all IDs.
@@ -193,9 +193,9 @@ class ItemsApi:
                 if "dye_slots" in s["details"] and s["details"]["dye_slots"]:
                     for i, d in enumerate(s["details"]["dye_slots"]["default"]):
                         if d:
-                            s["details"]["dye_slots"]["default"][i][
-                                "color_"
-                            ] = LazyLoader(misc_api.colors, d["color_id"])
+                            s["details"]["dye_slots"]["default"][i]["color_"] = (
+                                LazyLoader(misc_api.colors, d["color_id"])
+                            )
                     if (
                         "overrides" in s["details"]["dye_slots"]
                         and s["details"]["dye_slots"]["overrides"]
@@ -209,7 +209,7 @@ class ItemsApi:
         return object_parse(data, Skin)
 
     @endpoint("/v2/gliders", has_ids=True)
-    async def gliders(self, *, data, ids: list = None):
+    async def gliders(self, *, data, ids: list | None = None):
         """
         Get gliders from API
         :param data: data from wrapper
@@ -230,7 +230,7 @@ class ItemsApi:
         return object_parse(data, Glider)
 
     @endpoint("/v2/mailcarriers", has_ids=True)
-    async def mailcarriers(self, *, data, ids: list = None):
+    async def mailcarriers(self, *, data, ids: list | None = None):
         """
         Get mailcarriers from API
         :param data: data from wrapper

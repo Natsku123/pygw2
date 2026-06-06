@@ -1,5 +1,5 @@
 import pytest
-from pygw2.models import *
+from pygw2.models import Item, Recipe
 
 import unittest
 import aiounittest

@@ -1,5 +1,11 @@
 import pytest
-from pygw2.models import *
+from pygw2.models import (
+    BiographyAnswer,
+    BiographyQuestion,
+    Quest,
+    Season,
+    Story,
+)
 
 import unittest
 import aiounittest

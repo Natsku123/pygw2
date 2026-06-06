@@ -1,8 +1,7 @@
 import aiounittest
-import unittest
 import pytest
 
-from pygw2.models import *
+from pygw2.models import PvpHero, PvpLeaderboard, PvpRank, PvpSeason
 from pygw2.utils import ApiError
 
 from .helpers import ids_helper, subset

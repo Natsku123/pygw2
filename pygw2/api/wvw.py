@@ -73,7 +73,7 @@ class WvWMatchesApi:
         min_ids=1,
         max_ids=1,
     )
-    async def overview(self, *, data, ids: list = None) -> WvWMatch:
+    async def overview(self, *, data, ids: list | None = None) -> WvWMatch:
         """
         Get overview of match from API with World ID.
         :param data: Data from wrapper
@@ -130,7 +130,7 @@ class WvWMatchesApi:
         min_ids=1,
         max_ids=1,
     )
-    async def scores(self, *, data, ids: list = None) -> WvWMatch:
+    async def scores(self, *, data, ids: list | None = None) -> WvWMatch:
         """
         Get scores of match from API with World ID.
         :param data: Data from wrapper
@@ -187,7 +187,7 @@ class WvWMatchesApi:
         min_ids=1,
         max_ids=1,
     )
-    async def stats(self, *, data, ids: list = None) -> WvWMatch:
+    async def stats(self, *, data, ids: list | None = None) -> WvWMatch:
         """
         Get stats of match from API with World ID.
         :param data: Data from wrapper
@@ -252,7 +252,7 @@ class WvWApi:
 
     @endpoint("/v2/wvw/abilities", has_ids=True)
     async def abilities(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> List[Union[WvWAbility, int, str]]:
         """
         Get WvW abilities from API
@@ -280,7 +280,7 @@ class WvWApi:
 
     @endpoint("/v2/wvw/upgrades", has_ids=True)
     async def upgrades(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> List[Union[WvWUpgrade, int, str]]:
         """
         Get WvW upgrades from API
@@ -295,7 +295,7 @@ class WvWApi:
 
     @endpoint("/v2/wvw/objectives", has_ids=True)
     async def objectives(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> List[Union[WvWObjective, int, str]]:
         """
         Get WvW objectives from API
@@ -325,7 +325,9 @@ class WvWApi:
         return object_parse(data, WvWObjective)
 
     @endpoint("/v2/wvw/ranks", has_ids=True)
-    async def ranks(self, *, data, ids: list = None) -> List[Union[WvWRank, int, str]]:
+    async def ranks(
+        self, *, data, ids: list | None = None
+    ) -> List[Union[WvWRank, int, str]]:
         """
         Get WvW ranks from API
         :param data: Data from wrapper

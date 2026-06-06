@@ -1,5 +1,5 @@
 import pytest
-from pygw2.models import *
+from pygw2.models import DeliveryBox, ExchangeRate, ItemListing, Price, Transaction
 
 import unittest
 import aiounittest

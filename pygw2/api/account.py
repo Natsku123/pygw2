@@ -625,9 +625,6 @@ class AccountApi:
         :return:
         """
 
-        # Blacklist of purged IDs
-        blacklist = [45022, 45023, 45024, 45025]
-
         for i, item in enumerate(data):
             data[i] = parse_item(item)
 
@@ -644,10 +641,8 @@ class AccountApi:
 
         daily_api = DailyApi(api_key=self.api_key)
 
-        print("asd", data)
-
         if not data:
-            return data
+            return []
 
         return await daily_api.crafting(*data)
 
@@ -874,7 +869,7 @@ class AccountApi:
         # Keep request URLs small for accounts with very large unlocked recipe sets.
         # The downstream endpoint also batches, but explicit chunking avoids edge cases.
         chunk_size = 100
-        recipes = []
+        recipes: List["Recipe"] = []
         for i in range(0, len(data), chunk_size):
             chunk = data[i : i + chunk_size]
             parsed = await items_api.recipes(*chunk)
@@ -969,7 +964,7 @@ class AccountApi:
         return object_parse(data, OwnedLegendary)
 
     @endpoint("/v2/subtoken")
-    async def subtoken(self, *, data, params: dict = None) -> SubToken:
+    async def subtoken(self, *, data, params: dict | None = None) -> SubToken:
         """
         Check https://wiki.guildwars2.com/wiki/API:2/createsubtoken for more info
         :param data: Data from wrapper

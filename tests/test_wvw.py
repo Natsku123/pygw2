@@ -1,8 +1,7 @@
 import aiounittest
-import unittest
 import pytest
 
-from pygw2.models import *
+from pygw2.models import WvWAbility, WvWMatch, WvWObjective, WvWRank, WvWUpgrade
 
 from .helpers import ids_helper
 

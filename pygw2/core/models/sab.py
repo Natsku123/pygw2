@@ -1,4 +1,4 @@
-from pygw2.utils import LazyLoader, BaseModel
+from pygw2.utils import BaseModel
 
 
 class SABZones(BaseModel):

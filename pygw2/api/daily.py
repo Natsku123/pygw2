@@ -14,7 +14,7 @@ class DailyApi:
         self.api_key: str = api_key
 
     @endpoint("/v2/dailycrafting", has_ids=True)
-    async def crafting(self, *, data, ids: list = None):
+    async def crafting(self, *, data, ids: list | None = None):
         """
         Fetch daily craftable items by ID(s).
         None returns all time-gated crafting items.
@@ -27,7 +27,7 @@ class DailyApi:
         return object_parse(data, DailyCrafting)
 
     @endpoint("/v2/mapchests", has_ids=True)
-    async def mapchests(self, *, data, ids: list = None):
+    async def mapchests(self, *, data, ids: list | None = None):
         """
         Fetch daily hero's choice chests by ID(s).
         None returns all time-gated hero's choice chests.
@@ -40,7 +40,7 @@ class DailyApi:
         return object_parse(data, DailyMapChest)
 
     @endpoint("/v2/worldbosses", has_ids=True)
-    async def worldbosses(self, *, data, ids: list = None):
+    async def worldbosses(self, *, data, ids: list | None = None):
         """
         Fetch daily world bosses by ID(s).
         None returns all world bosses.

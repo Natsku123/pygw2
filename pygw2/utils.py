@@ -2,15 +2,16 @@ import asyncio
 import concurrent.futures
 import datetime
 from functools import wraps
-from typing import List, Dict, Union, Any, Type, Callable, Optional
+from typing import List, Dict, Union, Any, Callable, Coroutine, Optional
 
 from aiohttp import ClientSession, ContentTypeError
 from pydantic import TypeAdapter, ConfigDict, BaseModel as PydanticBase
 
 from .core.exceptions import ApiError
-from .settings import *
+from .settings import base_url, cache_time, default_parameters
 
 pool = concurrent.futures.ThreadPoolExecutor()
+_UNSET = object()
 
 
 class BaseModel(PydanticBase):
@@ -46,7 +47,7 @@ class LimitedDict(dict):
         return item in self.mapping and super().__contains__(self.mapping[item])
 
 
-def function_call_key(func: Callable, args, kwargs) -> str:
+def function_call_key(func: Callable[..., Any], args, kwargs) -> str:
     """
     Generate a key based on function called and arguments
     :param func:
@@ -54,13 +55,14 @@ def function_call_key(func: Callable, args, kwargs) -> str:
     :param kwargs:
     :return:
     """
-    return f"{func.__qualname__}{args}{kwargs}"
+    qualname = getattr(func, "__qualname__", func.__class__.__qualname__)
+    return f"{qualname}{args}{kwargs}"
 
 
 class LazyLoader:
     _loaded = LimitedDict({})
 
-    def __new__(cls, func: Callable, *args, **kwargs):
+    def __new__(cls, func: Callable[..., Coroutine[Any, Any, Any]], *args, **kwargs):
 
         # Check if the function has already been loaded
         loader = cls._loaded.get(function_call_key(func, args, kwargs))
@@ -75,7 +77,7 @@ class LazyLoader:
         cls._loaded[function_call_key(func, args, kwargs)] = loader
         return loader
 
-    def __init__(self, func: Callable, *args, **kwargs):
+    def __init__(self, func: Callable[..., Coroutine[Any, Any, Any]], *args, **kwargs):
         """
         Lazy load with given function with arguments
         :param func: Function to be used in loading
@@ -85,10 +87,10 @@ class LazyLoader:
         self.__func = func
         self.__args = args
         self.__kwargs = kwargs
-        self.__result = None
+        self.__result = _UNSET
         self.__time: Optional[datetime.datetime] = None
 
-    def __call__(self, force=False, *args, **kwargs) -> Union[List[Any], Any]:
+    def __call__(self, force: bool = False, *args, **kwargs) -> Any:
         """
         Run lazy loaded function on call or return already found result
         :param force: Force reload
@@ -100,8 +102,8 @@ class LazyLoader:
 
         # Fetch new result, if not fetched already or is too old or is forced
         if (
-            not self.__result
-            or not force
+            self.__result is _UNSET
+            or force
             or (self.__time and (now - self.__time).seconds > cache_time)
         ):
             self.__result = pool.submit(
@@ -112,29 +114,22 @@ class LazyLoader:
         return self.__result
 
 
-def list_to_str(l: list, delimiter: str = ","):
+def list_to_str(values: list[Any], delimiter: str = ",") -> str:
     """
     Convert list to string with delimiter.
-    :param l: list
+    :param values: list
     :param delimiter: str=","
     :return: str
     """
-    string = ""
-    for item in l:
-        if l.index(item) == len(l) - 1:
-            string += str(item)
-        else:
-            string += str(item) + delimiter
-
-    return string
+    return delimiter.join(str(item) for item in values)
 
 
 def object_parse(
     data: Union[List[Dict[Any, Any]], Dict[Any, Any]],
-    data_type: Type[BaseModel],
+    data_type: Any,
     *,
     force_list: bool = False,
-) -> Union[List[Any], Any]:
+) -> Any:
     """
     Parse object from incoming data
     :param data: Dict/list
@@ -143,15 +138,18 @@ def object_parse(
     :return:
     """
 
+    adapter = TypeAdapter(data_type)
+
     if isinstance(data, dict):
-        return data_type(**data)
-    elif isinstance(data, list):
-        result = TypeAdapter(List[data_type]).validate_python(data)
+        return adapter.validate_python(data)
+    if isinstance(data, list):
+        result = [adapter.validate_python(item) for item in data]
 
         if len(result) == 1 and not force_list:
             return result[0]
-        else:
-            return result
+        return result
+
+    return adapter.validate_python(data)
 
 
 def endpoint(
@@ -162,7 +160,7 @@ def endpoint(
     is_search: bool = False,
     max_ids: int = 200,
     min_ids: int = 0,
-    override_ids: str = None,
+    override_ids: Optional[str] = None,
 ):
     """
     Endpoint wrapper
@@ -282,10 +280,8 @@ def endpoint(
 
             # Get data from API
             async with ClientSession() as session:
-
                 # Iterate over all batches
                 for i in ids:
-
                     # Update parameters with IDs and
                     # make sure that there are no duplicate requests
                     if len(i) > 0:
@@ -305,7 +301,6 @@ def endpoint(
                         async with session.get(
                             base_url + path + path_id + subendpoint, params=parameters
                         ) as r:
-
                             # Retry transient upstream failures.
                             if 500 <= r.status < 600:
                                 if attempt < retries - 1:
@@ -340,7 +335,6 @@ def endpoint(
 
                             # Check if IDs used
                             if has_ids:
-
                                 # Check if fetched all
                                 if len(args) == 0:
                                     i = None

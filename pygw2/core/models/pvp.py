@@ -30,7 +30,7 @@ class PvPEquipment(BaseModel):
     sigils_: LazyLoader | None = None
 
     @property
-    def sigils(self) -> list[Item]:
+    def sigils(self) -> list[Item] | None:
         return self.sigils_() if self.sigils_ is not None else None
 
 
@@ -207,7 +207,7 @@ class PvpHeroSkin(BaseModel):
     unlock_items_: LazyLoader | None = None
 
     @property
-    def unlock_items(self) -> list[Item] | Item:
+    def unlock_items(self) -> list[Item] | Item | None:
         return self.unlock_items_() if self.unlock_items_ is not None else None
 
 

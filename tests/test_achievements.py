@@ -1,7 +1,12 @@
 import pytest
 
 import pygw2.core.exceptions
-from pygw2.models import *
+from pygw2.models import (
+    Achievement,
+    AchievementCategory,
+    AchievementGroup,
+    DailyAchievements,
+)
 
 import unittest
 import aiounittest

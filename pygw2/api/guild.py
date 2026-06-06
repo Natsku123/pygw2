@@ -26,7 +26,7 @@ class GuildEmblemApi:
         self.api_key: str = api_key
 
     @endpoint("/v2/emblem/backgrounds", has_ids=True)
-    async def backgrounds(self, *, data, ids: list = None):
+    async def backgrounds(self, *, data, ids: list | None = None):
         """
         Get Guild Emblem backgrounds by ID(s).
         None returns all IDs.
@@ -39,7 +39,7 @@ class GuildEmblemApi:
         return object_parse(data, GuildEmblemImages)
 
     @endpoint("/v2/emblem/foregrounds", has_ids=True)
-    async def foregrounds(self, *, data, ids: list = None):
+    async def foregrounds(self, *, data, ids: list | None = None):
         """
         Get Guild Emblem foregrounds by ID(s).
         None returns all IDs.
@@ -64,7 +64,7 @@ class GuildApi:
 
     def __init__(self, guild_id: Optional[str] = None, *, api_key: str = ""):
         self.api_key: str = api_key
-        self.guild_id: str = guild_id
+        self.guild_id: str | None = guild_id
         self._emblem = GuildEmblemApi(api_key=api_key)
 
     @property
@@ -72,7 +72,7 @@ class GuildApi:
         return self._emblem
 
     @endpoint("/v2/guild", has_ids=True, max_ids=1, min_ids=1)
-    async def get(self, *, data, ids: list = None):
+    async def get(self, *, data, ids: list | None = None):
         """
         Get info of Guild by ID.
         :param data: Guild data
@@ -82,7 +82,7 @@ class GuildApi:
         return object_parse(data, Guild)
 
     @endpoint("/v2/guild/permissions", has_ids=True)
-    async def permissions(self, *, data, ids: list = None):
+    async def permissions(self, *, data, ids: list | None = None):
         """
         Get Guild Permissions by ID(s).
         None returns all IDs.
@@ -95,7 +95,7 @@ class GuildApi:
         return object_parse(data, GuildPermission)
 
     @endpoint("/v2/guild/search", is_search=True)
-    async def search(self, *, data, name: str = None):
+    async def search(self, *, data, name: str | None = None):
         """
         Search for guild by name.
         Returns Guild IDs.
@@ -107,7 +107,7 @@ class GuildApi:
         return data
 
     @endpoint("/v2/guild/upgrades", has_ids=True)
-    async def upgrades(self, *, data, ids: list = None):
+    async def upgrades(self, *, data, ids: list | None = None):
         """
         Get Guild Upgrades by ID(s).
         None returns all IDs.
