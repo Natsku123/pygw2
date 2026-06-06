@@ -2,6 +2,7 @@ import aiounittest
 import unittest
 import pytest
 
+from pygw2.core.exceptions import ApiError
 from pygw2.models import *
 
 from .helpers import subset, ids_helper
@@ -200,7 +201,12 @@ class CharacterTests(aiounittest.AsyncTestCase):
     async def test_equipment(self):
         chars = await self.api.account.characters()
         char = chars[0]
-        equipment = await self.api.account.character(char).equipment()
+        try:
+            equipment = await self.api.account.character(char).equipment()
+        except ApiError as exc:
+            if "status 5" in str(exc) or "non-JSON API response" in str(exc):
+                pytest.skip(f"Guild Wars 2 API returned an upstream error: {exc}")
+            raise
         if isinstance(equipment, list):
             for e in equipment:
                 self.assertIsInstance(e, Equipment)

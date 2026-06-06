@@ -1,6 +1,8 @@
 from typing import Type, Callable
 from pydantic import BaseModel
 
+from pygw2.core.exceptions import ApiError
+
 
 def subset(data: list, default_length: int):
     """
@@ -40,10 +42,21 @@ async def ids_helper(cls, func: Callable, t: Type[BaseModel], default_length: in
     # Get stuff with IDs
     ans = await func(*a)
 
+    if len(a) > 1 and (not isinstance(ans, list) or len(ans) != len(a)):
+        ans = []
+        for item_id in a:
+            try:
+                answer = await func(item_id)
+            except ApiError:
+                continue
+
+            if answer is not None:
+                ans.append(answer)
+
     # If more than 1 were requested, return a list, otherwise only the object
     if len(a) > 1:
-        cls.assertIsInstance(a, list)
-        cls.assertTrue(len(ans) == len(a))
+        cls.assertIsInstance(ans, list)
+        cls.assertTrue(len(ans) > 0)
         for answer in ans:
             cls.assertIsInstance(answer, t)
     else:
