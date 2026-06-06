@@ -161,6 +161,7 @@ def endpoint(
     max_ids: int = 200,
     min_ids: int = 0,
     override_ids: Optional[str] = None,
+    not_found_data: Any = None,
 ):
     """
     Endpoint wrapper
@@ -171,6 +172,7 @@ def endpoint(
     :param path: Endpoint path
     :param subendpoint: Path of sub-endpoint
     :param override_ids: Override 'ids' parameter name
+    :param not_found_data: Data to return when endpoint responds with 404.
     :return:
     """
 
@@ -314,7 +316,7 @@ def endpoint(
                                 raise ApiError("Too many IDs.")
                             elif r.status == 404:
                                 # Not found
-                                result.append(None)
+                                result.append(not_found_data)
                                 break
 
                             # Parse json

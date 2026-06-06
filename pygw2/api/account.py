@@ -733,7 +733,7 @@ class AccountApi:
 
         return await items_api.mailcarriers(*data)
 
-    @endpoint("/v2/account/mapchests")
+    @endpoint("/v2/account/mapchests", not_found_data=[])
     async def mapchests(self, *, data) -> List["DailyMapChest"]:
         """
         Get mapchest unlocked since daily reset from API.
@@ -823,7 +823,15 @@ class AccountApi:
 
         misc_api = MiscellaneousApi(api_key=self.api_key)
 
-        return await misc_api.novelties(*data)
+        if not data:
+            return []
+
+        novelties = await misc_api.novelties(*data)
+        if novelties is None:
+            return []
+        if isinstance(novelties, list):
+            return [novelty for novelty in novelties if novelty is not None]
+        return [novelties]
 
     @endpoint("/v2/account/outfits")
     async def outfits(self, *, data) -> List["Outfit"]:

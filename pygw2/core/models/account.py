@@ -104,7 +104,7 @@ class Account(BaseModel):
     fractal_level: int
     daily_ap: int
     monthly_ap: int
-    wvw_rank: int
+    wvw_rank: int | None = None
     last_modified: datetime.datetime
 
 
