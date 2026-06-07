@@ -1,13 +1,12 @@
-import aiounittest
 import pytest
 
 from pygw2.models import WvWAbility, WvWMatch, WvWObjective, WvWRank, WvWUpgrade
 
-from .helpers import ids_helper
+from .helpers import ApiTestCase, ids_helper
 
 
 @pytest.mark.usefixtures("get_api")
-class WvWTests(aiounittest.AsyncTestCase):
+class WvWTests(ApiTestCase):
     async def test_abilities(self):
         await ids_helper(self, self.api.wvw.abilities, WvWAbility)
 
@@ -22,7 +21,7 @@ class WvWTests(aiounittest.AsyncTestCase):
 
 
 @pytest.mark.usefixtures("get_api")
-class WvWMatchTests(aiounittest.AsyncTestCase):
+class WvWMatchTests(ApiTestCase):
     async def test_get(self):
         matches = await self.api.wvw.matches()
         for m in matches:

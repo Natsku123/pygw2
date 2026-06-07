@@ -1,14 +1,13 @@
-import aiounittest
 import pytest
 
 from pygw2.models import PvpHero, PvpLeaderboard, PvpRank, PvpSeason
 from pygw2.utils import ApiError
 
-from .helpers import ids_helper, subset
+from .helpers import ApiTestCase, ids_helper, subset
 
 
 @pytest.mark.usefixtures("get_api")
-class PvPTests(aiounittest.AsyncTestCase):
+class PvPTests(ApiTestCase):
     async def test_ranks(self):
         await ids_helper(self, self.api.pvp.ranks, PvpRank)
 
@@ -20,7 +19,7 @@ class PvPTests(aiounittest.AsyncTestCase):
 
 
 @pytest.mark.usefixtures("get_api")
-class PvPLeaderboardsTests(aiounittest.AsyncTestCase):
+class PvPLeaderboardsTests(ApiTestCase):
     async def test_leaderboards(self):
         seasons = await self.api.pvp.seasons()
         seasons = subset(seasons, 3)

@@ -1,4 +1,3 @@
-import aiounittest
 import unittest
 import pytest
 
@@ -45,11 +44,11 @@ from pygw2.models import (
     WalletCurrency,
 )
 
-from .helpers import subset, ids_helper
+from .helpers import ApiTestCase, subset, ids_helper
 
 
 @pytest.mark.usefixtures("get_api")
-class AccountTests(aiounittest.AsyncTestCase):
+class AccountTests(ApiTestCase):
     async def test_account_get(self):
         acc = await self.api.account.get()
         self.assertIsInstance(acc, Account)
@@ -207,7 +206,7 @@ class AccountTests(aiounittest.AsyncTestCase):
 
 
 @pytest.mark.usefixtures("get_api")
-class CharacterTests(aiounittest.AsyncTestCase):
+class CharacterTests(ApiTestCase):
     async def test_character(self):
         chars = await self.api.account.characters()
         chars = subset(chars, 5)
@@ -298,7 +297,7 @@ class CharacterTests(aiounittest.AsyncTestCase):
 
 
 @pytest.mark.usefixtures("get_api")
-class HomeTests(aiounittest.AsyncTestCase):
+class HomeTests(ApiTestCase):
     async def test_cats(self):
         cats = await self.api.account.home.cats()
         cats = subset(cats, 10)
@@ -313,7 +312,7 @@ class HomeTests(aiounittest.AsyncTestCase):
 
 
 @pytest.mark.usefixtures("get_api")
-class MountsTests(aiounittest.AsyncTestCase):
+class MountsTests(ApiTestCase):
     async def test_skins(self):
         skins = await self.api.account.mounts.skins()
         skins = subset(skins, 10)
@@ -328,7 +327,7 @@ class MountsTests(aiounittest.AsyncTestCase):
 
 
 @pytest.mark.usefixtures("get_api")
-class PvpTests(aiounittest.AsyncTestCase):
+class PvpTests(ApiTestCase):
     # TODO sort this out
     # async def test_pvp_heroes(self):
     #     ph = await self.api.account.pvp.heroes()

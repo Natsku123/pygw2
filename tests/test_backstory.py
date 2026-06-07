@@ -8,12 +8,11 @@ from pygw2.models import (
 )
 
 import unittest
-import aiounittest
-from tests.helpers import ids_helper
+from tests.helpers import ApiTestCase, ids_helper
 
 
 @pytest.mark.usefixtures("get_api")
-class BackStoryTests(aiounittest.AsyncTestCase):
+class BackStoryTests(ApiTestCase):
     async def test_answers(self):
         await ids_helper(self, self.api.backstory.answers, BiographyAnswer)
 

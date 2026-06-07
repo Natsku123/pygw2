@@ -1,12 +1,12 @@
 import pytest
 from pygw2.models import Item, Recipe
+from tests.helpers import ApiTestCase
 
 import unittest
-import aiounittest
 
 
 @pytest.mark.usefixtures("get_api")
-class ItemTests(aiounittest.AsyncTestCase):
+class ItemTests(ApiTestCase):
     async def test_get(self):
         got_items = await self.api.items.get()
         self.assertIsInstance(got_items, list)

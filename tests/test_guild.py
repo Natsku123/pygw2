@@ -1,4 +1,3 @@
-import aiounittest
 import pytest
 
 from pygw2.models import (
@@ -13,14 +12,14 @@ from pygw2.models import (
     GuildUpgrade,
 )
 
-from .helpers import ids_helper
+from .helpers import ApiTestCase, ids_helper
 
 
 TEST_GUILD_ID = "B95A726D-DD83-E511-AEFB-AC162DC05865"
 
 
 @pytest.mark.usefixtures("get_api")
-class GuildTests(aiounittest.AsyncTestCase):
+class GuildTests(ApiTestCase):
     async def test_get(self):
         guild = await self.api.guild(TEST_GUILD_ID).get()
         self.assertIsInstance(guild, Guild)

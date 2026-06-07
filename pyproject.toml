@@ -16,7 +16,7 @@ keywords = ["api", "python", "guild", "wars", "2", "gw2"]
 dependencies = [
   "aiohttp",
   "pydantic",
-  "requests"
+  "requests",
 ]
 
 [project.urls]
@@ -28,9 +28,9 @@ include = ["pygw2*"]
 
 [dependency-groups]
 dev = [
-  "aiounittest",
   "coverage",
   "pytest",
+  "pytest-asyncio>=1.4.0",
   "pytest-cov",
   "ruff>=0.15.16",
   "ty>=0.0.44",

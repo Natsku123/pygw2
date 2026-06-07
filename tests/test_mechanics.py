@@ -1,4 +1,3 @@
-import aiounittest
 import pytest
 
 from pygw2.models import (
@@ -16,11 +15,11 @@ from pygw2.models import (
     Trait,
 )
 
-from .helpers import ids_helper
+from .helpers import ApiTestCase, ids_helper
 
 
 @pytest.mark.usefixtures("get_api")
-class MechanicsTests(aiounittest.AsyncTestCase):
+class MechanicsTests(ApiTestCase):
     async def test_masteries(self):
         await ids_helper(self, self.api.mechanics.masteries, Mastery)
 
@@ -53,7 +52,7 @@ class MechanicsTests(aiounittest.AsyncTestCase):
 
 
 @pytest.mark.usefixtures("get_api")
-class MechanicsMountsTests(aiounittest.AsyncTestCase):
+class MechanicsMountsTests(ApiTestCase):
     async def test_skins(self):
         await ids_helper(self, self.api.mechanics.mounts.skins, MountSkin)
 
