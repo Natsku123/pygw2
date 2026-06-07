@@ -2,20 +2,31 @@ import asyncio
 import concurrent.futures
 import datetime
 from functools import wraps
-from typing import List, Dict, Union, Any, Type, Callable, Optional
+from typing import (
+    List,
+    Dict,
+    Union,
+    Any,
+    Callable,
+    Coroutine,
+    Optional,
+    Literal,
+    get_origin,
+    get_type_hints,
+)
 
-from aiohttp import ClientSession
-from pydantic import parse_obj_as, BaseModel as PydanticBase
+from aiohttp import ClientSession, ContentTypeError
+from pydantic import TypeAdapter, ConfigDict, BaseModel as PydanticBase
 
 from .core.exceptions import ApiError
-from .settings import *
+from .settings import base_url, cache_time, default_parameters
 
 pool = concurrent.futures.ThreadPoolExecutor()
+_UNSET = object()
 
 
 class BaseModel(PydanticBase):
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class LimitedDict(dict):
@@ -47,7 +58,7 @@ class LimitedDict(dict):
         return item in self.mapping and super().__contains__(self.mapping[item])
 
 
-def function_call_key(func: Callable, args, kwargs) -> str:
+def function_call_key(func: Callable[..., Any], args, kwargs) -> str:
     """
     Generate a key based on function called and arguments
     :param func:
@@ -55,13 +66,14 @@ def function_call_key(func: Callable, args, kwargs) -> str:
     :param kwargs:
     :return:
     """
-    return f"{func.__qualname__}{args}{kwargs}"
+    qualname = getattr(func, "__qualname__", func.__class__.__qualname__)
+    return f"{qualname}{args}{kwargs}"
 
 
 class LazyLoader:
     _loaded = LimitedDict({})
 
-    def __new__(cls, func: Callable, *args, **kwargs):
+    def __new__(cls, func: Callable[..., Coroutine[Any, Any, Any]], *args, **kwargs):
 
         # Check if the function has already been loaded
         loader = cls._loaded.get(function_call_key(func, args, kwargs))
@@ -76,7 +88,7 @@ class LazyLoader:
         cls._loaded[function_call_key(func, args, kwargs)] = loader
         return loader
 
-    def __init__(self, func: Callable, *args, **kwargs):
+    def __init__(self, func: Callable[..., Coroutine[Any, Any, Any]], *args, **kwargs):
         """
         Lazy load with given function with arguments
         :param func: Function to be used in loading
@@ -86,10 +98,10 @@ class LazyLoader:
         self.__func = func
         self.__args = args
         self.__kwargs = kwargs
-        self.__result = None
+        self.__result = _UNSET
         self.__time: Optional[datetime.datetime] = None
 
-    def __call__(self, force=False, *args, **kwargs) -> Union[List[Any], Any]:
+    def __call__(self, force: bool = False, *args, **kwargs) -> Any:
         """
         Run lazy loaded function on call or return already found result
         :param force: Force reload
@@ -101,8 +113,8 @@ class LazyLoader:
 
         # Fetch new result, if not fetched already or is too old or is forced
         if (
-            not self.__result
-            or not force
+            self.__result is _UNSET
+            or force
             or (self.__time and (now - self.__time).seconds > cache_time)
         ):
             self.__result = pool.submit(
@@ -113,29 +125,22 @@ class LazyLoader:
         return self.__result
 
 
-def list_to_str(l: list, delimiter: str = ","):
+def list_to_str(values: list[Any], delimiter: str = ",") -> str:
     """
     Convert list to string with delimiter.
-    :param l: list
+    :param values: list
     :param delimiter: str=","
     :return: str
     """
-    string = ""
-    for item in l:
-        if l.index(item) == len(l) - 1:
-            string += str(item)
-        else:
-            string += str(item) + delimiter
-
-    return string
+    return delimiter.join(str(item) for item in values)
 
 
 def object_parse(
     data: Union[List[Dict[Any, Any]], Dict[Any, Any]],
-    data_type: Type[BaseModel],
+    data_type: Any,
     *,
     force_list: bool = False,
-) -> Union[List[Any], Any]:
+) -> Any:
     """
     Parse object from incoming data
     :param data: Dict/list
@@ -144,15 +149,18 @@ def object_parse(
     :return:
     """
 
+    adapter = TypeAdapter(data_type)
+
     if isinstance(data, dict):
-        return data_type(**data)
-    elif isinstance(data, list):
-        result = parse_obj_as(List[data_type], data)
+        return adapter.validate_python(data)
+    if isinstance(data, list):
+        result = [adapter.validate_python(item) for item in data]
 
         if len(result) == 1 and not force_list:
             return result[0]
-        else:
-            return result
+        return result
+
+    return adapter.validate_python(data)
 
 
 def endpoint(
@@ -163,7 +171,9 @@ def endpoint(
     is_search: bool = False,
     max_ids: int = 200,
     min_ids: int = 0,
-    override_ids: str = None,
+    override_ids: Optional[str] = None,
+    not_found_data: Any = None,
+    return_shape: Literal["auto", "list", "single"] = "auto",
 ):
     """
     Endpoint wrapper
@@ -174,10 +184,27 @@ def endpoint(
     :param path: Endpoint path
     :param subendpoint: Path of sub-endpoint
     :param override_ids: Override 'ids' parameter name
+    :param not_found_data: Data to return when endpoint responds with 404.
+    :param return_shape: Return normalization mode.
+        "auto": preserve existing behavior,
+        "list": always return list (empty list on not found),
+        "single": always return one item (None on not found).
     :return:
     """
 
     def decorate(func):
+        resolved_return_shape = return_shape
+        if resolved_return_shape == "auto":
+            # In auto mode, treat list-typed APIs as list-normalized.
+            # This keeps plural/list endpoints from collapsing to a single object.
+            try:
+                return_hint = get_type_hints(func).get("return")
+            except Exception:
+                return_hint = None
+
+            if return_hint is not None and get_origin(return_hint) is list:
+                resolved_return_shape = "list"
+
         @wraps(func)
         async def get_data(self, *args, **kwargs):
             ids = [[]]
@@ -251,8 +278,12 @@ def endpoint(
 
             # Construct fetch with ID(s)
             if has_ids:
-                # if len(args) > max_ids and path_id == "":
-                #     raise ApiError("Too many IDs for this endpoint.")
+                if (
+                    len(args) > max_ids
+                    and path_id == ""
+                    and resolved_return_shape == "single"
+                ):
+                    raise ApiError("Too many IDs for this endpoint.")
                 if len(args) < min_ids and path_id == "":
                     raise ApiError("Not enough IDs for this endpoint.")
 
@@ -283,10 +314,8 @@ def endpoint(
 
             # Get data from API
             async with ClientSession() as session:
-
                 # Iterate over all batches
                 for i in ids:
-
                     # Update parameters with IDs and
                     # make sure that there are no duplicate requests
                     if len(i) > 0:
@@ -300,48 +329,98 @@ def endpoint(
                         elif override_ids in parameters:
                             del parameters[override_ids]
 
-                    async with session.get(
-                        base_url + path + path_id + subendpoint, params=parameters
-                    ) as r:
+                    retries = 3
+                    delay = 0.5
+                    for attempt in range(retries):
+                        async with session.get(
+                            base_url + path + path_id + subendpoint, params=parameters
+                        ) as r:
+                            # Retry transient upstream failures.
+                            if 500 <= r.status < 600:
+                                if attempt < retries - 1:
+                                    await asyncio.sleep(delay)
+                                    delay *= 2
+                                    continue
+                                raise ApiError(f"Server error {r.status}.")
 
-                        # Check known status codes
-                        if r.status == 414:
-                            raise ApiError("Too many IDs.")
-                        elif r.status == 404:
-                            # Not found
-                            result.append(None)
-                            continue
+                            # Check known status codes
+                            if r.status == 414:
+                                raise ApiError("Too many IDs.")
+                            elif r.status == 404:
+                                # Not found
+                                if resolved_return_shape == "list":
+                                    result.append([])
+                                else:
+                                    result.append(not_found_data)
+                                break
 
-                        # Parse json
-                        data = await r.json()
+                            # Parse json
+                            try:
+                                data = await r.json()
+                            except ContentTypeError:
+                                if attempt < retries - 1:
+                                    await asyncio.sleep(delay)
+                                    delay *= 2
+                                    continue
+                                raise ApiError(
+                                    f"Unexpected response type for status {r.status}."
+                                )
 
-                        # Check for errors.
-                        if "text" in data:
-                            raise ApiError(data["text"])
+                            # Check for errors.
+                            if "text" in data:
+                                raise ApiError(data["text"])
 
-                        # Check if IDs used
-                        if has_ids:
+                            # Check if IDs used
+                            if has_ids:
+                                # Check if fetched all
+                                if len(args) == 0:
+                                    i = None
 
-                            # Check if fetched all
-                            if len(args) == 0:
-                                i = None
-
-                            result.append(await func(self, **kwargs, data=data, ids=i))
-                        else:
-                            result.append(await func(self, **kwargs, data=data))
+                                result.append(
+                                    await func(self, **kwargs, data=data, ids=i)
+                                )
+                            else:
+                                result.append(await func(self, **kwargs, data=data))
+                            break
 
             # If only one batch was fetched, return it
             # Else compile a single list
-            if len(result) == 1:
-                return result[0]
-            else:
+            if resolved_return_shape == "list":
                 final = []
                 for r in result:
+                    if r is None:
+                        continue
                     if isinstance(r, list):
                         final += r
                     else:
                         final.append(r)
                 return final
+
+            if resolved_return_shape == "single":
+                if len(result) == 0:
+                    return None
+                if len(result) > 1:
+                    raise ApiError("Expected single result but got multiple batches.")
+
+                single = result[0]
+                if isinstance(single, list):
+                    if len(single) == 0:
+                        return None
+                    if len(single) == 1:
+                        return single[0]
+                    raise ApiError("Expected single result but got a list.")
+                return single
+
+            if len(result) == 1:
+                return result[0]
+
+            final = []
+            for r in result:
+                if isinstance(r, list):
+                    final += r
+                else:
+                    final.append(r)
+            return final
 
         return get_data
 

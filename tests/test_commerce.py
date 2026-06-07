@@ -1,13 +1,12 @@
 import pytest
-from pygw2.models import *
+from pygw2.models import DeliveryBox, ExchangeRate, ItemListing, Price, Transaction
 
 import unittest
-import aiounittest
-from tests.helpers import ids_helper
+from tests.helpers import ApiTestCase, ids_helper
 
 
 @pytest.mark.usefixtures("get_api")
-class CommerceTests(aiounittest.AsyncTestCase):
+class CommerceTests(ApiTestCase):
     async def test_delivery(self):
         delivery_box = await self.api.commerce.delivery()
         self.assertIsInstance(delivery_box, DeliveryBox)

@@ -3,7 +3,29 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, ForwardRef
 
-from pygw2.core.enums import *
+from pygw2.core.enums import (
+    Attunement,
+    Binding,
+    CharacterFlag,
+    ComboFieldType,
+    ComboFinisherType,
+    Discipline,
+    EquipmentLocation,
+    EquipmentSlot,
+    Gender,
+    ProfessionTrainingCategory,
+    ProfessionTrainingTrackType,
+    ProfessionWeaponFlag,
+    Professions,
+    Races,
+    SkillCategories,
+    SkillFactType,
+    SkillSlot,
+    SkillType,
+    TraitSlot,
+    TraitTier,
+    WeaponType,
+)
 from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
@@ -70,19 +92,19 @@ class Equipment(BaseModel):
     infusions_: LazyLoader | None = None
 
     @property
-    def infusions(self) -> list[Item]:
+    def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
     upgrades_: LazyLoader | None = None
 
     @property
-    def upgrades(self) -> list[Item]:
+    def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
     skin_: LazyLoader | None = None
 
     @property
-    def skin(self) -> list[Skin]:
+    def skin(self) -> list[Skin] | None:
         return self.skin_() if self.skin_ is not None else None
 
     stats: Stats | None = None
@@ -92,7 +114,7 @@ class Equipment(BaseModel):
     dyes_: LazyLoader | None = None
 
     @property
-    def dyes(self) -> list[Color]:
+    def dyes(self) -> list[Color] | None:
         return self.dyes_() if self.dyes_ is not None else None
 
 
@@ -108,19 +130,19 @@ class ItemInventory(BaseModel):
     infusions_: LazyLoader | None = None
 
     @property
-    def infusions(self) -> list[Item]:
+    def infusions(self) -> list[Item] | None:
         return self.infusions_() if self.infusions_ is not None else None
 
     upgrades_: LazyLoader | None = None
 
     @property
-    def upgrades(self) -> list[Item]:
+    def upgrades(self) -> list[Item] | None:
         return self.upgrades_() if self.upgrades_ is not None else None
 
     skin_: LazyLoader | None = None
 
     @property
-    def skin(self) -> list[Skin]:
+    def skin(self) -> list[Skin] | None:
         return self.skin_() if self.skin_ is not None else None
 
     stats: Stats | None = None
@@ -144,13 +166,13 @@ class SkillsBase(BaseModel):
     heal_: LazyLoader | None = None
 
     @property
-    def heal(self) -> Skill:
+    def heal(self) -> Skill | None:
         return self.heal_() if self.heal_ else None
 
     utilities_: LazyLoader | None = None
 
     @property
-    def utilities(self) -> list[Skill]:
+    def utilities(self) -> list[Skill] | None:
         return self.utilities_() if self.utilities_ else None
 
     elite_: LazyLoader | None = None
@@ -183,13 +205,13 @@ class SpecializationBase(BaseModel):
     specialization_: LazyLoader | None = None
 
     @property
-    def specialization(self) -> Specialization:
+    def specialization(self) -> Specialization | None:
         return self.specialization_() if self.specialization_ else None
 
     traits_: LazyLoader | None = None
 
     @property
-    def traits(self) -> list[Trait]:
+    def traits(self) -> list[Trait] | None:
         return self.traits_() if self.traits_ else None
 
 
@@ -208,7 +230,7 @@ class CharacterCore(BaseModel):
     guild_: LazyLoader | None = None
 
     @property
-    def guild(self) -> Guild:
+    def guild(self) -> Guild | None:
         return self.guild_() if self.guild_ is not None else None
 
     age: int
@@ -217,7 +239,7 @@ class CharacterCore(BaseModel):
     title_: LazyLoader | None = None
 
     @property
-    def title(self) -> Title:
+    def title(self) -> Title | None:
         return self.title_() if self.title_ is not None else None
 
 
@@ -256,7 +278,7 @@ class Character(BaseModel):
     guild_: LazyLoader | None = None
 
     @property
-    def guild(self) -> Guild:
+    def guild(self) -> Guild | None:
         return self.guild_() if self.guild_ is not None else None
 
     age: int
@@ -265,7 +287,7 @@ class Character(BaseModel):
     title_: LazyLoader | None = None
 
     @property
-    def title(self) -> Title:
+    def title(self) -> Title | None:
         return self.title_() if self.title_ is not None else None
 
     backstory_: LazyLoader
@@ -467,13 +489,13 @@ class SkillFact(BaseModel):
 
 
 class SkillTraitedFact(SkillFact):
-    requires_trait_: LazyLoader
+    requires_trait_: LazyLoader | None = None
 
     @property
-    def requires_trait(self) -> Trait:
-        return self.requires_trait_()
+    def requires_trait(self) -> Trait | None:
+        return self.requires_trait_() if self.requires_trait_ is not None else None
 
-    overrides: int | None  # TODO resolve from facts
+    overrides: int | None = None  # TODO resolve from facts
 
 
 class Skill(BaseModel):
@@ -509,25 +531,25 @@ class Skill(BaseModel):
 
     @property
     def prev_chain(self) -> Skill | None:
-        return self.prev_chain_ if self.prev_chain_ is not None else None
+        return self.prev_chain_() if self.prev_chain_ is not None else None
 
     transform_skills_: LazyLoader | None = None
 
     @property
     def transform_skills(self) -> list[Skill] | None:
-        return self.transform_skills_ if self.transform_skills_ is not None else None
+        return self.transform_skills_() if self.transform_skills_ is not None else None
 
     bundle_skills_: LazyLoader | None = None
 
     @property
     def bundle_skills(self) -> list[Skill] | None:
-        return self.bundle_skills_ if self.bundle_skills_ is not None else None
+        return self.bundle_skills_() if self.bundle_skills_ is not None else None
 
     toolbelt_skill_: LazyLoader | None = None
 
     @property
     def toolbelt_skill(self) -> Skill | None:
-        return self.toolbelt_skill_ if self.toolbelt_skill_ is not None else None
+        return self.toolbelt_skill_() if self.toolbelt_skill_ is not None else None
 
 
 class TraitSkill(BaseModel):
@@ -544,11 +566,11 @@ class Trait(BaseModel):
     name: str
     icon: str
     description: str
-    specialization_: LazyLoader
+    specialization_: LazyLoader | None = None
 
     @property
-    def specialization(self) -> Specialization:
-        return self.specialization_()
+    def specialization(self) -> Specialization | None:
+        return self.specialization_() if self.specialization_ is not None else None
 
     tier: TraitTier
     slot: TraitSlot

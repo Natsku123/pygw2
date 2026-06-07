@@ -14,7 +14,7 @@ class HomeApi:
         self.api_key: str = api_key
 
     @endpoint("/v2/home/cats", has_ids=True)
-    async def cats(self, *, data, ids: list = None):
+    async def cats(self, *, data, ids: list | None = None):
         """
         Get unlockable cats by ID(s).
         None returns all IDs.
@@ -27,7 +27,7 @@ class HomeApi:
         return object_parse(data, HomeCat)
 
     @endpoint("/v2/home/nodes", has_ids=True)
-    async def nodes(self, *, data, ids: list = None):
+    async def nodes(self, *, data, ids: list | None = None):
         """
         Get unlockable nodes by ID(s).
         None returns all IDs.

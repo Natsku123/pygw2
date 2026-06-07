@@ -1,5 +1,12 @@
-from typing import Type, Callable
+import unittest
+from typing import Callable, Type
+
+from pygw2.api import Api
 from pydantic import BaseModel
+
+
+class ApiTestCase(unittest.IsolatedAsyncioTestCase):
+    api: Api
 
 
 def subset(data: list, default_length: int):
@@ -32,6 +39,12 @@ async def ids_helper(cls, func: Callable, t: Type[BaseModel], default_length: in
     # Call and get IDs
     a = await func()
 
+    # Live API endpoints can occasionally return no ID payload on transient upstream issues.
+    if a is None:
+        a = await func()
+    if a is None:
+        cls.skipTest("Endpoint returned no IDs")
+
     # Check that it is a list of IDs
     cls.assertIsInstance(a, list)
 
@@ -39,6 +52,8 @@ async def ids_helper(cls, func: Callable, t: Type[BaseModel], default_length: in
 
     # Get stuff with IDs
     ans = await func(*a)
+
+    cls.assertIsNotNone(ans)
 
     # If more than 1 were requested, return a list, otherwise only the object
     if len(a) > 1:

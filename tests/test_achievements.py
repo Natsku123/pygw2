@@ -1,14 +1,19 @@
 import pytest
 
 import pygw2.core.exceptions
-from pygw2.models import *
+from pygw2.models import (
+    Achievement,
+    AchievementCategory,
+    AchievementGroup,
+    DailyAchievements,
+)
+from tests.helpers import ApiTestCase
 
 import unittest
-import aiounittest
 
 
 @pytest.mark.usefixtures("get_api")
-class AchievementsTests(aiounittest.AsyncTestCase):
+class AchievementsTests(ApiTestCase):
     async def test_get(self):
         a = await self.api.achievements.get(1)
         self.assertIsInstance(a, Achievement)

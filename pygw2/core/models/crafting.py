@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pygw2.core.enums import RecipeType, Discipline, RecipeFlag
-from pygw2.utils import LazyLoader, BaseModel
+from pygw2.utils import BaseModel
 
 
 class Material(BaseModel):

@@ -5,12 +5,12 @@ from ..utils import endpoint, object_parse
 class ContinentApi:
     _instances = {}
 
-    def __new__(cls, *args, continent_id: int = None, **kwargs):
+    def __new__(cls, *args, continent_id: int | None = None, **kwargs):
         if continent_id not in cls._instances:
             cls._instances[continent_id] = super().__new__(cls)
         return cls._instances[continent_id]
 
-    def __init__(self, continent_id: int = None):
+    def __init__(self, continent_id: int | None = None):
         self.continent_id = continent_id
         self._floor_api = ContinentFloorApi
 
@@ -24,19 +24,20 @@ class ContinentApi:
         # TODO check format
         return data
 
-    def floor(self, floor_id) -> "ContinentFloorApi":
+    def floor(self, floor_id: int) -> "ContinentFloorApi":
+        assert self.continent_id is not None
         return self._floor_api(self.continent_id, floor_id)
 
 
 class ContinentFloorApi:
     _instances = {}
 
-    def __new__(cls, continent_id: int, *args, floor_id: int = None, **kwargs):
+    def __new__(cls, continent_id: int, *args, floor_id: int | None = None, **kwargs):
         if (continent_id, floor_id) not in cls._instances:
             cls._instances[(continent_id, floor_id)] = super().__new__(cls)
         return cls._instances[(continent_id, floor_id)]
 
-    def __init__(self, continent_id: int, floor_id: int = None):
+    def __init__(self, continent_id: int, floor_id: int | None = None):
         self.continent_id = continent_id
         self.floor_id = floor_id
         self._region_api = ContinentFloorRegionApi
@@ -52,6 +53,7 @@ class ContinentFloorApi:
         return data
 
     def region(self, region_id: int) -> "ContinentFloorRegionApi":
+        assert self.floor_id is not None
         return self._region_api(self.continent_id, self.floor_id, region_id)
 
 
@@ -59,13 +61,18 @@ class ContinentFloorRegionApi:
     _instances = {}
 
     def __new__(
-        cls, continent_id: int, floor_id: int, *args, region_id: int = None, **kwargs
+        cls,
+        continent_id: int,
+        floor_id: int,
+        *args,
+        region_id: int | None = None,
+        **kwargs,
     ):
         if (continent_id, floor_id, region_id) not in cls._instances:
             cls._instances[(continent_id, floor_id, region_id)] = super().__new__(cls)
         return cls._instances[(continent_id, floor_id, region_id)]
 
-    def __init__(self, continent_id: int, floor_id: int, region_id: int = None):
+    def __init__(self, continent_id: int, floor_id: int, region_id: int | None = None):
         self.continent_id = continent_id
         self.floor_id = floor_id
         self.region_id = region_id
@@ -82,6 +89,7 @@ class ContinentFloorRegionApi:
         return data
 
     def map(self, map_id: int) -> "ContinentFloorRegionMapApi":
+        assert self.region_id is not None
         return self._map_api(self.continent_id, self.floor_id, self.region_id, map_id)
 
 
@@ -94,17 +102,21 @@ class ContinentFloorRegionMapApi:
         floor_id: int,
         region_id: int,
         *args,
-        map_id: int = None,
-        **kwargs
+        map_id: int | None = None,
+        **kwargs,
     ):
         if (continent_id, floor_id, region_id, map_id) not in cls._instances:
-            cls._instances[
-                (continent_id, floor_id, region_id, map_id)
-            ] = super().__new__(cls)
+            cls._instances[(continent_id, floor_id, region_id, map_id)] = (
+                super().__new__(cls)
+            )
         return cls._instances[(continent_id, floor_id, region_id, map_id)]
 
     def __init__(
-        self, continent_id: int, floor_id: int, region_id: int, map_id: int = None
+        self,
+        continent_id: int,
+        floor_id: int,
+        region_id: int,
+        map_id: int | None = None,
     ):
         self.continent_id = continent_id
         self.floor_id = floor_id
@@ -112,14 +124,16 @@ class ContinentFloorRegionMapApi:
         self.map_id = map_id
 
     @endpoint("/v2/continents", subendpoint="/sectors", has_ids=True)
-    async def sectors(self, *, data, ids: list = None):
+    async def sectors(self, *, data, ids: list | None = None):
         """
         Get sectors of map.
         :param data: data from wrapper
         :param ids: list of IDs
         :return:
         """
-        return object_parse(data, MapSector)
+        if ids:
+            return object_parse(data, MapSector)
+        return data
 
     @endpoint("/v2/continents", subendpoint="/pois")
     async def pois(self, *, data):
@@ -155,7 +169,7 @@ class MapInfoApi:
         self._continent = ContinentApi
 
     @endpoint("/v2/continents", has_ids=True)
-    async def continents(self, *, data, ids: list = None):
+    async def continents(self, *, data, ids: list | None = None):
         """
         Get continents by ID(s).
         None returns all IDs.
@@ -167,11 +181,11 @@ class MapInfoApi:
             return data
         return object_parse(data, Continent)
 
-    def continent(self, continent_id: int = None) -> ContinentApi:
+    def continent(self, continent_id: int | None = None) -> ContinentApi:
         return self._continent(continent_id)
 
     @endpoint("/v2/maps", has_ids=True)
-    async def maps(self, *, data, ids: list = None):
+    async def maps(self, *, data, ids: list | None = None):
         """
         Get maps by ID(s).
         None returns all IDs.

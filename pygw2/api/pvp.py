@@ -67,7 +67,7 @@ class PvpLeaderboardsApi:
         return object_parse(data, PvpLeaderboard)
 
     @endpoint("/v2/pvp/seasons", subendpoint="/leaderboards/guild/na")
-    async def guild_eu(self, *, data) -> List[PvpLeaderboard]:
+    async def guild_na(self, *, data) -> List[PvpLeaderboard]:
         """
         Get leaderboards for NA guild from API
         :param data: data from wrapper
@@ -90,7 +90,9 @@ class PvpApi:
         self._leaderboards = PvpLeaderboardsApi
 
     @endpoint("/v2/pvp/ranks", has_ids=True)
-    async def ranks(self, *, data, ids: list = None) -> List[Union[PvpRank, int, str]]:
+    async def ranks(
+        self, *, data, ids: list | None = None
+    ) -> List[Union[PvpRank, int, str]]:
         """
         Get Pvp ranks from API by list of IDs or one ID.
         :param data: data from wrapper
@@ -105,7 +107,7 @@ class PvpApi:
 
     @endpoint("/v2/pvp/seasons", has_ids=True)
     async def seasons(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> List[Union[PvpSeason, int, str]]:
         """
         Get Pvp seasons from API by list of IDs or one iD.
@@ -120,7 +122,9 @@ class PvpApi:
         return object_parse(data, PvpSeason)
 
     @endpoint("/v2/pvp/heroes", has_ids=True)
-    async def heroes(self, *, data, ids: list = None) -> List[Union[PvpHero, int, str]]:
+    async def heroes(
+        self, *, data, ids: list | None = None
+    ) -> List[Union[PvpHero, int, str]]:
         """
         Get Pvp heroes from API
         :param data: data from wrapper

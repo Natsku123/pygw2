@@ -27,7 +27,7 @@ class MechanicsMountsApi:
 
     @endpoint("/v2/mounts/skins", has_ids=True)
     async def skins(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[MountSkin, List[MountSkin], List[str], List[int]]:
         """
         Get mount skins by ID(s).
@@ -42,7 +42,7 @@ class MechanicsMountsApi:
 
     @endpoint("/v2/mounts/types", has_ids=True)
     async def types(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[MountType, List[MountType], List[str], List[int]]:
         """
         Get mount types by ID(s).
@@ -74,7 +74,7 @@ class MechanicsApi:
 
     @endpoint("/v2/masteries", has_ids=True)
     async def masteries(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Mastery, List[Mastery], List[str], List[int]]:
         """
         Get masteries by ID(s).
@@ -89,7 +89,7 @@ class MechanicsApi:
 
     @endpoint("/v2/outfits", has_ids=True)
     async def outfits(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Outfit, List[Outfit], List[str], List[int]]:
         """
         Get outfits by ID(s).
@@ -112,7 +112,7 @@ class MechanicsApi:
 
     @endpoint("/v2/pets", has_ids=True)
     async def pets(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Pet, List[Pet], List[str], List[int]]:
         """
         Get Ranger pets by ID(s).
@@ -127,7 +127,7 @@ class MechanicsApi:
 
     @endpoint("/v2/professions", has_ids=True)
     async def professions(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Profession, List[Profession], List[str], List[int]]:
         """
         Get professions by ID(s).
@@ -163,7 +163,7 @@ class MechanicsApi:
 
     @endpoint("/v2/races", has_ids=True)
     async def races(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Race, List[Race], List[str], List[int]]:
         """
         Get races by ID(s).
@@ -180,7 +180,7 @@ class MechanicsApi:
 
     @endpoint("/v2/specializations", has_ids=True)
     async def specializations(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Specialization, List[Specialization], List[str], List[int]]:
         """
 
@@ -199,7 +199,7 @@ class MechanicsApi:
 
     @endpoint("/v2/skills", has_ids=True)
     async def skills(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Skill, List[Skill], List[str], List[int]]:
         """
         Get skills by ID(s).
@@ -234,7 +234,7 @@ class MechanicsApi:
 
     @endpoint("/v2/traits", has_ids=True)
     async def traits(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Trait, List[Trait], List[str], List[int]]:
         """
         Get traits by ID(s).
@@ -253,7 +253,7 @@ class MechanicsApi:
 
     @endpoint("/v2/legends", has_ids=True)
     async def legends(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Legend, List[Legend], List[str], List[int]]:
         """
         Get legends by ID(s).
@@ -274,7 +274,7 @@ class MechanicsApi:
 
     @endpoint("/v2/legendaryarmory", has_ids=True)
     async def legendary_armory(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> Union[Legendary, List[Legendary], List[str], List[int]]:
         """
         Get Legendary Armory items by ID(s).

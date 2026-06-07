@@ -157,7 +157,15 @@ class AccountHomeApi:
 
         home_api = HomeApi(api_key=self.api_key)
 
-        return await home_api.nodes(*data)
+        if not data:
+            return []
+
+        nodes = await home_api.nodes(*data)
+        if nodes is None:
+            return []
+        if isinstance(nodes, list):
+            return [node for node in nodes if node is not None]
+        return [nodes]
 
 
 class AccountMountsApi:
@@ -182,7 +190,15 @@ class AccountMountsApi:
 
         mecha_api = MechanicsApi(api_key=self.api_key)
 
-        return await mecha_api.mounts.skins(*data)
+        if not data:
+            return []
+
+        skins = await mecha_api.mounts.skins(*data)
+        if skins is None:
+            return []
+        if isinstance(skins, list):
+            return [skin for skin in skins if skin is not None]
+        return [skins]
 
     @endpoint("/v2/account/mounts/types")
     async def types(self, *, data) -> List[MountType]:
@@ -195,7 +211,15 @@ class AccountMountsApi:
 
         mecha_api = MechanicsApi(api_key=self.api_key)
 
-        return await mecha_api.mounts.types(*data)
+        if not data:
+            return []
+
+        types = await mecha_api.mounts.types(*data)
+        if types is None:
+            return []
+        if isinstance(types, list):
+            return [mount for mount in types if mount is not None]
+        return [types]
 
 
 class CharactersApi:
@@ -601,9 +625,6 @@ class AccountApi:
         :return:
         """
 
-        # Blacklist of purged IDs
-        blacklist = [45022, 45023, 45024, 45025]
-
         for i, item in enumerate(data):
             data[i] = parse_item(item)
 
@@ -620,10 +641,8 @@ class AccountApi:
 
         daily_api = DailyApi(api_key=self.api_key)
 
-        print("asd", data)
-
         if not data:
-            return data
+            return []
 
         return await daily_api.crafting(*data)
 
@@ -714,7 +733,7 @@ class AccountApi:
 
         return await items_api.mailcarriers(*data)
 
-    @endpoint("/v2/account/mapchests")
+    @endpoint("/v2/account/mapchests", not_found_data=[])
     async def mapchests(self, *, data) -> List["DailyMapChest"]:
         """
         Get mapchest unlocked since daily reset from API.
@@ -726,9 +745,14 @@ class AccountApi:
         daily_api = DailyApi(api_key=self.api_key)
 
         if not data:
-            return data
+            return []
 
-        return await daily_api.mapchests(*data)
+        mapchests = await daily_api.mapchests(*data)
+        if mapchests is None:
+            return []
+        if isinstance(mapchests, list):
+            return mapchests
+        return [mapchests]
 
     @endpoint("/v2/account/masteries")
     async def masteries(self, *, data) -> List["MasteryProgress"]:
@@ -799,7 +823,15 @@ class AccountApi:
 
         misc_api = MiscellaneousApi(api_key=self.api_key)
 
-        return await misc_api.novelties(*data)
+        if not data:
+            return []
+
+        novelties = await misc_api.novelties(*data)
+        if novelties is None:
+            return []
+        if isinstance(novelties, list):
+            return [novelty for novelty in novelties if novelty is not None]
+        return [novelties]
 
     @endpoint("/v2/account/outfits")
     async def outfits(self, *, data) -> List["Outfit"]:
@@ -842,7 +874,19 @@ class AccountApi:
         if not data:
             return data
 
-        return await items_api.recipes(*data)
+        # Keep request URLs small for accounts with very large unlocked recipe sets.
+        # The downstream endpoint also batches, but explicit chunking avoids edge cases.
+        chunk_size = 100
+        recipes: List["Recipe"] = []
+        for i in range(0, len(data), chunk_size):
+            chunk = data[i : i + chunk_size]
+            parsed = await items_api.recipes(*chunk)
+            if isinstance(parsed, list):
+                recipes.extend(parsed)
+            else:
+                recipes.append(parsed)
+
+        return recipes
 
     @endpoint("/v2/account/skins")
     async def skins(self, *, data) -> List["Skin"]:
@@ -928,7 +972,7 @@ class AccountApi:
         return object_parse(data, OwnedLegendary)
 
     @endpoint("/v2/subtoken")
-    async def subtoken(self, *, data, params: dict = None) -> SubToken:
+    async def subtoken(self, *, data, params: dict | None = None) -> SubToken:
         """
         Check https://wiki.guildwars2.com/wiki/API:2/createsubtoken for more info
         :param data: Data from wrapper

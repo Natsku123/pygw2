@@ -61,8 +61,8 @@ class MasteryLevel(BaseModel):
     name: str = ""
     description: str = ""
     icon: str = ""
-    point_cost: int = ""
-    exp_cost: int = ""
+    point_cost: int | None = None
+    exp_cost: int | None = None
 
 
 class Mastery(BaseModel):
@@ -90,7 +90,6 @@ class Account(BaseModel):
     id: str
     age: int
     name: str
-    world: int  # TODO resolve against /v2/worlds
     world_: LazyLoader
 
     @property
@@ -105,7 +104,7 @@ class Account(BaseModel):
     fractal_level: int
     daily_ap: int
     monthly_ap: int
-    wvw_rank: int
+    wvw_rank: int | None = None
     last_modified: datetime.datetime
 
 

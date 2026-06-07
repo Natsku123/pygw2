@@ -2,7 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ForwardRef
 
-from pygw2.core.enums import *
+from pygw2.core.enums import (
+    ArmorSlot,
+    Attribute,
+    DamageType,
+    DyeSlotMaterial,
+    GatheringToolType,
+    Races,
+    SkinFlag,
+    SkinType,
+    WeaponType,
+    WeightClass,
+)
 from pygw2.utils import LazyLoader, BaseModel
 
 if TYPE_CHECKING:
@@ -57,9 +68,9 @@ class Skin(BaseModel):
     icon: str
     rarity: str  # TODO same as ItemRarity?
     description: str | None = None
-    details: ArmorSkinDetails | WeaponSkinDetails | GatheringSkinDetails | Foo | None = (
-        None
-    )
+    details: (
+        ArmorSkinDetails | WeaponSkinDetails | GatheringSkinDetails | Foo | None
+    ) = None
 
 
 class DyeSlot(BaseModel):

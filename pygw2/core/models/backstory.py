@@ -1,13 +1,7 @@
 from __future__ import annotations
-from typing import ForwardRef
 
 from pygw2.utils import LazyLoader, BaseModel
 from pygw2.core.enums import Professions, Races, StoryFlags
-
-BiographyQuestion = ForwardRef("BiographyQuestion")
-BiographyAnswer = ForwardRef("BiographyAnswer")
-Story = ForwardRef("Story")
-Season = ForwardRef("Season")
 
 
 class BiographyAnswer(BaseModel):

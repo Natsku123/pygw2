@@ -1,4 +1,4 @@
-api_version = "2023-10-09T00:00:00Z"
+api_version = "2026-06-06T00:00:00Z"
 
 base_url = "https://api.guildwars2.com"
 

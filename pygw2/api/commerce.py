@@ -43,8 +43,9 @@ class TradingPostApi:
         has_ids=True,
         max_ids=1,
         min_ids=1,
+        return_shape="single",
     )
-    async def exchange_coins(self, *, data, ids: list = None) -> ExchangeRate:
+    async def exchange_coins(self, *, data, ids: list | None = None) -> ExchangeRate:
         """
         Get coins -> gems exchange rate from API.
         :param data: data from wrapper
@@ -60,8 +61,9 @@ class TradingPostApi:
         has_ids=True,
         max_ids=1,
         min_ids=1,
+        return_shape="single",
     )
-    async def exchange_gems(self, *, data, ids: list = None) -> ExchangeRate:
+    async def exchange_gems(self, *, data, ids: list | None = None) -> ExchangeRate:
         """
         Get gems -> coins exchange rate from API.
         :param data: data from wrapper
@@ -73,7 +75,7 @@ class TradingPostApi:
 
     @endpoint("/v2/commerce/listings", has_ids=True)
     async def listings(
-        self, *, data, ids: list = None
+        self, *, data, ids: list | None = None
     ) -> List[Union[ItemListing, int, str]]:
         """
         Get Trading post listings from API.
@@ -95,7 +97,9 @@ class TradingPostApi:
         return object_parse(data, ItemListing)
 
     @endpoint("/v2/commerce/prices", has_ids=True)
-    async def prices(self, *, data, ids: list = None) -> List[Union[Price, int, str]]:
+    async def prices(
+        self, *, data, ids: list | None = None
+    ) -> List[Union[Price, int, str]]:
         """
         Get Trading post prices from API.
         :param data: data from wrapper
