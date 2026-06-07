@@ -2,7 +2,18 @@ import asyncio
 import concurrent.futures
 import datetime
 from functools import wraps
-from typing import List, Dict, Union, Any, Callable, Coroutine, Optional
+from typing import (
+    List,
+    Dict,
+    Union,
+    Any,
+    Callable,
+    Coroutine,
+    Optional,
+    Literal,
+    get_origin,
+    get_type_hints,
+)
 
 from aiohttp import ClientSession, ContentTypeError
 from pydantic import TypeAdapter, ConfigDict, BaseModel as PydanticBase
@@ -162,6 +173,7 @@ def endpoint(
     min_ids: int = 0,
     override_ids: Optional[str] = None,
     not_found_data: Any = None,
+    return_shape: Literal["auto", "list", "single"] = "auto",
 ):
     """
     Endpoint wrapper
@@ -173,10 +185,26 @@ def endpoint(
     :param subendpoint: Path of sub-endpoint
     :param override_ids: Override 'ids' parameter name
     :param not_found_data: Data to return when endpoint responds with 404.
+    :param return_shape: Return normalization mode.
+        "auto": preserve existing behavior,
+        "list": always return list (empty list on not found),
+        "single": always return one item (None on not found).
     :return:
     """
 
     def decorate(func):
+        resolved_return_shape = return_shape
+        if resolved_return_shape == "auto":
+            # In auto mode, treat list-typed APIs as list-normalized.
+            # This keeps plural/list endpoints from collapsing to a single object.
+            try:
+                return_hint = get_type_hints(func).get("return")
+            except Exception:
+                return_hint = None
+
+            if return_hint is not None and get_origin(return_hint) is list:
+                resolved_return_shape = "list"
+
         @wraps(func)
         async def get_data(self, *args, **kwargs):
             ids = [[]]
@@ -250,8 +278,12 @@ def endpoint(
 
             # Construct fetch with ID(s)
             if has_ids:
-                # if len(args) > max_ids and path_id == "":
-                #     raise ApiError("Too many IDs for this endpoint.")
+                if (
+                    len(args) > max_ids
+                    and path_id == ""
+                    and resolved_return_shape == "single"
+                ):
+                    raise ApiError("Too many IDs for this endpoint.")
                 if len(args) < min_ids and path_id == "":
                     raise ApiError("Not enough IDs for this endpoint.")
 
@@ -316,7 +348,10 @@ def endpoint(
                                 raise ApiError("Too many IDs.")
                             elif r.status == 404:
                                 # Not found
-                                result.append(not_found_data)
+                                if resolved_return_shape == "list":
+                                    result.append([])
+                                else:
+                                    result.append(not_found_data)
                                 break
 
                             # Parse json
@@ -350,16 +385,42 @@ def endpoint(
 
             # If only one batch was fetched, return it
             # Else compile a single list
-            if len(result) == 1:
-                return result[0]
-            else:
+            if resolved_return_shape == "list":
                 final = []
                 for r in result:
+                    if r is None:
+                        continue
                     if isinstance(r, list):
                         final += r
                     else:
                         final.append(r)
                 return final
+
+            if resolved_return_shape == "single":
+                if len(result) == 0:
+                    return None
+                if len(result) > 1:
+                    raise ApiError("Expected single result but got multiple batches.")
+
+                single = result[0]
+                if isinstance(single, list):
+                    if len(single) == 0:
+                        return None
+                    if len(single) == 1:
+                        return single[0]
+                    raise ApiError("Expected single result but got a list.")
+                return single
+
+            if len(result) == 1:
+                return result[0]
+
+            final = []
+            for r in result:
+                if isinstance(r, list):
+                    final += r
+                else:
+                    final.append(r)
+            return final
 
         return get_data
 

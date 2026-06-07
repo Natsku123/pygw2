@@ -43,6 +43,7 @@ class TradingPostApi:
         has_ids=True,
         max_ids=1,
         min_ids=1,
+        return_shape="single",
     )
     async def exchange_coins(self, *, data, ids: list | None = None) -> ExchangeRate:
         """
@@ -60,6 +61,7 @@ class TradingPostApi:
         has_ids=True,
         max_ids=1,
         min_ids=1,
+        return_shape="single",
     )
     async def exchange_gems(self, *, data, ids: list | None = None) -> ExchangeRate:
         """

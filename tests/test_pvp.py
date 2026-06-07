@@ -22,6 +22,7 @@ class PvPTests(ApiTestCase):
 class PvPLeaderboardsTests(ApiTestCase):
     async def test_leaderboards(self):
         seasons = await self.api.pvp.seasons()
+        self.assertIsInstance(seasons, list)
         seasons = subset(seasons, 3)
         # TODO handle exceptions better
         for s in seasons:

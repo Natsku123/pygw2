@@ -209,6 +209,7 @@ class AccountTests(ApiTestCase):
 class CharacterTests(ApiTestCase):
     async def test_character(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         chars = subset(chars, 5)
         for c in chars:
             char = await self.api.account.character(c).get()
@@ -216,6 +217,7 @@ class CharacterTests(ApiTestCase):
 
     async def test_backstory(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         char = chars[0]
         answers = await self.api.account.character(char).backstory()
         for a in answers:
@@ -223,12 +225,14 @@ class CharacterTests(ApiTestCase):
 
     async def test_core(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         char = chars[0]
         core = await self.api.account.character(char).core()
         self.assertIsInstance(core, CharacterCore)
 
     async def test_crafting(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         char = chars[0]
         crafts = await self.api.account.character(char).crafting()
         if isinstance(crafts, list):
@@ -239,6 +243,7 @@ class CharacterTests(ApiTestCase):
 
     async def test_equipment(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         char = chars[0]
         equipment = await self.api.account.character(char).equipment()
         if isinstance(equipment, list):
@@ -249,6 +254,7 @@ class CharacterTests(ApiTestCase):
 
     async def test_inventory(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         char = chars[0]
         inventory = await self.api.account.character(char).inventory()
         if isinstance(inventory, list):
@@ -272,6 +278,7 @@ class CharacterTests(ApiTestCase):
 
     async def test_training(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         char = chars[0]
         training = await self.api.account.character(char).training()
         if isinstance(training, list):
@@ -282,6 +289,7 @@ class CharacterTests(ApiTestCase):
 
     async def test_sab(self):
         chars = await self.api.account.characters()
+        self.assertIsInstance(chars, list)
         char = chars[0]
         sab = await self.api.account.character(char).sab()
         self.assertIsInstance(sab, SAB)
@@ -300,12 +308,14 @@ class CharacterTests(ApiTestCase):
 class HomeTests(ApiTestCase):
     async def test_cats(self):
         cats = await self.api.account.home.cats()
+        self.assertIsInstance(cats, list)
         cats = subset(cats, 10)
         for c in cats:
             self.assertIsInstance(c, HomeCat)
 
     async def test_nodes(self):
         nodes = await self.api.account.home.nodes()
+        self.assertIsInstance(nodes, list)
         nodes = subset(nodes, 10)
         for n in nodes:
             self.assertIsInstance(n, HomeNode)
@@ -315,12 +325,14 @@ class HomeTests(ApiTestCase):
 class MountsTests(ApiTestCase):
     async def test_skins(self):
         skins = await self.api.account.mounts.skins()
+        self.assertIsInstance(skins, list)
         skins = subset(skins, 10)
         for s in skins:
             self.assertIsInstance(s, MountSkin)
 
     async def test_types(self):
         types = await self.api.account.mounts.types()
+        self.assertIsInstance(types, list)
         types = subset(types, 10)
         for t in types:
             self.assertIsInstance(t, MountType)

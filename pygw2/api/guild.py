@@ -71,7 +71,7 @@ class GuildApi:
     def emblem(self) -> GuildEmblemApi:
         return self._emblem
 
-    @endpoint("/v2/guild", has_ids=True, max_ids=1, min_ids=1)
+    @endpoint("/v2/guild", has_ids=True, max_ids=1, min_ids=1, return_shape="single")
     async def get(self, *, data, ids: list | None = None):
         """
         Get info of Guild by ID.
